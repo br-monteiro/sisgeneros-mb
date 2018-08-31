@@ -1,0 +1,25 @@
+{
+    "name":"HTR/Firebird-Framework",
+    "description":"Framework desenvolvido por Edson Monteiro",
+    "minimum-stability":"dev",
+    "require": {
+        "php": ">=5.4",
+        "respect/validation": "0.7.*@dev",
+        "rah/danpu": "2.6.*",
+        "rych/phpass": "3.0.*@beta",
+        "h4cc/wkhtmltopdf-i386": "0.12.x",
+        "knplabs/knp-snappy": "0.4.3"
+    },
+    "authors": [
+        {
+            "name": "Edson Monteiro",
+            "email": "bruno.monteirodg@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "HTR" : "vendor",
+            "App" : "./"
+        }
+    }
+}
