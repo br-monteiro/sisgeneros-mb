@@ -1,0 +1,144 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Solicitações</h3>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li>
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nº</th>
+                            <th>OM</th>
+                            <th>Fornecedor</th>
+                            <th>NF</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Criação</th>
+                            <th>Alteração</th>
+                            <th>Data Ent.</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td><small><?= $value['numero']; ?></small></td>
+                                <td><small><?= $value['indicativo_naval']; ?></small></td>
+                                <td><small><?= $value['fornecedor_nome']; ?></small></td>
+                                <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
+                                <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
+                                <td>
+                                    <?php
+                                        if ($value['status'] == 1) {
+                                            echo 'Solicitado';
+                                        } else if ($value['status'] == 2) {
+                                            echo 'Aprovado';
+                                        } else {
+                                            echo 'Entregue';
+                                        }
+                                    ?>
+                                </td>
+                                <td>
+                                    <span class="label label-default">    
+                                        <?= date('d-m-Y', $value['created_at']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="label label-default">    
+                                        <?= date('d-m-Y', $value['updated_at']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="label label-info">    
+                                        <?= $value['data_entrega']; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary">
+                                        <i class="fa fa-list"></i> Itens
+                                    </a>
+                                    <?php if (($this->view->userLoggedIn['nivel'] == 1 OR $this->view->userLoggedIn['nivel'] == 3) AND $value['status'] == 1): ?>
+                                        <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success">
+                                            <i class="fa fa-check-circle"></i> Aprovar
+                                        </a>
+                                        <?php
+                                    endif;
+                                    if ($this->view->userLoggedIn['nivel'] != 2 AND $value['status'] == 1):
+
+                                        ?>
+                                        <a href="#"
+                                           onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
+                                           class="btn btn-danger">
+                                            <i class="fa fa-trash"></i> Eliminar
+                                        </a>
+                                        <?php
+                                    endif;
+                                    if ($value['status'] >= 2):
+
+                                        ?>
+                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default">
+                                            <i class="fa fa-file"></i> PDF
+                                        </a>
+                                        <?php
+                                    endif;
+                                    if ($this->view->userLoggedIn['nivel'] != 2 AND$value['status'] == 2):
+
+                                        ?>
+                                        <a href="<?= $this->view->controller; ?>receber/id/<?= $value['id']; ?>" class="btn btn-success">
+                                            <i class="fa fa-check-circle"></i> Receber
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                        <?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->

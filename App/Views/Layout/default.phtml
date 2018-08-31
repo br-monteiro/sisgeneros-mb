@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="Bruno Monteiro">
+        <title>
+            <?php
+            echo isset($this->view->title) ? $this->view->title : '';
+            echo ' :: ' . APPNAM . ' ' . APPVER . ' ::';
+
+            ?>    
+        </title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="<?= ATTACH; ?>bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- MetisMenu CSS -->
+        <link href="<?= ATTACH; ?>metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="<?= DIRCSS; ?>sb-admin-2.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="<?= ATTACH; ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <style type="text/css">
+            @media print {
+                .btn, .pagination {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="wrapper">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?= APPDIR; ?>"><?= APPNAM . ' ' . APPVER; ?></a>
+                </div>
+                <!-- /.navbar-header -->
+
+                <?php include_once ATTPAG . 'menu_horizontal_top.phtml'; ?>
+
+                <?php include_once ATTPAG . 'menu_vertical.phtml'; ?>
+
+            </nav>
+
+            <?= $this->content(); ?> 
+
+        </div>
+        <!-- /#wrapper -->
+        <!-- jQuery -->
+        <script src="<?= ATTACH; ?>jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap Core JavaScript -->
+        <script src="<?= ATTACH; ?>bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="<?= ATTACH; ?>metisMenu/dist/metisMenu.min.js"></script>
+
+        <!-- Mask Money Plugin JavaScript -->
+        <!--<script src="<?= ATTACH; ?>maskMoney/jquery.maskMoney.js"></script>-->
+
+        <!-- JQuery Mask Plugin JavaScript -->
+        <script src="<?= ATTACH; ?>jqueryMask/jquery.mask.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="<?= DIRJS_; ?>sb-admin-2.js"></script>
+        <!-- Script padrão de envio de formulário -->
+        <script type="text/javascript">
+            function resetForm() {
+                document.getElementById("form").reset();
+            }
+            function resetFormOnDemand(fields) {
+                for (var i = 0; i < fields.length; i++) {
+                    var field = document.getElementById(fields[i]);
+                    field.value = "";
+                }
+            }
+            function focusOn(idCampo) {
+                //document.getElementsById( nameCampo ).focus();
+                document.getElementById(idCampo).focus();
+            }
+            function confirmar(texto, url) {
+                if (confirm(texto)) {
+                    window.location = url;
+                }
+            }
+
+            $(document).ready(function () {
+                //$("#preco").maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+                $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
+                $('#data_entrega').mask('00-00-0000', {reverse: true});
+                $('#validade').mask('00/00/0000', {reverse: true});
+                $('#numero').mask('00000/0000', {reverse: true});
+                $('#valor').mask('000.000.000.000.000,00', {reverse: true});
+                $('#form').submit(function () {
+                    var dados = $(this).serialize();
+                    $.ajax({
+                        type: "POST", // Tipo de metodo
+                        url: $(this).attr("action"), //Recebe o valor da action do form
+                        data: dados,
+                        success: function (data) //Se tiver sucesso...
+                        {
+                            $("#resultado").html(data);
+                        }
+                    });
+                    return false;
+                });
+                //Requisita                           
+
+                var x = 1;
+                $('#add').click(function (e) {
+                    e.preventDefault();     //prevenir novos clicks
+                    $('#lista').append('\
+                            <tr class="remove' + x + '">\
+                                <td>\
+                                    <input type="hidden"\
+                                           name="id[]"\
+                                           value="">\
+                                    <input type="text"\
+                                           name="quantidade[]"\
+                                           id="quantidade"\
+                                           class="form-control"\
+                                           maxlength="10">\
+                                </td>\
+                                <td><input type="text"\
+                                           name="uf[]"\
+                                           id="uf"\
+                                           class="form-control"\
+                                           maxlength="5"></td>\
+                                <td><input type="text"\
+                                           name="valor[]"\
+                                           id="valor2"\
+                                           class="form-control"></td>\
+                                <td><input type="text"\
+                                           name="nome[]"\
+                                           id="nome"\
+                                           class="form-control"\
+                                           maxlength="50"></td>\
+                                <td><a href="#" class="remove" id="remove' + x + '">\
+                                    <i class="fa fa-times"></i>\
+                                </td>\
+                            </tr>\
+                    ');
+                    x++;
+                });
+
+                //this is not the best move, because will create overhead...
+                //but is for simplicity
+                //damn users
+                $('#lista').on("click", ".remove", function (e) {
+                    e.preventDefault();
+                    var tr = $(this).attr('id');
+                    //alert ('remove: ' + tr);
+                    $('#lista tr.' + tr).remove();
+                    x--;
+                });
+            });
+        </script>
+    </body>
+</html>

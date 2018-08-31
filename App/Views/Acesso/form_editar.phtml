@@ -1,0 +1,189 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?=$this->view->title?></h5>
+                
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-table fa-fw"></i> Editando Registro
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div id="resultado"></div>
+                        <form action="<?=$this->view->controller;?>altera/" method="post" id="form">
+                        <input type="hidden" name="id" value="<?=$this->view->result['id'];?>">
+                        <div class="row">
+                            <div class="col-lg-6">
+
+                                <div class="form-group">
+                                    <label>Login</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="username"
+                                           maxlength="10"
+                                           placeholder="Login do Usuário - Username"
+                                           id="username"
+                                           value="<?=$this->view->result['username'];?>"
+                                           required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Senha</label>
+                                    <input type="password"
+                                           class="form-control"
+                                           name="password"
+                                           maxlength="20"
+                                           placeholder="Senha de Acesso - Password"
+                                           id="password">
+                                    <p class="help-block" style="color: red;">* Altere este campo apenas se for necessário.</p>
+                                </div>
+                                
+                                <div class="form-group"
+                                    <?php
+                                        if ($this->view->userLoggedIn['nivel'] != 1 ) {
+                                            echo 'style="display:none;"';
+                                        }
+                                    ?> >
+                                    <label>Nível de Acesso</label>
+                                    <select name="nivel"
+                                            id="nivel"
+                                            class="form-control"
+                                            required>
+                                        <option value="1" <?php
+                                            if ($this->view->result['nivel'] == 1) {
+                                                echo 'selected';
+                                            }
+                                            ?>>1 - Administrador</option>
+                                        <option value="2" <?php
+                                            if ($this->view->result['nivel'] == 2) {
+                                                echo 'selected';
+                                            }
+                                            ?>>2 - Controlador</option>
+                                        <option value="3" <?php
+                                            if ($this->view->result['nivel'] == 3) {
+                                                echo 'selected';
+                                            }
+                                            ?>>3 - Encarregado</option>
+                                        <option value="4" <?php
+                                            if ($this->view->result['nivel'] == 4) {
+                                                echo 'selected';
+                                            }
+                                            ?>>4 - Normal</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-6">
+
+                                <div class="form-group"
+                                    <?php
+                                        if ($this->view->userLoggedIn['nivel'] != 1 ) {
+                                            echo 'style="display:none;"';
+                                        }
+                                    ?> >
+                                    <label>Nome do Usuário</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           name="name"
+                                           maxlength="20"
+                                           placeholder="Nome do Usuário Responsável"
+                                           id="name"
+                                           value="<?=$this->view->result['name'];?>"
+                                           required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>E-mail do Usuário</label>
+                                    <input type="email"
+                                           class="form-control"
+                                           name="email"
+                                           maxlength="100"
+                                           placeholder="E-mail do Usuário Responsável"
+                                           id="email"
+                                           value="<?=$this->view->result['email'];?>"
+                                           required>
+                                    <p class="help-block"
+                                    <?php
+                                        if ($this->view->userLoggedIn['nivel'] != 1 ) {
+                                            echo 'style="display:none;"';
+                                        }
+                                    ?> >&nbsp;</p>
+                                </div>
+
+                                <div class="form-group"
+                                    <?php
+                                        if ($this->view->userLoggedIn['nivel'] != 1 ) {
+                                            echo 'style="display:none;"';
+                                        }
+                                    ?> >
+                                    <label>Usuário ativo?</label>
+                                    <select name="active"
+                                            id="active"
+                                            class="form-control"
+                                            required>
+                                        <option value="1" <?php
+                                            if ($this->view->result['active'] == 1) {
+                                                echo 'selected';
+                                            }
+                                            ?>>1-Sim</option>
+                                        <option value="2" <?php
+                                            if ($this->view->result['active'] == 2) {
+                                                echo 'selected';
+                                            }
+                                            ?>>2-Não</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group"
+                                    <?php
+                                        if ($this->view->userLoggedIn['nivel'] != 1 ) {
+                                            echo 'style="display:none;"';
+                                        }
+                                    ?> >
+                                    <label>OM</label>
+                                    <select name="om_id"
+                                            id="om_id"
+                                            class="form-control"
+                                            required>
+                                        <?php foreach ($this->view->resultOm as $value): ?>
+                                            <option value="<?=$value['id'];?>"<?php
+                                                if ($this->view->result['om_id'] == $value['id']) {
+                                                    echo 'selected';
+                                                }
+                                                ?>>
+                                                <?=$value['indicativo_naval'];?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <br>
+                                    <button class="btn btn-primary"><i class="fa fa-check"></i> Alterar</button>
+                                    <a href="<?=$this->view->controller;?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->

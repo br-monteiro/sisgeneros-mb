@@ -1,0 +1,90 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div id="resultado"></div>
+                        <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Número</label>
+                                        <input type="text"
+                                               name="numero"
+                                               id="numero"
+                                               placeholder="Número da Licitação"
+                                               class="form-control"
+                                               maxlength="10"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Validade</label>
+                                        <input type="text"
+                                               name="validade"
+                                               id="validade"
+                                               placeholder="Data de Validade da Licitação"
+                                               class="form-control"
+                                               maxlength="10"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label>UASG</label>
+                                        <input type="text"
+                                               name="uasg"
+                                               id="uasg"
+                                               placeholder="Número da UASG da Licitação"
+                                               class="form-control"
+                                               maxlength="6"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Órgão Resposável</label>
+                                        <input type="text"
+                                               name="nome_uasg"
+                                               id="nome_uasg"
+                                               placeholder="Nome do Órgão Resposável pela Licitação"
+                                               class="form-control"
+                                               maxlength="50"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button class="btn btn-primary"><i class="fa fa-check"></i> Registrar</button>
+                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->

@@ -1,0 +1,273 @@
+<style>
+    body {
+        font-size: 12px !important;
+        background-color: #fff !important;
+    }
+    .table-striped > tbody > tr:nth-of-type(2n+1) {
+        background-color: #ccc;
+    }
+    .table-print {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .recebedor {
+        text-align: left !important;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        font-weight: bold;
+    }
+    .cabecalho {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .tipo-documento, .numero, .data {
+        text-align: right;
+        padding-right: 50px;
+    }
+    .tipo-documento {
+        font-size: 14px;
+    }
+    .numero {
+        font-size: 18px;
+    }
+    .data {
+        font-size: 16px;
+    }
+    .assinaturas {
+        padding-top: 36px;
+        width: 33%;
+    }
+    .fornecedor {
+        padding: 10px;
+        text-align: left;
+        padding-left: 50px;
+        font-weight: bold;
+        font-size: 16px;
+        padding-top: 25px;
+    }
+    .obs, .data_entrega {
+        text-align: left;
+        padding-left: 50px;
+    }
+    .data_entrega {
+        font-size: 14px;
+    }
+    .agente-fiscal {
+        text-align: left;
+        padding-left: 100px;
+        padding-top: 25px;
+    }
+    .content-assinatura {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+    .agente-fiscal .content-assinatura{
+        width: 45% !important;
+    }
+    .linha-assinatura {
+        border-top: 2px solid;
+        width: 75%;
+        margin: 0px auto;
+    }
+    .discricao {
+        text-align: left !important;
+    }
+    .td-table, .table {
+        margin: 0px !important;
+        padding: 0px !important;
+    }
+    .table-condensed > tfoot > tr > td {
+        padding: 2px !important;
+    }
+</style>
+<?php
+$mes = function($data) {
+    $m = date('m', $data);
+    switch ($m) {
+        case '01':
+            return 'janeiro';
+        case '02':
+            return 'fevereiro';
+        case '03':
+            return 'março';
+        case '04':
+            return 'abril';
+        case '05':
+            return 'maio';
+        case '06':
+            return 'junho';
+        case '07':
+            return 'julho';
+        case '08':
+            return 'agosto';
+        case '09':
+            return 'setembro';
+        case '10':
+            return 'outubro';
+        case '11':
+            return 'novembro';
+        case '12':
+            return 'dezembro';
+    }
+};
+// valida para que as informações sejam geradas apenas quando o status for igual a 3
+if (!isset($this->view->result[0])) {
+    die("<i class='fa fa-info-circle'></i> A papeleta não pode ser gerada..");
+}
+
+?>
+<table class="table-print">
+    <tr>
+        <td colspan="3" class="cabecalho">
+            MARINHA DO BRASIL<br />
+            <?= ($this->view->result[0]['nome']); ?><br />
+            DIVISÃO DE MUNICIAMENTO
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="agente-fiscal">
+            <div class="content-assinatura">
+                <?= ($this->view->result[0]['agente_fiscal']); ?><br />
+                <?= ($this->view->result[0]['agente_fiscal_posto']); ?><br />
+                Agente Fiscal
+            </div>
+        </td>
+        <td class="numero">
+            Solicitação Nº
+            <strong>
+                <?= ($this->view->result[0]['numero']); ?>
+            </strong>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="fornecedor">
+            FORNECEDOR: <?= ($this->view->result[0]['cnpj']); ?> - <?= ($this->view->result[0]['fornecedor_nome']); ?>
+        </td>
+        <td class="tipo-documento">
+            <?=
+            $this->view->result[0]['nao_licitado'] == 0 ?
+                '(X) LICITADO  | (&nbsp;&nbsp;) NÃO LICITADO' : '(&nbsp;&nbsp;) LICITADO  | (X) NÃO LICITADO';
+
+            ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" class="td-table">
+
+            <table class="table table-striped table-hover table-condensed" border="1">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="text-center">
+                            ITEM
+                        </th>
+                        <th rowspan="2" class="text-center">
+                            DESCRIÇÃO
+                        </th>
+                        <th rowspan="2" class="text-center">
+                            LICITAÇÃO
+                        </th>
+                        <th rowspan="2" class="text-center">
+                            UF
+                        </th>
+                        <th colspan="2" class="text-center">
+                            QUANTIDADE
+                        </th>
+                        <th colspan="2" class="text-center">
+                            PREÇO R$
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">SOLICITADA</th>
+                        <th class="text-center">ATENDIDA</th>
+                        <th class="text-center">UNITÁRIO</th>
+                        <th class="text-center">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $i = 1;
+                    $t = 0;
+                    foreach ($this->view->result as $value):
+
+                        ?>
+                        <tr>
+                            <td><?= $i++; ?></td>
+                            <td class='discricao'><?= $value['item_nome']; ?></td>
+                            <td><?= isset($value['licitacao_numero']) ? $value['licitacao_numero'] : 'NL'; ?></td>
+                            <td><?= $value['item_uf']; ?></td>
+                            <td><?= $q = $value['item_quantidade']; ?></td>
+                            <td><?= $q2 = $value['item_quantidade_atendida'] > 0 ? $value['item_quantidade_atendida'] : ''; ?></td>
+                            <td><?= number_format($v = $value['item_valor'], 2, ',', '.'); ?></td>
+                            <td>
+                                <?php
+                                    $acc = 0;
+                                    $q2 = $q2 > 0 ? $q2 : 0;
+                                    $acc = $q2 > 0 ? $q2 * $v : $q * $v;
+                                    $t += $acc;
+                                    echo number_format($acc, 2, ',', '.');
+                                ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6"></td>
+                        <td>
+                            Total
+                        </td>
+                        <td>
+                            R$ <?= number_format($t, 2, ',', '.'); ?>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="data_entrega">
+            Data de entrega: <strong><?= $value['data_entrega']; ?></strong>
+        </td>
+        <td class="recebedor">
+            RECEBIDO EM ________/________/________<br />
+            RECEBEDOR:
+        </td>
+        <td class="data">
+            Belém, <?= date('d', $this->view->result[0]['alteracao']); ?>
+            de <?= $mes($this->view->result[0]['alteracao']); ?>
+            de <?= date('Y', $this->view->result[0]['alteracao']); ?>.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="8" class="obs">
+            OBSERVAÇÃO: O material deve ser entregue junto com a NFE, com os dados bancários na mesma.<br>
+            Nota Fiscal Nº: <?= $this->view->result[0]['numero_nota_fiscal']; ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="assinaturas">
+            <div class="content-assinatura">
+                <?= $this->view->result[0]['gestor_municiamento']; ?><br />
+                <?= $this->view->result[0]['gestor_municiamento_posto']; ?><br />
+                Gestor(a) de Municiamento
+            </div>
+        </td>
+        <td class="assinaturas">
+            <div class="content-assinatura">
+                <div class="linha-assinatura">
+                    PAIOLEIRO DE SERVIÇO
+                </div>
+            </div>
+        </td>
+        <td class="assinaturas">
+            <div class="content-assinatura">
+                <?= $this->view->result[0]['fiel_municiamento']; ?><br />
+                <?= $this->view->result[0]['fiel_municiamento_posto']; ?><br />
+                Fiel de Municiamento
+            </div>
+        </td>
+    </tr>
+</table>

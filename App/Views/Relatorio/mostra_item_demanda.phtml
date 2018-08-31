@@ -1,0 +1,86 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Relatório de Demanda</h3>
+                <div class="alert alert-info" role="alert">
+                    Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
+                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong> | 
+                    UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong>
+                </div>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+                <table class="table table-condensed table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>UF</th>
+                            <th>Nome</th>
+                            <th>Fornecedor</th>
+                            <th>Licitado</th>
+                            <th>Demanda</th>
+                            <th>Restante</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td style='font-size: 11px'><?= $value['numero']; ?></td>
+                                <td style='font-size: 11px'><?= $value['uf']; ?></td>
+                                <td style='font-size: 11px'><?= $value['nome']; ?></td>
+                                <td style='font-size: 11px'><?= $value['fornecedor']; ?></td>
+                                <td>
+                                    <span class="label label-success">
+                                        <?= $value['quantidade']; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?php
+                                    $demanda = $this->demanda($value['numero'], $this->view->resultLicitacao['id']);
+                                    $restante = $value['quantidade'] - $demanda;
+                                    if ($demanda):
+
+                                        ?>
+                                        <span class="label label-info">
+                                        <?= $demanda ?>
+                                        </span>
+                                    <?php else: ?>
+                                        ---
+    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <span class="label <?= $restante < 0 ? "label-danger" : "label-default"; ?>">
+    <?= $restante; ?>
+                                    </span>
+                                </td>
+                            </tr>
+<?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li><a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+<?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->

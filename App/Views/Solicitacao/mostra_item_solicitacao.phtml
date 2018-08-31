@@ -1,0 +1,86 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Itens da Solicitação</h3>
+                <?php if (isset($this->view->resultLicitacao['numero'])): ?>
+                    <div class="alert alert-info" role="alert">
+                        Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                        UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
+                        Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
+
+                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        <?php if ($this->view->resultSolicitacao['status'] == 1): ?>
+                            (<a href="<?= $this->view->controller; ?>alterardata/id/<?= $this->view->resultSolicitacao['id']; ?>/idlista/<?= $this->view->resultSolicitacao['id_lista']; ?>"
+                                class="text-danger">Alterar <i class="fa fa-edit"></i></a>)
+                        <?php endif; ?>
+
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-info" role="alert">
+                        Não licitado
+                    </div>
+                <?php endif; ?>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Solicitado</th>
+                            <th>Recebido</th>
+                            <th>UF</th>
+                            <th>Nome</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td><?= $value['item_numero'] ?: ''; ?></td>
+                                <td><?= $value['item_quantidade']; ?></td>
+                                <td><?= $value['item_quantidade_atendida']; ?></td>
+                                <td><?= $value['item_uf']; ?></td>
+                                <td><?= $value['item_nome']; ?></td>
+                                <td>
+                                    <?php if ($this->view->userLoggedIn['nivel'] != 2 and $this->view->resultSolicitacao['status'] == 1) { ?>
+                                        <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success">
+                                            <i class="fa fa-edit"></i> Editar
+                                        </a>
+                                        <a href="#"
+                                           onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminaritem/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                           class="btn btn-danger">
+                                            <i class="fa fa-trash"></i> Eliminar
+                                        </a>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li><a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                        <?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->

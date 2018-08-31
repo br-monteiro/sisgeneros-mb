@@ -1,0 +1,136 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3></h3>
+                <div id="resultado"></div>
+                <?php if (isset($this->view->result[0])): ?>
+                    <a href="<?= $this->view->controller; ?>" class="btn btn-info" id="btn_voltar" style="display: none;">Voltar</a>
+                    <form action="<?= $this->view->controller; ?>registrarrecebimento/id/<?= $this->view->result[0]['solicitacao_id']; ?>" method="post" id="form">
+                        <input type="hidden" name="id_licitacao" value="<?= $this->view->result[0]['id_licitacao'] ?>">
+                        <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
+                        <input type="hidden" name="data_entrega" value="<?= date("d-m-Y", time()); ?>">
+                        <button class="btn btn-info" id='btn_enviar'>
+                            <i class="fa fa-asterisk"></i> Confirmar Registro
+                        </button>
+                        <div class="row" style="padding-top: 10px;">
+                            <div class="col-lg-4" id="numero_nota_fiscal_container">
+                                <label>Número da Nota Fiscal: </label>
+                                <input type="text" name="numero_nota_fiscal"
+                                       id="numero_nota_fiscal"
+                                       class="form-control"
+                                       maxlength="20"
+                                       placeholder="Número da nota fiscal"
+                                       autofocus>
+                            </div>
+                            <div class="col-lg-4" id="nota">
+                                <label>Avaliação da entrega: </label><br>
+                                <span class="label label-danger">
+                                    <input type="radio" name="nota" value="1"> 1
+                                </span>
+                                &nbsp; <span class="label label-default">
+                                    <input type="radio" name="nota" value="2"> 2
+                                </span>
+                                &nbsp; <span class="label label-warning">
+                                    <input type="radio" name="nota" value="3"> 3
+                                </span>
+                                &nbsp; <span class="label label-success">
+                                    <input type="radio" name="nota" value="4"> 4
+                                </span>
+                                &nbsp; <span class="label label-info">
+                                    <input type="radio" name="nota" value="5" checked> 5
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 10px;">
+                            <div class="col-lg-4" id="observacao">
+                                <label>Observação: </label>
+                                <textarea name="observacao"
+                                          placeholder="Observações"
+                                          class="form-control"></textarea>
+                            </div>
+                            <div class="col-lg-6" id="legenda">
+                                <label>Legenda:</label><br>
+                                <span class="label label-danger" style="font-size: 14px !important;">1 - Muito insatisfeito</span> à
+                                <span class="label label-info" style="font-size: 14px !important;">5 - Muito satisfeito</span>
+                            </div>
+                        </div>
+                        <table class="table" id='tabela_result'>
+                            <thead>
+                                <tr>
+                                    <th width="8%">Entregue</th>
+                                    <th width="8%">Solicitado</th>
+                                    <th>Item</th>
+                                    <th>Valor Unitário</th>
+                                    <th>UF</th>
+                                    <th>Nome</th>
+                                    <th>Fornecedor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->view->result as $value): ?>
+                                    <tr>
+                                        <td>
+                                            <input type="hidden"
+                                                   name="id[]"
+                                                   value="<?= $value['id']; ?>">
+                                            <input type="hidden"
+                                                   name="uf[]"
+                                                   value="<?= $value['item_uf']; ?>">
+                                            <input type="hidden"
+                                                   name="valor[]"
+                                                   value="<?= $value['item_valor']; ?>">
+                                            <input type="hidden"
+                                                   name="fornecedor[]"
+                                                   value="">
+                                            <input type="hidden"
+                                                   name="nome[]"
+                                                   value="---">
+                                            <input type="text"
+                                                   name="quantidade[]"
+                                                   id="quantidade"
+                                                   value="<?= $value['item_quantidade']; ?>"
+                                                   class="form-control">
+                                        </td>
+                                        <td><?= $value['item_quantidade']; ?></td>
+                                        <td><?= $value['item_numero']; ?></td>
+                                        <td>R$ <?= number_format($value['item_valor'], 2, ",", "."); ?></td>
+                                        <td><?= $value['item_uf']; ?></td>
+                                        <td><?= $value['item_nome']; ?></td>
+                                        <td>
+                                            <span class="label label-default">
+                                                <?= $value['fornecedor_nome']; ?>
+                                            </span>
+                                            <br>
+                                            <span class="label label-danger">
+                                                <?= $value['cnpj']; ?>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </form>
+
+                <?php else: ?>
+                    <div class="alert alert-info">
+                        Esta solicitação já foi recebida.
+                    </div>
+                <?php endif; ?>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<script>
+    function mostrar(id) {
+        $("#" + id).show();
+    }
+    function ocultar(id) {
+        $("#" + id).hide();
+    }
+</script>
+<!-- /#page-wrapper -->

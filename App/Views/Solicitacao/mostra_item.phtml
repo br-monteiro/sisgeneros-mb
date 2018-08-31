@@ -1,0 +1,71 @@
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3></h3>
+                <div class="alert alert-info" role="alert">
+                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                    UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
+                    Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
+                    Fornecedor: <strong class="label label-success"><?= $this->view->result[0]['fornecedor']; ?></strong><br>
+                    CNPJ: <strong class="label label-success"><?= $this->view->result[0]['cnpj']; ?></strong>
+                </div>
+                <div id="resultado"></div>
+                <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
+                    <input type="hidden" name="id_licitacao" value="<?= $this->view->resultLicitacao['id'] ?>">
+                    <input type="hidden" name="nao_licitado" value="0">
+                    <input type="hidden" name="numero_nota_fiscal" value="S/N">
+                    <input type="hidden" name="observacao" value="">
+                    <button class="btn btn-info">
+                        <i class="fa fa-asterisk"></i> Confirmar Registro
+                    </button>
+                    <div class="row">
+                        <div class="col-md-4" style="margin-top: 10px;">
+                            <label>Data estipulada para entrega:</label>
+                            <input type="text" name="data_entrega" id="data_entrega" class="form-control" placeholder="dd-mm-aaaa" maxlength="10">
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="8%">Quantidade</th>
+                                <th>Item</th>
+                                <th>Valor Unitário</th>
+                                <th>UF</th>
+                                <th>Nome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->view->result as $value): ?>
+                                <tr>
+                                    <td>
+                                        <input type="hidden"
+                                               name="id[]"
+                                               value="<?= $value['id']; ?>">
+                                        <input type="hidden"
+                                               name="fornecedor[]"
+                                               value="<?= $value['fornecedor_id']; ?>">
+                                        <input type="text"
+                                               name="quantidade[]"
+                                               id="quantidade"
+                                               class="form-control">
+                                    </td>
+                                    <td><?= $value['numero']; ?></td>
+                                    <td>R$ <?= number_format($value['valor'], 2, ",", "."); ?></td>
+                                    <td><?= $value['uf']; ?></td>
+                                    <td><?= $value['nome']; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </form>
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /#page-wrapper -->
