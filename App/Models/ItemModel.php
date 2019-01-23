@@ -203,7 +203,7 @@ class ItemModel extends CRUD
     // Validação
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
@@ -212,7 +212,7 @@ class ItemModel extends CRUD
 
     private function validaIdLista()
     {
-        $value = v::int()->validate($this->getIdLista());
+        $value = v::intVal()->validate($this->getIdLista());
         if (!$value) {
             msg::showMsg('O campo ID LISTA deve ser um número inteiro válido.', 'danger');
         }
@@ -221,7 +221,7 @@ class ItemModel extends CRUD
 
     private function validaIdFornecedor()
     {
-        $value = v::int()->validate($this->getIdFornecedor());
+        $value = v::intVal()->validate($this->getIdFornecedor());
         if (!$value) {
             msg::showMsg('O campo ID DO FORNECEDOR deve ser um número inteiro válido.', 'danger');
         }
@@ -230,7 +230,7 @@ class ItemModel extends CRUD
 
     private function validaNumero()
     {
-        $value = v::int()->notEmpty()->noWhitespace()->validate($this->getNumero());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getNumero());
         if (!$value) {
             msg::showMsg('O campo Numero deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("numero");</script>', 'danger');
@@ -240,7 +240,7 @@ class ItemModel extends CRUD
 
     private function validaNome()
     {
-        $value = v::string()->notEmpty()->validate($this->getNome());
+        $value = v::stringType()->notEmpty()->validate($this->getNome());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nome");</script>', 'danger');
@@ -250,7 +250,7 @@ class ItemModel extends CRUD
 
     private function validaUf()
     {
-        $value = v::string()->notEmpty()->length(1, 4)->validate($this->getUf());
+        $value = v::stringType()->notEmpty()->length(1, 4)->validate($this->getUf());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("uf");</script>', 'danger');
@@ -260,7 +260,7 @@ class ItemModel extends CRUD
 
     private function validaQuantidade()
     {
-        $value = v::int()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
         if (!$value) {
             msg::showMsg('O campo Quantidade deve ser preenchido corretamente.'
                 . '<script>focusOn("quantidade");</script>', 'danger');

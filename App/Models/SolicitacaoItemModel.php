@@ -198,7 +198,7 @@ class SolicitacaoItemModel extends CRUD
 
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser preenchido corretamente', 'danger');
         }
@@ -207,7 +207,7 @@ class SolicitacaoItemModel extends CRUD
 
     private function validaQuantidade()
     {
-        $value = v::int()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
         if (!$value) {
             msg::showMsg('O campo Quantidade deve ser preenchido corretamente.'
                 . '<script>focusOn("quantidade");</script>', 'danger');

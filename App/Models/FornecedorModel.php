@@ -139,7 +139,7 @@ class FornecedorModel extends CRUD
     // Validação
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
@@ -148,7 +148,7 @@ class FornecedorModel extends CRUD
 
     private function validaNome()
     {
-        $value = v::string()->notEmpty()->validate($this->getNome());
+        $value = v::stringType()->notEmpty()->validate($this->getNome());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nome");</script>', 'danger');
@@ -168,7 +168,7 @@ class FornecedorModel extends CRUD
 
     private function validaDados()
     {
-        $value = v::string()->validate($this->getDados());
+        $value = v::stringType()->validate($this->getDados());
         if (!$value) {
             msg::showMsg('O campo Dados deve ser preenchido corretamente.'
                 . '<script>focusOn("dados");</script>', 'danger');

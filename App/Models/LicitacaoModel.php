@@ -181,7 +181,7 @@ class LicitacaoModel extends CRUD
     // Validação
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
@@ -190,7 +190,7 @@ class LicitacaoModel extends CRUD
 
     private function validaIdLista()
     {
-        $value = v::int()->validate($this->getIdLista());
+        $value = v::intVal()->validate($this->getIdLista());
         if (!$value) {
             msg::showMsg('O campo ID LISTA deve ser um número inteiro válido.', 'danger');
         }
@@ -199,7 +199,7 @@ class LicitacaoModel extends CRUD
 
     private function validaNumero()
     {
-        $value = v::string()->notEmpty()->noWhitespace()->length(10, 10)->validate($this->getNumero());
+        $value = v::stringType()->notEmpty()->noWhitespace()->length(10, 10)->validate($this->getNumero());
         if (!$value) {
             msg::showMsg('O campo Numero deve ser preenchido corretamente'
                 . ' com <strong>10 caracteres obrigatoriamente</strong>.'
@@ -210,7 +210,7 @@ class LicitacaoModel extends CRUD
 
     private function validaUasg()
     {
-        $value = v::int()->notEmpty()->min(6, 6)->validate($this->getUasg());
+        $value = v::intVal()->notEmpty()->min(6, 6)->validate($this->getUasg());
         if (!$value) {
             msg::showMsg('O campo UASG deve ser um número inteiro válido '
                 . '<strong>com 6 caracteres</strong>.'
@@ -221,7 +221,7 @@ class LicitacaoModel extends CRUD
 
     private function validaNomeUasg()
     {
-        $value = v::string()->notEmpty()->length(1, 50)->validate($this->getNomeUasg());
+        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getNomeUasg());
         if (!$value) {
             msg::showMsg('O campo Nome da Uasg deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nome_uasg");</script>', 'danger');

@@ -235,8 +235,6 @@ class AcessoModel extends CRUD
         // Verifica se todos os campos foram preenchidos
         if ($username && $password) {
             $cripto = new Cripto;
-            // cripitografa os dados enviados
-            $username = $cripto->encode($username);
             // consulta se existe um susário registrado com o USERNAME fornecido
             $result = $this->findByUsername($username);
 
@@ -329,7 +327,7 @@ class AcessoModel extends CRUD
     // Validação
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O ID deve ser um número inteiro válido.', 'danger');
         }
@@ -338,7 +336,7 @@ class AcessoModel extends CRUD
 
     private function validaUsername()
     {
-        $value = v::string()->notEmpty()->validate($this->getUsername());
+        $value = v::stringType()->notEmpty()->validate($this->getUsername());
         if (!$value) {
             msg::showMsg('O campo Login deve ser preenchido corretamente.'
                 . '<script>focusOn("username");</script>', 'danger');
@@ -351,7 +349,7 @@ class AcessoModel extends CRUD
 
     private function validaPassword()
     {
-        $value = v::string()->notEmpty()->length(8, null)->validate($this->getPassword());
+        $value = v::stringType()->notEmpty()->length(8, null)->validate($this->getPassword());
         if (!$value) {
             msg::showMsg('O campo Senha deve ser preenchido corretamente'
                 . ' com no <strong>mínimo 8 caracteres</strong>.'
@@ -365,7 +363,7 @@ class AcessoModel extends CRUD
 
     private function validaName()
     {
-        $value = v::string()->notEmpty()->validate($this->getName());
+        $value = v::stringType()->notEmpty()->validate($this->getName());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser preenchido corretamente.'
                 . '<script>focusOn("name");</script>', 'danger');
@@ -375,7 +373,7 @@ class AcessoModel extends CRUD
 
     private function validaOmId()
     {
-        $value = v::int()->notEmpty()->validate($this->getOmId());
+        $value = v::intVal()->notEmpty()->validate($this->getOmId());
         if (!$value) {
             msg::showMsg('O campo OM deve ser preenchido corretamente.'
                 . '<script>focusOn("om_id");</script>', 'danger');
@@ -396,7 +394,7 @@ class AcessoModel extends CRUD
 
     private function validaNivel()
     {
-        $value = v::int()->notEmpty()->validate($this->getNivel());
+        $value = v::intVal()->notEmpty()->validate($this->getNivel());
         if (!$value) {
             msg::showMsg('O campo Nível de Acesso deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nivel");</script>', 'danger');
@@ -408,7 +406,7 @@ class AcessoModel extends CRUD
     {
         $cripto = new Cripto;
         if (!$password) {
-            $this->$attribute = $cripto->encode($value);
+            $this->$attribute = $value;
         } else {
             $this->$attribute = $cripto->passHash($value);
         }

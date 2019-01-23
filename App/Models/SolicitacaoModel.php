@@ -472,7 +472,7 @@ class SolicitacaoModel extends CRUD
     // Validação
     private function validaId()
     {
-        $value = v::int()->validate($this->getId());
+        $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
@@ -486,7 +486,7 @@ class SolicitacaoModel extends CRUD
         $value = $licitacao->findById($this->getIdLicitacao());
         // verifica se há um retorno na consulta feita acima
         $value = $value['id'] ?: 'inválido';
-        $value = v::int()->validate($value);
+        $value = v::intVal()->validate($value);
         if (!$value) {
             msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
         }
@@ -495,7 +495,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaNaoLicitado()
     {
-        $value = v::int()->validate($this->getNaoLicitado());
+        $value = v::intVal()->validate($this->getNaoLicitado());
         if (!$value) {
             msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
         }
@@ -514,7 +514,7 @@ class SolicitacaoModel extends CRUD
     private function validaQuantidade($value)
     {
         $value = str_replace(",", ".", $value);
-        $validate = v::float()->validate($value);
+        $validate = v::floatVal()->validate($value);
         if ((!$validate) OR ( $value < 0)) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) QUANTIDADE deve(m) ser'
                 . ' número INTEIRO não negativo', 'danger');
@@ -524,7 +524,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaUf($value)
     {
-        $validate = v::string()->notEmpty()->length(2, 5)->validate($value);
+        $validate = v::stringType()->notEmpty()->length(2, 5)->validate($value);
         if (!$validate OR is_numeric($value)) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) UF deve(m) ser'
                 . ' preenchido corretamente', 'danger');
@@ -537,7 +537,7 @@ class SolicitacaoModel extends CRUD
         $value = str_replace(".", "", $value);
         $value = str_replace(",", ".", $value);
 
-        $validate = v::float()->notEmpty()->validate($value);
+        $validate = v::floatVal()->notEmpty()->validate($value);
         if (!$validate) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) VALOR deve(m) ser'
                 . ' preenchido corretamente', 'danger');
@@ -547,7 +547,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaNome($value)
     {
-        $validate = v::string()->notEmpty()->length(3, 50)->validate($value);
+        $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
         if (!$validate) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) DESCRIÇÃO deve(m) ser'
                 . ' preenchido corretamente', 'danger');
@@ -557,7 +557,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaNumeroNotaFiscal($value)
     {
-        $validate = v::string()->notEmpty()->length(3, 20)->validate($value);
+        $validate = v::stringType()->notEmpty()->length(3, 20)->validate($value);
         if (!$validate) {
             msg::showMsg('Para realizar o recebimeto é necessário fornecer o número da nota fiscal'
                 . '<script>focusOn("numero_nota_fiscal");</script>', 'danger');
