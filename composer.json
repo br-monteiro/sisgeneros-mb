@@ -4,7 +4,7 @@
     "minimum-stability":"dev",
     "require": {
         "php": ">=5.4",
-        "respect/validation": "0.7.*@dev",
+        "respect/validation": "1.1.5",
         "rah/danpu": "2.6.*",
         "rych/phpass": "3.0.*@beta",
         "h4cc/wkhtmltopdf-i386": "0.12.x",
