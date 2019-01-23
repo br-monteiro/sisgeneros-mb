@@ -15,9 +15,9 @@ class OmController extends Controller implements CtrlInterface
     private $modelPath = 'App\Models\OmModel';
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
 
         $this->view->controller = APPDIR . 'om/';
         // Instancia o Helper que auxilia na proteção e autenticação de usuários

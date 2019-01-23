@@ -18,9 +18,9 @@ class RelatorioController extends Controller implements CtrlInterface
     private $access;
     private $solItem;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
 
         $this->view->controller = APPDIR . 'relatorio/';
 

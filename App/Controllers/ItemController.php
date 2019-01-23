@@ -17,9 +17,9 @@ class ItemController extends Controller implements CtrlInterface
     private $modelPath = 'App\Models\ItemModel';
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
         $this->view->controller = APPDIR . 'item/';
         // Instancia o Helper que auxilia na proteção e autenticação de usuários
         $this->access = new Access();

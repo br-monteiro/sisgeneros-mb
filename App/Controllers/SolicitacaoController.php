@@ -21,10 +21,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
     private $modelPath = 'App\Models\SolicitacaoModel';
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
-
+        parent::__construct($bootstrap);
         $this->view->controller = APPDIR . 'solicitacao/';
         // Instancia o Helper que auxilia na proteção e autenticação de usuários
         $this->access = new Access();

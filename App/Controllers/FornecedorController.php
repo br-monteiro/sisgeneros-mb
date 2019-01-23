@@ -15,9 +15,9 @@ class FornecedorController extends Controller implements CtrlInterface
     private $modelPath = 'App\Models\FornecedorModel';
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
 
         $this->view->controller = APPDIR . 'fornecedor/';
         // Instancia o Helper que auxilia na proteção e autenticação de usuários

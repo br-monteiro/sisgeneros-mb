@@ -14,9 +14,9 @@ class IndexController extends Controller implements CtrlInterface
 
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
     }
