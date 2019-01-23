@@ -21,12 +21,13 @@ class Paginator extends CRUD
     private $totalPagina;
     private $maxResult;
     private $select;
-    private $btn;
-    private $resultado;
+    private $btn = [];
+    private $resultado = [];
     private $maxOffSet;
     private $where;
     private $orderBy;
     private $bindValue;
+    private $currentPage = 1;
 
     public function __construct(Array $dados)
     {
@@ -146,12 +147,26 @@ class Paginator extends CRUD
 
     private function setMaxOffSet()
     {
-        $maxOffSet = ($this->getMaxResult() * $this->getPagina()) - $this->getMaxResult();
-        if ($maxOffSet >= $this->getTotalResult()) {
-            $this->maxOffSet = $this->getTotalResult() - 1;
-        } else {
-            $this->maxOffSet = $maxOffSet;
+        $page = $this->getPagina();
+        $limit = $this->getMaxResult();
+        $allResults = $this->getTotalResult();
+        $offset = 0;
+
+        if ($page) {
+            $lastPage = ceil($allResults / $limit);
+
+            if ($page > $lastPage) {
+                $page = $lastPage;
+            }
+            if ($page > 1) {
+                $offset = ($page - 1) * $limit;
+            }
+            if ($page <= 1) {
+                $offset = 0;
+            }
         }
+
+        $this->maxOffSet = $offset;
         return $this;
     }
 
@@ -195,9 +210,30 @@ class Paginator extends CRUD
 
     private function setBtn()
     {
-        for ($i = 1; $i < $this->getTotalPagina() + 1; $i++) {
-            $this->btn[] = $i;
+        $page = $this->getPagina();
+        $maxButtons = $page + 10;
+        $allResults = $this->getTotalResult();
+        $limit = $this->getMaxResult();
+        $lastPage = ceil($allResults / $limit);
+        $this->currentPage = $page;
+        
+        if ($maxButtons > $lastPage) {
+            $maxButtons = $lastPage;
         }
+
+        if ($page > $lastPage) {
+            $this->currentPage = $lastPage;
+            $maxButtons = $lastPage;
+            $page = $lastPage - 10;
+        } elseif (($lastPage - $page) < 10) {
+            $maxButtons = $lastPage;
+            $page = $lastPage - 10;            
+        }
+
+        for ($i = $page; $i <= $maxButtons; $i++) {
+            $this->btn[] = intval($i);
+        }
+
         return $this;
     }
 
@@ -206,11 +242,33 @@ class Paginator extends CRUD
         return $this->btn;
     }
 
+    private function getNext()
+    {
+        $next = $this->getPagina() + 1;
+        $totalResults = count($this->resultado);
+        if ($totalResults < $this->getMaxResult()) {
+            return end($this->btn);
+        }
+        return $next;
+    }
+
+    private function getPrevious()
+    {
+        $previous = $this->getPagina() - 1;
+        if ($previous <= 0) {
+            return 1;
+        }
+
+        return $previous;
+    }
+
     private function makeBtn()
     {
+        $btn = [];
         $btn['link'] = $this->getBtn();
-        $btn['previus'] = 1;
-        $btn['next'] = $this->getTotalPagina();
+        $btn['previus'] = $this->getPrevious();
+        $btn['next'] = $this->getNext();
+        $btn['current'] = $this->currentPage;
         return $btn;
     }
 
