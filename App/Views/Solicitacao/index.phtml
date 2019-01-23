@@ -14,7 +14,7 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
                                 <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
                             </li>
                         <?php endforeach; ?>
@@ -124,7 +124,9 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
