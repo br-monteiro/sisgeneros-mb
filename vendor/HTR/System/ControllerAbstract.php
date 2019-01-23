@@ -19,14 +19,10 @@ class ControllerAbstract
     protected $pagina;
     private $bootstrap;
 
-    public function __construct()
-    {
-        $this->view = new \stdClass();
-    }
-
-    public function setDependece($bootstrap)
+    public function __construct($bootstrap)
     {
         $this->bootstrap = $bootstrap;
+        $this->view = new \stdClass();
     }
 
     protected function render($pagina, $useLaytou = true, $alternativeLayout = 'default')

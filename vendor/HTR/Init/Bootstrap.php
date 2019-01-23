@@ -139,13 +139,13 @@ class Bootstrap
             $class = "App\\Controllers\\" . $this->getController();
 
             // instacia o Controller
-            $controller = new $class;
+            $controller = new $class($this);
+
             // verifica se o método é existente
             if (!method_exists($class, $this->getAction())) {
                 // caso o método (action) não exista, retorna um Erro 404
                 new \HTR\Helpers\ErrorPag\ErrorPag('error_404');
             }
-            $controller->setDependece($this);
             // retorna  a Action
             $action = $this->getAction();
             // executa a Action
