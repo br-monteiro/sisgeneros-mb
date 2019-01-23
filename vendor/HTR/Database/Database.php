@@ -71,7 +71,7 @@ class Database
 
     public function executa($select = false)
     {
-        $sql = $this->pdo->prepare($this->instrucao->retornaSql());
+        $sql = self::$pdo->prepare($this->instrucao->retornaSql());
 
         $binds = $this->instrucao->retornaBind();
 
