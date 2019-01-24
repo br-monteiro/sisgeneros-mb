@@ -1,0 +1,32 @@
+{
+    "name": "rych/phpass",
+    "type": "library",
+    "description": "PHP Password Library: Easy, secure password management for PHP",
+    "keywords": ["cryptography", "security", "password"],
+    "homepage": "https://github.com/rchouinard/phpass",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Chouinard",
+            "email": "rchouinard@gmail.com",
+            "homepage": "http://ryanchouinard.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/rchouinard/phpass/issues",
+        "wiki": "https://github.com/rchouinard/phpass/wiki"
+    },
+    "require": {
+        "php": ">=5.3.8",
+        "ext-hash": "*"
+    },
+    "suggest": {
+        "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data.",
+        "ext-mcrypt": "The Mcrypt extension is used as a source of cryptographically strong random data in the absence of ext-openssl."
+    },
+    "autoload": {
+        "psr-0": {
+            "PHPassLib": "src/"
+        }
+    }
+}

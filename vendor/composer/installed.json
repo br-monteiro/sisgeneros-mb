@@ -1,0 +1,337 @@
+[
+    {
+        "name": "rych/phpass",
+        "version": "v3.0.0beta1",
+        "version_normalized": "3.0.0.0-beta1",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rchouinard/phpass.git",
+            "reference": "f94d30f6ea9ead98ea9497818cbbb28db730ea7d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rchouinard/phpass/zipball/f94d30f6ea9ead98ea9497818cbbb28db730ea7d",
+            "reference": "f94d30f6ea9ead98ea9497818cbbb28db730ea7d",
+            "shasum": ""
+        },
+        "require": {
+            "ext-hash": "*",
+            "php": ">=5.3.8"
+        },
+        "suggest": {
+            "ext-mcrypt": "The Mcrypt extension is used as a source of cryptographically strong random data in the absence of ext-openssl.",
+            "ext-openssl": "The OpenSSL extension is used as the default source of cryptographically strong random data."
+        },
+        "time": "2012-08-14 03:45:21",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "PHPassLib": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Ryan Chouinard",
+                "email": "rchouinard@gmail.com",
+                "homepage": "http://ryanchouinard.com"
+            }
+        ],
+        "description": "PHP Password Library: Easy, secure password management for PHP",
+        "homepage": "https://github.com/rchouinard/phpass",
+        "keywords": [
+            "cryptography",
+            "password",
+            "security"
+        ]
+    },
+    {
+        "name": "symfony/process",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/process.git",
+            "reference": "489010d6598a9e3d0f52bba5b3c14cb130d5f7cc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/process/zipball/489010d6598a9e3d0f52bba5b3c14cb130d5f7cc",
+            "reference": "489010d6598a9e3d0f52bba5b3c14cb130d5f7cc",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5.9"
+        },
+        "time": "2016-08-07 15:19:41",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.2-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Process\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Process Component",
+        "homepage": "https://symfony.com"
+    },
+    {
+        "name": "knplabs/knp-snappy",
+        "version": "0.4.3",
+        "version_normalized": "0.4.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/KnpLabs/snappy.git",
+            "reference": "44f7a9b37d5686fd7db4c1e9569a802a5d16923f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/44f7a9b37d5686fd7db4c1e9569a802a5d16923f",
+            "reference": "44f7a9b37d5686fd7db4c1e9569a802a5d16923f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "symfony/process": "~2.3|~3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.7"
+        },
+        "suggest": {
+            "h4cc/wkhtmltoimage-amd64": "Provides wkhtmltoimage-amd64 binary for Linux-compatible machines, use version `~0.12` as dependency",
+            "h4cc/wkhtmltoimage-i386": "Provides wkhtmltoimage-i386 binary for Linux-compatible machines, use version `~0.12` as dependency",
+            "h4cc/wkhtmltopdf-amd64": "Provides wkhtmltopdf-amd64 binary for Linux-compatible machines, use version `~0.12` as dependency",
+            "h4cc/wkhtmltopdf-i386": "Provides wkhtmltopdf-i386 binary for Linux-compatible machines, use version `~0.12` as dependency",
+            "wemersonjanuario/wkhtmltopdf-windows": "Provides wkhtmltopdf executable for Windows, use version `~0.12` as dependency"
+        },
+        "time": "2015-11-17 13:16:27",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.5.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Knp\\Snappy": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "KnpLabs Team",
+                "homepage": "http://knplabs.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "http://github.com/KnpLabs/snappy/contributors"
+            }
+        ],
+        "description": "PHP5 library allowing thumbnail, snapshot or PDF generation from a url or a html page. Wrapper for wkhtmltopdf/wkhtmltoimage.",
+        "homepage": "http://github.com/KnpLabs/snappy",
+        "keywords": [
+            "knp",
+            "knplabs",
+            "pdf",
+            "snapshot",
+            "thumbnail",
+            "wkhtmltopdf"
+        ]
+    },
+    {
+        "name": "respect/validation",
+        "version": "0.7.10",
+        "version_normalized": "0.7.10.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Respect/Validation.git",
+            "reference": "9dbb9f96cf637224f3b59d83a4980e304e9c24f9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Respect/Validation/zipball/9dbb9f96cf637224f3b59d83a4980e304e9c24f9",
+            "reference": "9dbb9f96cf637224f3b59d83a4980e304e9c24f9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0",
+            "symfony/validator": "~2.6",
+            "zendframework/zend-validator": "~2.3"
+        },
+        "suggest": {
+            "ext-bcmath": "Arbitrary Precision Mathematics",
+            "ext-mbstring": "Multibyte String Functions"
+        },
+        "time": "2015-04-24 22:18:13",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.7-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Respect\\Validation\\": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD Style"
+        ],
+        "authors": [
+            {
+                "name": "Respect/Validation Contributors",
+                "homepage": "https://github.com/Respect/Validation/graphs/contributors"
+            }
+        ],
+        "description": "The most awesome validation engine ever created for PHP",
+        "homepage": "http://respect.li",
+        "keywords": [
+            "respect",
+            "validation",
+            "validator"
+        ]
+    },
+    {
+        "name": "rah/danpu",
+        "version": "2.6.2",
+        "version_normalized": "2.6.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/gocom/danpu.git",
+            "reference": "5ddf4518bbd159617efbe5c8a634ed9875ed700d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/gocom/danpu/zipball/5ddf4518bbd159617efbe5c8a634ed9875ed700d",
+            "reference": "5ddf4518bbd159617efbe5c8a634ed9875ed700d",
+            "shasum": ""
+        },
+        "require": {
+            "ext-pdo": "*",
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*",
+            "satooshi/php-coveralls": "0.6.*",
+            "squizlabs/php_codesniffer": "1.5.*"
+        },
+        "suggest": {
+            "ext-zlib": "*"
+        },
+        "time": "2013-12-22 00:11:55",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Rah\\Danpu\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jukka Svahn",
+                "homepage": "https://github.com/gocom",
+                "role": "Developer"
+            }
+        ],
+        "description": "Zero-dependency MySQL dump library for easily exporting and importing databases",
+        "homepage": "https://github.com/gocom/danpu",
+        "keywords": [
+            "backup",
+            "database",
+            "db",
+            "dump",
+            "export",
+            "import",
+            "library",
+            "mysql",
+            "mysqldump",
+            "restore",
+            "sql"
+        ]
+    },
+    {
+        "name": "h4cc/wkhtmltopdf-i386",
+        "version": "0.12.3",
+        "version_normalized": "0.12.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/h4cc/wkhtmltopdf-i386.git",
+            "reference": "79f2f8ed78d35f5541beceb2ec6fcd01a76e05ba"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/h4cc/wkhtmltopdf-i386/zipball/79f2f8ed78d35f5541beceb2ec6fcd01a76e05ba",
+            "reference": "79f2f8ed78d35f5541beceb2ec6fcd01a76e05ba",
+            "shasum": ""
+        },
+        "time": "2016-02-02 19:38:57",
+        "bin": [
+            "bin/wkhtmltopdf-i386"
+        ],
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL Version 3"
+        ],
+        "authors": [
+            {
+                "name": "Julius Beckmann",
+                "email": "github@h4cc.de"
+            }
+        ],
+        "description": "Convert html to pdf using webkit (qtwebkit). Static linked linux binary for i386 systems.",
+        "homepage": "http://wkhtmltopdf.org/",
+        "keywords": [
+            "binary",
+            "convert",
+            "pdf",
+            "snapshot",
+            "thumbnail",
+            "wkhtmltopdf"
+        ]
+    }
+]
