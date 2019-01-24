@@ -76,10 +76,8 @@ class Paginator extends CRUD
         // retornará o valor '1'
         $this->pagina = isset($pagina) ? $pagina : 1;
         // Verifica se o valor passado é numérico
-        if (!is_numeric($this->pagina)) {
+        if (!is_numeric($this->pagina) || $this->getPagina() > $this->getTotalResult()) {
             // caso não seja, seta o valor '1' ao atributo $this->pagina
-            $this->pagina = 1;
-        } elseif ($this->getPagina() > $this->getTotalResult()) {
             $this->pagina = 1;
         }
         return $this;
@@ -211,29 +209,26 @@ class Paginator extends CRUD
     private function setBtn()
     {
         $page = $this->getPagina();
-        $maxButtons = $page + 10;
         $allResults = $this->getTotalResult();
         $limit = $this->getMaxResult();
         $lastPage = ceil($allResults / $limit);
-        $this->currentPage = $page;
-        
-        if ($maxButtons > $lastPage) {
-            $maxButtons = $lastPage;
-        }
+        $allButtons = array_keys(array_fill(1, $allResults, ''));
+        $allButtonsGroup = array_chunk($allButtons, 10);
 
         if ($page > $lastPage) {
-            $this->currentPage = $lastPage;
-            $maxButtons = $lastPage;
-            $page = $lastPage - 10;
-        } elseif (($lastPage - $page) < 10) {
-            $maxButtons = $lastPage;
-            $page = $lastPage - 10;            
+            $page = $lastPage;
         }
 
-        for ($i = $page; $i <= $maxButtons; $i++) {
-            $this->btn[] = intval($i);
+        foreach ($allButtonsGroup as $group) {
+            foreach ($group as $value) {
+                if ($page == $value) {
+                    $this->btn = $group;
+                    break;
+                }
+            }
         }
 
+        $this->currentPage = $page;
         return $this;
     }
 
