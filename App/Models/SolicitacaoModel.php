@@ -213,25 +213,58 @@ class SolicitacaoModel extends CRUD
             . '</script>', 'success');
     }
 
-    public function paginator($pagina, $user)
+    public function paginator($pagina, $user, $busca = null)
     {
-        $innerJoin = " INNER JOIN om
-                ON om.id = solicitacao.om_id
-        INNER JOIN fornecedor
-                ON fornecedor.id = solicitacao.fornecedor_id";
+        $innerJoin = ""
+            . " INNER JOIN om "
+            . "    ON om.id = solicitacao.om_id "
+            . " INNER JOIN fornecedor "
+            . "    ON fornecedor.id = solicitacao.fornecedor_id ";
+
         $dados = [
             'select' => 'solicitacao.*, fornecedor.nome AS fornecedor_nome, om.indicativo_naval',
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
-            'maxResult' => 200,
-            'orderBy' => 'solicitacao.created_at DESC',
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
+            'maxResult' => 100,
+            'orderBy' => 'solicitacao.created_at DESC'
         ];
         // para usuários com nível de acesso diferente de 1 - administrador
         if ($user['nivel'] > 1) {
-            $dados['where'] = 'om_id = ?';
-            $dados['bindValue'] = [0 => $user['om_id']];
+            $dados['where'] = 'om_id = :omId ';
+            $dados['bindValue'] = [':omId' => $user['om_id']];
+        }
+
+        if ($busca) {
+            $dateInit = $dateEnd = $busca;
+
+            if (preg_match('/\d{2}-\d{2}-\d{4}/', $busca)) {
+                $exDate = explode('-', $busca);
+                $exDate = array_reverse($exDate);
+                $exDate = implode('-', $exDate);
+                $exDate .= 'T00:00:00+00:00';
+
+                $date = new \DateTime($exDate);
+                $dateInit = $date->getTimestamp();
+                $date->modify('+23 hour');
+                $dateEnd = $date->getTimestamp();
+            }
+
+            $andExists = isset($dados['where']) ? 'AND' : '';
+            $dados['where'] .= " {$andExists} ( "
+                . 'fornecedor.nome LIKE :search '
+                . 'OR solicitacao.numero LIKE :search '
+                . 'OR solicitacao.created_at BETWEEN :dInit AND :dEnd '
+                . 'OR solicitacao.updated_at BETWEEN :dInit AND :dEnd '
+                . 'OR solicitacao.data_entrega LIKE :search '
+                . ') ';
+
+            $bindValue = [
+                ':search' => '%' . $busca . '%',
+                ':dInit' => $dateInit,
+                ':dEnd' => $dateEnd
+            ];
+            $dados['bindValue'] = $dados['bindValue'] ?? [];
+            $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
         }
 
         $paginator = new Paginator($dados);

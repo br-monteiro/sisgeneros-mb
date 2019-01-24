@@ -34,3 +34,11 @@ $(function() {
         element.addClass('active');
     }
 });
+
+$('.search-button').click(function() {
+    var searchValue = $('.search-input').val();
+    var formAction = $('.search-form').attr('action');
+    if (searchValue && formAction) {
+        window.location = formAction + '/busca/' + searchValue;
+    }
+});

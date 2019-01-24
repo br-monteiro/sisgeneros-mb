@@ -356,3 +356,7 @@ table.dataTable thead .sorting:after {
 .panel-yellow a:hover {
     color: #df8a13;
 }
+
+.search-input-box {
+    margin-top: 18px;
+}

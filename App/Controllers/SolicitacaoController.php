@@ -190,7 +190,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
         // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Histórico de Solicitações';
 
-        $model->paginator($this->getParametro('pagina'), $this->view->userLoggedIn);
+        $model->paginator($this->getParametro('pagina'), $this->view->userLoggedIn, $this->getParametro('busca'));
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
 
