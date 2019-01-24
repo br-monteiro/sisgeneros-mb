@@ -17,23 +17,29 @@ class Criptografia
 
     public function encode($valor, $definitivo = false)
     {
-        /// VERIFICA SE O VALOR A SER ENCRIPTOGRAFADO SERÁ DE APENAS UMA VIA (DEFINITIVO*)
         if ($definitivo) {
             /// ENCRIPTOGRAFA A STRING PASSADA
             $valor = sha1(STRSAL . md5($valor) . STRSAL);
         } else {
-            /// ENCRIPTOGRAFA A STRING PASSADA
-            $valor = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5(STRSAL), $valor, MCRYPT_MODE_CBC, md5(md5(STRSAL))));
+            //$key previously generated safely, ie: openssl_random_pseudo_bytes
+            $key = STRSAL;
+            $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
+            $iv = openssl_random_pseudo_bytes($ivlen);
+            $ciphertextRaw = openssl_encrypt($valor, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
+            $hmac = hash_hmac('sha256', $ciphertextRaw, $key, $as_binary = true);
+            $valor = base64_encode($iv . $hmac . $ciphertextRaw);
         }
         return $valor;
     }
 
-    /////////////
-    // MÉTODO USADO PARA DESENCRIPTOGRAFAR DADOS
     public function decode($valor)
     {
-        /// ENCRIPTOGRAFA A STRING PASSADA
-        $valor = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5(STRSAL), base64_decode($valor), MCRYPT_MODE_CBC, md5(md5(STRSAL))), "\0");
+        $c = base64_decode($valor);
+        $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
+        $iv = substr($c, 0, $ivlen);
+        substr($c, $ivlen, $sha2len = 32);
+        $ciphertextRaw = substr($c, $ivlen + $sha2len);
+        $valor = openssl_decrypt($ciphertextRaw, $cipher, STRSAL, $options = OPENSSL_RAW_DATA, $iv);
         return $valor;
     }
 
