@@ -13,6 +13,27 @@ require_once DRINST . 'vendor/HTR/System/ConfigSystem.conf.php';
 // Inclui o autoload do Composer
 require_once DRINST . 'vendor/autoload.php';
 
+/**
+ * @HACK
+ * Debugger the values and exit.
+ * If you want don't stop the program execution, just pass 'nonstop' as argument
+ */
+function d()
+{
+    $args = func_get_args();
+    $stop = true;
+    echo '<pre>';
+    foreach ($args as $value) {
+        if ($value === 'nonstop') {
+            $stop = false;
+        }
+        var_dump($value);
+    }
+    echo '</pre>';
+    if ($stop) {
+        exit;
+    }
+}
 try {
     // Inicia a Aplicação
     new \App\Init();
