@@ -38,7 +38,8 @@ class SolicitacaoModel extends CRUD
         $solicitacao = $solicitacao->findById_lista($idLista);
 
         if ($solicitacao['nao_licitado'] == 0) {
-            $query = "SELECT solicitacao.*, licitacao.*, om.nome as om_nome,"
+            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, licitacao.*,"
+                . "om.nome as om_nome,"
                 . "fornecedor.nome as fornecedor_nome "
                 . "FROM solicitacao "
                 . "INNER JOIN om ON om.id = solicitacao.om_id "
@@ -46,7 +47,7 @@ class SolicitacaoModel extends CRUD
                 . "INNER JOIN fornecedor ON fornecedor.id = solicitacao.fornecedor_id "
                 . "WHERE solicitacao.id_lista = ?";
         } else {
-            $query = "SELECT solicitacao.*, om.nome as om_nome,"
+            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, om.nome as om_nome,"
                 . "fornecedor.nome as fornecedor_nome "
                 . "FROM solicitacao "
                 . "INNER JOIN om ON om.id = solicitacao.om_id "
