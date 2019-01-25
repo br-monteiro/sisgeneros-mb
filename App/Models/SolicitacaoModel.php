@@ -229,7 +229,7 @@ class SolicitacaoModel extends CRUD
             'orderBy' => 'solicitacao.created_at DESC'
         ];
         // para usuários com nível de acesso diferente de administrador
-        if ($user['nivel'] !== 'ADMININSTRADOR') {
+        if ($user['nivel'] !== 'ADMINISTRADOR') {
             $dados['where'] = 'om_id = :omId ';
             $dados['bindValue'] = [':omId' => $user['om_id']];
         }
