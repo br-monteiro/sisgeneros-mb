@@ -137,7 +137,7 @@ class AcessoModel extends CRUD
             // seta a troca de senha na próxima vez que o usuário logar
             $dados['trocar_senha'] = 1;
         } else {
-            // Para usuário com o nível diferente de 1-Addministrador
+            // Para usuário com o nível diferente de 1-Administrador
             $this->setId($user['id']);
             $dados['active'] = $user['active'];
             $dados['nivel'] = $user['nivel'];
@@ -295,7 +295,7 @@ class AcessoModel extends CRUD
             ->setOmId(filter_input(INPUT_POST, 'om_id', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setEmail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
-            ->setNivel(filter_input(INPUT_POST, 'nivel', FILTER_SANITIZE_NUMBER_INT))
+            ->setNivel(filter_input(INPUT_POST, 'nivel', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT))
             ->setIp($_SERVER["REMOTE_ADDR"]);
         return $this;
