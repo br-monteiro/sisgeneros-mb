@@ -442,7 +442,7 @@ class SolicitacaoModel extends CRUD
      * Generate the number of Solicitação
      * @return int The solictação number
      */
-    public function numberGenerator(int $number = 0): int
+    protected function numberGenerator(int $number = 0): int
     {
         if ($number > 0) {
             $hasEqualsRegister = $this->pdo
