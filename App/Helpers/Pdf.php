@@ -1,5 +1,5 @@
 <?php
-namespace App\Controllers;
+namespace App\Helpers;
 
 use Knp\Snappy\Pdf as Snappy;
 
