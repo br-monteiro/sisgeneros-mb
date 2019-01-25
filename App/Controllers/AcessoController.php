@@ -26,7 +26,7 @@ class AcessoController extends Controller implements CtrlInterface
 
     public function novoAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess([1]);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR']);
         $om = new OmModel();
         $this->view->resultOm = $om->findAll();
         $this->view->title = 'Novo Registro';
@@ -35,26 +35,29 @@ class AcessoController extends Controller implements CtrlInterface
 
     public function editarAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $om = new OmModel();
         $this->view->resultOm = $om->findAll();
         $model = new AcessoModel();
         $this->view->title = 'Editando Registro';
-        $id = $this->view->userLoggedIn['nivel'] > 1 ? $this->view->userLoggedIn['nivel'] : $this->getParametro('id');
+        $id = $this->getParametro('id');
+        if ($this->view->userLoggedIn['nivel'] !== 'ADMINISTRADOR') {
+            $id = $this->view->userLoggedIn['id'];
+        }
         $this->view->result = $model->findById($id);
         $this->render('form_editar');
     }
 
     public function eliminarAction()
     {
-        $this->access->authenticAccess([1]);
+        $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
         $model->remover($this->getParametro('id'));
     }
 
     public function verAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess([1]);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
         $this->view->title = 'Lista de Todos os Usuários';
         $model->paginator($this->getParametro('pagina'));
@@ -65,15 +68,14 @@ class AcessoController extends Controller implements CtrlInterface
 
     public function registraAction()
     {
-        $this->access->authenticAccess([1]);
+        $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
         $model->novo();
     }
 
     public function alteraAction()
     {
-        $this->access->authenticAccess([1, 2, 3, 4]);
-        // Instanciando o Model padrão usado.
+        $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new AcessoModel();
         $model->editar();
     }
@@ -101,8 +103,8 @@ class AcessoController extends Controller implements CtrlInterface
     public function mudarSenhaAction()
     {
         $this->access->breakRedirect();
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
-        $this->view->title = "Mudano Senha";
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $this->view->title = "Mudando Senha";
         $this->render('form_mudar_senha');
     }
 
@@ -110,7 +112,7 @@ class AcessoController extends Controller implements CtrlInterface
     {
         $model = new AcessoModel();
         $this->access->breakRedirect();
-        $user = $this->access->authenticAccess([1, 2, 3, 4]);
+        $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model->mudarSenha($user['id']);
     }
 }

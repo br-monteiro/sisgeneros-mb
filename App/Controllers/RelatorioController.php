@@ -1,7 +1,4 @@
 <?php
-/**
- * @controller Relatorio
- */
 namespace App\Controllers;
 
 use HTR\System\ControllerAbstract as Controller;
@@ -21,11 +18,9 @@ class RelatorioController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-
         $this->view->controller = APPDIR . 'relatorio/';
-
         $this->access = new Access();
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2]);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $this->view->idLista = $this->getParametro('idlista');
         $this->solItem = new SolItem();
     }
@@ -37,41 +32,31 @@ class RelatorioController extends Controller implements CtrlInterface
 
     public function solicitacaoAction()
     {
-
         $model = new Solicitacao();
-
         $this->view->title = 'Relatório de Solicitações';
-
-        $model->paginator($this->getParametro('pagina'), ['nivel' => 1]);
+        $model->paginator($this->getParametro('pagina'), ['nivel' => 'ADMINISTRADOR']);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
-
         $this->render('index');
     }
 
     public function detalharAction()
     {
-
         $model = new Solicitacao();
         $licitacao = new Licitacao();
         $solItem = new SolItem();
-
         $this->view->title = 'Itens da Solicitação';
-
         $this->view->resultSolicitacao = $model->recuperaDadosRelatorioSolicitacao($this->view->idLista);
         $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
-
         $solItem->paginator($this->getParametro('pagina'), $this->view->idLista);
         $this->view->result = $solItem->getResultadoPaginator();
         $this->view->btn = $solItem->getNavePaginator();
-
         $this->render('mostra_item_solicitacao');
     }
 
     public function demandaAction()
     {
         $licitacao = new Licitacao();
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Licitações Registradas';
         $licitacao->paginator($this->getParametro('pagina'));
         $this->view->result = $licitacao->getResultadoPaginator();
@@ -83,15 +68,11 @@ class RelatorioController extends Controller implements CtrlInterface
     {
         $item = new Item();
         $licitacao = new Licitacao();
-
         $this->view->title = 'Lista de Itens da Licitação';
-
         $item->paginator($this->getParametro('pagina'), $this->view->idLista);
         $this->view->result = $item->getResultadoPaginator();
         $this->view->btn = $item->getNavePaginator();
-
         $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
-
         $this->render('mostra_item_demanda');
     }
 

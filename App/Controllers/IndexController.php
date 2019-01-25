@@ -1,7 +1,4 @@
 <?php
-/**
- * @Controller Index
- */
 namespace App\Controllers;
 
 use HTR\System\ControllerAbstract as Controller;
@@ -18,7 +15,7 @@ class IndexController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
         $this->access = new Access();
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
     }
 
     public function indexAction()
