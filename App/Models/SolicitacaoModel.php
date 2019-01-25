@@ -250,7 +250,7 @@ class SolicitacaoModel extends CRUD
             }
 
             $andExists = isset($dados['where']) ? 'AND' : '';
-            $dados['where'] .= " {$andExists} ( "
+            $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
                 . 'fornecedor.nome LIKE :search '
                 . 'OR solicitacao.numero LIKE :search '
                 . 'OR solicitacao.created_at BETWEEN :dInit AND :dEnd '
