@@ -16,9 +16,9 @@ class AcessoController extends Controller implements CtrlInterface
     private $modelPath = 'App\Models\AcessoModel';
     private $access;
 
-    public function __construct()
+    public function __construct($bootstrap)
     {
-        parent::__construct();
+        parent::__construct($bootstrap);
         /**
          * Nome do controller
          * USADO NOS LINKS DA CAMA VIEW
