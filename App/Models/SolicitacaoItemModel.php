@@ -139,7 +139,7 @@ class SolicitacaoItemModel extends CRUD
         }
         // redireciona se o usuário tiver nível diferente de 1-Administrador e
         // se a Om da Solicitação for diferente da do usuário
-        if ($user['nivel'] != 1) {
+        if ($user['nivel'] !== 'ADMINISTRADOR') {
             if ($solicitacao['om'] != $user['om']) {
                 header("Location:" . APPDIR . 'solicitacao/');
                 return true;

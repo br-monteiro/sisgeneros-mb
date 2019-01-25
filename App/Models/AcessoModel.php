@@ -133,7 +133,7 @@ class AcessoModel extends CRUD
         // consulta dados o usuário logado
         $user = $this->findById($_SESSION['userId']);
 
-        if ($user['nivel'] == 1 && ($user['id'] != $this->getId())) {
+        if ($user['nivel'] == 'ADMINISTRADOR' && ($user['id'] != $this->getId())) {
             // seta a troca de senha na próxima vez que o usuário logar
             $dados['trocar_senha'] = 1;
         } else {
@@ -393,7 +393,7 @@ class AcessoModel extends CRUD
 
     private function validaNivel()
     {
-        $value = v::intVal()->notEmpty()->validate($this->getNivel());
+        $value = v::stringType()->notEmpty()->validate($this->getNivel());
         if (!$value) {
             msg::showMsg('O campo Nível de Acesso deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nivel");</script>', 'danger');
