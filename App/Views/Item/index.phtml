@@ -13,6 +13,31 @@
                 <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idLista; ?>" class="btn btn-info">
                     <i class="fa fa-plus-circle"></i> Novo Registro
                 </a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <nav>
+                            <ul class="pagination">
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php foreach ($this->view->btn['link'] as $value): ?>
+                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                        <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                            <?= $value; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
@@ -39,14 +64,16 @@
                                     </span>
                                 </td>
                                 <td style='font-size: 11px'><?= $value['nome']; ?></td>
-                                <td style='font-size: 11px'><?= $value['fornecedor']; ?></td>
+                                <td style='font-size: 11px'>
+                                    <?= strlen($value['fornecedor']) > 25 ? substr($value['fornecedor'], 0, 25) . '...' : $value['fornecedor']; ?>
+                                </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-default">
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-default btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a href="#"
                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
-                                       class="btn btn-danger">
+                                       class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -63,7 +90,11 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
