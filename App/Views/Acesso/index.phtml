@@ -6,8 +6,31 @@
                 <h3>Usuários Cadastrados</h3>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
-                    <i class="fa fa-asterisk"></i> Novo Registro
+                    <i class="fa fa-plus-circle"></i> Novo Registro
                 </a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <nav>
+                            <ul class="pagination">
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php foreach ($this->view->btn['link'] as $value): ?>
+                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                        <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -30,13 +53,13 @@
                                 <td><?= date('d-m-Y H:i:s', $value['created_at']); ?></td>
                                 <td><?= date('d-m-Y H:i:s', $value['updated_at']); ?></td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success">
-                                        <i class="fa fa-edit"></i> Editar
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <i class="fa fa-edit"></i>
                                     </a>
                                     <a href="#"
                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                       class="btn btn-danger">
-                                        <i class="fa fa-trash"></i> Eliminar
+                                       class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -52,7 +75,9 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">

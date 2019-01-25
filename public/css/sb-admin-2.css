@@ -360,3 +360,7 @@ table.dataTable thead .sorting:after {
 .search-input-box {
     margin-top: 18px;
 }
+
+table.table td {
+    font-size: 12px !important;
+}

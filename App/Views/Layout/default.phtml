@@ -7,11 +7,8 @@
         <meta name="description" content="">
         <meta name="author" content="Bruno Monteiro">
         <title>
-            <?php
-            echo isset($this->view->title) ? $this->view->title : '';
-            echo ' :: ' . APPNAM . ' ' . APPVER . ' ::';
-
-            ?>    
+            <?= $this->view->title ?? '' ?>
+            <?= ' :: ' . APPNAM . ' ' . APPVER . ' ::' ?>
         </title>
 
         <!-- Bootstrap Core CSS -->
@@ -42,9 +39,7 @@
     </head>
 
     <body>
-
         <div id="wrapper">
-
             <!-- Navigation -->
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
@@ -61,7 +56,6 @@
                 <?php include_once ATTPAG . 'menu_horizontal_top.phtml'; ?>
 
                 <?php include_once ATTPAG . 'menu_vertical.phtml'; ?>
-
             </nav>
 
             <?= $this->content(); ?> 

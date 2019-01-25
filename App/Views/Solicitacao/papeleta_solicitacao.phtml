@@ -113,7 +113,7 @@ $mes = function($data) {
             return 'dezembro';
     }
 };
-// valida para que as informações sejam geradas apenas quando o status for igual a 3
+// valida para que as informações sejam geradas apenas quando o status for igual a APROVADO
 if (!isset($this->view->result[0])) {
     die("<i class='fa fa-info-circle'></i> A papeleta não pode ser gerada..");
 }
@@ -207,8 +207,8 @@ if (!isset($this->view->result[0])) {
                                     $q2 = $q2 > 0 ? $q2 : 0;
                                     $acc = $q2 > 0 ? $q2 * $v : $q * $v;
                                     $t += $acc;
-                                    echo number_format($acc, 2, ',', '.');
                                 ?>
+                                <?= number_format($acc, 2, ',', '.'); ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

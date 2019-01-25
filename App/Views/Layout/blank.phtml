@@ -8,11 +8,8 @@
         <meta name="author" content="Bruno Monteiro">
 
         <title>
-            <?php
-            echo isset($this->view->title) ? $this->view->title : '';
-            echo ' :: ' . APPNAM . ' ' . APPVER . ' ::';
-
-            ?>    
+            <?= $this->view->title ?? '' ?>
+            <?= ' :: ' . APPNAM . ' ' . APPVER . ' ::' ?>   
         </title>
 
         <!-- Bootstrap Core CSS -->
@@ -38,7 +35,6 @@
 
     <body>
         <?= $this->content(); ?> 
-
 
         <!-- jQuery -->
         <script src="<?= ATTACH; ?>jquery/dist/jquery.min.js"></script>

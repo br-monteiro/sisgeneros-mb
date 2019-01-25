@@ -11,9 +11,16 @@
                         Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
 
                         Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
-                        <?php if ($this->view->resultSolicitacao['status'] == 1): ?>
-                            (<a href="<?= $this->view->controller; ?>alterardata/id/<?= $this->view->resultSolicitacao['id']; ?>/idlista/<?= $this->view->resultSolicitacao['id_lista']; ?>"
-                                class="text-danger">Alterar <i class="fa fa-edit"></i></a>)
+                        <?php 
+                            if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
+                                $solicitacaoId = $this->view->resultSolicitacao['id'];
+                                $idLista = $this->view->resultSolicitacao['id_lista'];
+                                $url = $this->view->controller . 'alterardata/id/' . $solicitacaoId . '/idlista/' . $idLista;
+                        ?>
+                            (<a href="<?= $url; ?>"
+                                class="text-danger">
+                                Alterar <i class="fa fa-edit"></i>
+                            </a>)
                         <?php endif; ?>
 
                     </div>
@@ -67,7 +74,11 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">

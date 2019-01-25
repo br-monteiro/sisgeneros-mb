@@ -38,7 +38,8 @@ class SolicitacaoModel extends CRUD
         $solicitacao = $solicitacao->findById_lista($idLista);
 
         if ($solicitacao['nao_licitado'] == 0) {
-            $query = "SELECT solicitacao.*, licitacao.*, om.nome as om_nome,"
+            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, licitacao.*,"
+                . "om.nome as om_nome,"
                 . "fornecedor.nome as fornecedor_nome "
                 . "FROM solicitacao "
                 . "INNER JOIN om ON om.id = solicitacao.om_id "
@@ -46,7 +47,7 @@ class SolicitacaoModel extends CRUD
                 . "INNER JOIN fornecedor ON fornecedor.id = solicitacao.fornecedor_id "
                 . "WHERE solicitacao.id_lista = ?";
         } else {
-            $query = "SELECT solicitacao.*, om.nome as om_nome,"
+            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, om.nome as om_nome,"
                 . "fornecedor.nome as fornecedor_nome "
                 . "FROM solicitacao "
                 . "INNER JOIN om ON om.id = solicitacao.om_id "
@@ -61,7 +62,7 @@ class SolicitacaoModel extends CRUD
     public function alteraDataEntrega($idLista, $user)
     {
         // verifica se o usuário não é adminitrador
-        if ($user['nivel'] != 1) {
+        if ($user['nivel'] !== 'ADMINISTRADOR') {
             // colsuta a solicitação por id_lista
             $sol = $this->findById_lista($idLista);
             // verifica se a solicitação é da mesma OM que o usuário lodado
@@ -90,8 +91,8 @@ class SolicitacaoModel extends CRUD
 
     public function retornaDadosPapeleta($id, $user = null, $controllerReceber = false)
     {
-        $where = $user['nivel'] > 1 ? ' AND om.id = ' . $user['om_id'] : null;
-        $where .= !$controllerReceber ? ' AND status != 1 ' : ' AND status = 2 ';
+        $where = $user['nivel'] !== 'ADMINISTRADOR' ? ' AND om.id = ' . $user['om_id'] : null;
+        $where .= !$controllerReceber ? " AND status != 'ABERTO' " : " AND status = 'APROVADO' ";
         $stmt = $this->pdo->prepare("SELECT nao_licitado FROM solicitacao WHERE id = ? ");
         $stmt->execute([$id]);
         $s = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -144,7 +145,7 @@ class SolicitacaoModel extends CRUD
         // Valida dados
         $this->validaAll($user['om_id']);
         $dados = [
-            'status' => 3, // 1 - Solicitado; 2 - Aprovado
+            'status' => 'RECEBIDO',
             'updated_at' => time(),
             'numero_nota_fiscal' => $this->getNumeroNotaFiscal(),
             'observacao' => $this->getObservacao()
@@ -194,7 +195,7 @@ class SolicitacaoModel extends CRUD
         $this->setObservacao(filter_input(INPUT_POST, 'observacao', FILTER_SANITIZE_SPECIAL_CHARS));
 
         $dados = [
-            'status' => 3,
+            'status' => 'RECEBIDO',
             'updated_at' => time(),
             'numero_nota_fiscal' => $this->getNumeroNotaFiscal(),
             'observacao' => $this->getObservacao()
@@ -228,8 +229,8 @@ class SolicitacaoModel extends CRUD
             'maxResult' => 100,
             'orderBy' => 'solicitacao.created_at DESC'
         ];
-        // para usuários com nível de acesso diferente de 1 - administrador
-        if ($user['nivel'] > 1) {
+        // para usuários com nível de acesso diferente de administrador
+        if ($user['nivel'] !== 'ADMINISTRADOR') {
             $dados['where'] = 'om_id = :omId ';
             $dados['bindValue'] = [':omId' => $user['om_id']];
         }
@@ -292,7 +293,7 @@ class SolicitacaoModel extends CRUD
             'om_id' => $this->getOmId(),
             'fornecedor_id' => $this->getFornecedorId(),
             'numero' => $this->getNumero(),
-            'status' => 1, // 1 - Solicitado; 2 - Aprovado
+            'status' => 'ABERTO',
             'created_at' => time(),
             'updated_at' => time(),
             'nao_licitado' => $this->getNaoLicitado(),
@@ -305,7 +306,7 @@ class SolicitacaoModel extends CRUD
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                     . "<strong>Solicitação Nº {$this->getNumero()} <br>"
-                    . "Status: Solicitado - Aguardando Aprovação.</strong><br>"
+                    . "Status: ABERTO.</strong><br>"
                     . "<a href='" . APPDIR . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
@@ -325,7 +326,7 @@ class SolicitacaoModel extends CRUD
             'om_id' => $this->getOmId(),
             'fornecedor_id' => $this->getFornecedorId(),
             'numero' => $this->getNumero(),
-            'status' => 1, // 1 - Solicitado; 2 - Aprovado
+            'status' => 'ABERTO',
             'created_at' => time(),
             'updated_at' => time(),
             'nao_licitado' => $this->getNaoLicitado(),
@@ -340,7 +341,7 @@ class SolicitacaoModel extends CRUD
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                     . "<strong>Solicitação Nº {$this->getNumero()} <br>"
-                    . "Status: Solicitado - Aguardando Aprovação.</strong><br>"
+                    . "Status: ABERTO.</strong><br>"
                     . "<a href='" . APPDIR . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
@@ -378,7 +379,7 @@ class SolicitacaoModel extends CRUD
     public function aprovar($id)
     {
         $dados = [
-            'status' => 2,
+            'status' => 'APROVADO',
             'updated_at' => time()
         ];
 
@@ -391,11 +392,11 @@ class SolicitacaoModel extends CRUD
     {
         $solicitacao = $this->findById_lista($idlista);
         // verifica se a solicitação já foi aprovada
-        if ($solicitacao['status'] != 1) {
+        if ($solicitacao['status'] !== 'ABERTO') {
             header("Location:" . APPDIR . "solicitacao/");
             return true;
             // verifica se o usuário é da mensa OM da solicitação
-        } elseif ($user['nivel'] != 1) {
+        } elseif ($user['nivel'] !== 'ADMINISTRADOR') {
             if ($user['om'] != $solicitacao['om']) {
                 header("Location:" . APPDIR . "solicitacao/");
                 return true;
@@ -405,12 +406,12 @@ class SolicitacaoModel extends CRUD
 
     public function chart($user)
     {
-        $sql = ($user['nivel'] != 1 && $user['nivel'] != 2) ? " AND om_id = '{$user['om_id']}'" : null;
+        $sql = !in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) ? " AND om_id = '{$user['om_id']}'" : null;
         $result = [];
         foreach ($this->arrayDate() as $key) {
             $stmt = $this->pdo->prepare(""
                 . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE status = 3 AND created_at > ? AND created_at < ? " . $sql);
+                . "WHERE status = 'RECEBIDO' AND created_at > ? AND created_at < ? " . $sql);
             $stmt->bindValue(1, $key['inicio']);
             $stmt->bindValue(2, $key['fim']);
             $stmt->execute();

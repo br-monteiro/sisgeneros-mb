@@ -7,7 +7,7 @@
                 <div class="alert alert-info">
                     Licitação: <?= $this->view->result[0]['numero']; ?><br />
                     UASG: <?= $this->view->result[0]['uasg']; ?><br />
-                    Intituição: <?= $this->view->result[0]['nome_uasg']; ?><br />
+                    Órgão: <?= $this->view->result[0]['nome_uasg']; ?><br />
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <table class="table table-striped table-hover">
@@ -22,7 +22,7 @@
                             <tr>
                                 <td><?= $value['nome']; ?></td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>item/fornecedor/<?= $value['fornecedor_id']; ?>/idlista/<?= $value['id_lista']; ?>" class="btn btn-success">
+                                    <a href="<?= $this->view->controller; ?>item/fornecedor/<?= $value['fornecedor_id']; ?>/idlista/<?= $value['id_lista']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i> Registrar Solicitação
                                     </a>
                                 </td>

@@ -1,3 +1,9 @@
+<?php
+$busca = $this->getParametro('busca');
+$busca = $busca ? '/busca/' . $busca : '';
+$userNivel = $this->view->userLoggedIn['nivel'];
+
+?>
 <!-- Page Content -->
 <div id="page-wrapper">
     <div class="container-fluid">
@@ -10,17 +16,17 @@
                         <nav>
                             <ul class="pagination">
                                 <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus'] . $busca; ?>" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <?php foreach ($this->view->btn['link'] as $value): ?>
                                     <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                                        <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"><?= $value; ?></a>
                                     </li>
                                 <?php endforeach; ?>
                                 <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next'] . $busca; ?>" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
@@ -53,7 +59,7 @@
                             <th>Tipo</th>
                             <th>Status</th>
                             <th>Alteração</th>
-                            <th>Data Ent.</th>
+                            <th>Entrega</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -82,32 +88,47 @@
                                     <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Itens
                                     </a>
-                                    <?php if (($this->view->userLoggedIn['nivel'] == 1 OR $this->view->userLoggedIn['nivel'] == 3) AND $value['status'] == 'ABERTO'): ?>
+
+                                    <!-- BUTTONS -->
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO']) && $value['status'] == 'ABERTO'): ?>
                                         <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Aprovar
                                         </a>
-                                    <?php
-                                    endif;
-                                    if ($this->view->userLoggedIn['nivel'] != 2 AND $value['status'] == 'ABERTO'): ?>
+                                    <?php endif; ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'APROVADO'): ?>
+                                        <a href="<?= $this->view->controller; ?>processar/status/processado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-cogs"></i> Processar
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'PROCESSADO'): ?>
+                                        <a href="<?= $this->view->controller; ?>processar/status/empenhado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-file"></i> Empenhar
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'EMPENHADO'): ?>
+                                        <a href="<?= $this->view->controller; ?>processar/status/solicitado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-bullhorn"></i> Solicitar
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'ABERTO'): ?>
                                         <a href="#"
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
                                            class="btn btn-danger btn-sm">
-                                            <i class="fa fa-trash"></i> Eliminar
+                                            <i class="fa fa-trash"></i>
                                         </a>
-                                    <?php
-                                    endif;
-                                    if ($value['status'] >= 'APROVADO'): ?>
+                                    <?php endif; ?>
+                                    <?php if ($value['status'] == 'SOLICITADO'): ?>
                                         <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default btn-sm">
-                                            <i class="fa fa-file"></i> PDF
+                                            <i class="fa fa-file-pdf-o"></i> PDF
                                         </a>
-                                    <?php
-                                    endif;
-                                    if ($this->view->userLoggedIn['nivel'] != 2 AND$value['status'] == 'APROVADO'):
-                                    ?>
+                                    <?php endif; ?>
+                                    <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'SOLICITADO'): ?>
                                         <a href="<?= $this->view->controller; ?>receber/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
+                                    <!-- END BUTTOS -->
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -117,17 +138,17 @@
                 <nav>
                     <ul class="pagination">
                         <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previus'] . $busca; ?>" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
                             <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a>
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"><?= $value; ?></a>
                             </li>
                         <?php endforeach; ?>
                         <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next'] . $busca; ?>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

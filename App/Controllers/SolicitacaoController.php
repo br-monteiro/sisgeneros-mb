@@ -1,7 +1,4 @@
 <?php
-/**
- * @controller Solicitacao
- */
 namespace App\Controllers;
 
 use HTR\System\ControllerAbstract as Controller;
@@ -12,20 +9,17 @@ use App\Models\ItemModel as Item;
 use App\Models\SolicitacaoItemModel as SolicitacaoItem;
 use App\Models\SolicitacaoModel;
 use App\Models\FornecedorModel;
-use App\Controllers\Pdf;
+use App\Helpers\Pdf;
 
 class SolicitacaoController extends Controller implements CtrlInterface
 {
 
-    // Model padrão usado para este Controller
-    private $modelPath = 'App\Models\SolicitacaoModel';
     private $access;
 
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
         $this->view->controller = APPDIR . 'solicitacao/';
-        // Instancia o Helper que auxilia na proteção e autenticação de usuários
         $this->access = new Access();
         $this->view->idLista = $this->getParametro('idlista');
     }
@@ -39,10 +33,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO']);
 
         $licitacao = new Licitacao();
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Licitações Disponíveis';
         $licitacao->paginator($this->getParametro('pagina'), time());
         $this->view->result = $licitacao->getResultadoPaginator();
@@ -54,7 +47,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 2, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
         $this->view->title = "Solicitação - Não Licitado";
         $fornecedorModel = new FornecedorModel();
         $fornecedorModel->paginator($this->getParametro('pagina'));
@@ -67,7 +61,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 2, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
         $this->view->title = "Adicionar itens";
         $this->view->idFornecedor = $this->getParametro('id');
         $this->render('mostra_item_nao_licitado');
@@ -77,18 +72,13 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Lista dos Itens da Licitação';
-
         $item = new Item();
         $this->view->result = $item->findByIdLista($this->view->idLista, $this->getParametro('fornecedor'));
-
-        // Busca os dados da licitação
         $licitacao = new Licitacao();
         $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
-
         $this->render('mostra_item');
     }
 
@@ -96,15 +86,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Lista de itens solicitados';
-
         $solicitacao = new SolicitacaoModel();
-
         $this->view->result = $solicitacao->retornaDadosPapeleta($this->getParametro('id'), $this->view->userLoggedIn, true);
-
         $this->render('mostra_item_recebimento');
     }
 
@@ -112,21 +98,13 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            // Acesso permitido apelas para 1-Administrador, 3-Encarregado, 4-Solicitante
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath;
+        $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
-
         $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
-
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Editando Registro';
-
-        // Executa a consulta no Banco de Dados
         $this->view->result = $solicitacaoItem->findById($this->getParametro('id'));
-
         $this->render('form_editar');
     }
 
@@ -134,20 +112,12 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            // Acesso permitido apelas para 1-Administrador, 3-Encarregado, 4-Solicitante
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath;
-
+        $model = new SolicitacaoModel();
         $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
-
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Alterando data de entrega';
-
-        // Executa a consulta no Banco de Dados
         $this->view->result = $model->findById($this->getParametro('id'));
-
         $this->render('form_alteracao_data');
     }
 
@@ -155,16 +125,12 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        $model = new $this->modelPath;
+        $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
-
         $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
-
-        // tenta remover os itens da solicitação
         if ($solicitacaoItem->remover($this->getParametro('id'))) {
-            // remove a solicitação
             $model->remover($this->getParametro('id'));
         }
     }
@@ -173,47 +139,37 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        $model = new $this->modelPath;
+        $model = new SolicitacaoModel();
         $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
-
         $solicitacaoItem = new SolicitacaoItem();
         $solicitacaoItem->eliminarItem($this->getParametro('id'), $this->view->idLista);
     }
 
     public function verAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath();
-        // Atribui título à página através do atributo padrão '$this->view->title'
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new SolicitacaoModel();
         $this->view->title = 'Histórico de Solicitações';
-
         $model->paginator($this->getParametro('pagina'), $this->view->userLoggedIn, $this->getParametro('busca'));
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
-
         $this->render('index');
     }
 
     public function detalharAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 2, 3, 4]);
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath();
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new SolicitacaoModel();
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
-
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Itens da Solicitação';
-
         $this->view->resultSolicitacao = $model->findById_lista($this->view->idLista);
         $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
         $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idLista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
         $this->view->btn = $solicitacaoItem->getNavePaginator();
-
         $this->render('mostra_item_solicitacao');
     }
 
@@ -221,10 +177,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath();
+        $model = new SolicitacaoModel();
         $model->novo($this->view->userLoggedIn['om_id']);
     }
 
@@ -232,10 +187,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 2, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        // Instanciando o Model padrão usado.
-        $model = new $this->modelPath();
+        $model = new SolicitacaoModel();
         $model->novoNaoLicitado($this->view->userLoggedIn['om_id']);
     }
 
@@ -243,7 +197,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $solicitacaoItem = new SolicitacaoItem();
         $solicitacaoItem->editar($this->view->idLista, $this->view->userLoggedIn);
@@ -253,9 +207,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        $solicitacao = new $this->modelPath();
+        $solicitacao = new SolicitacaoModel();
         $solicitacao->alteraDataEntrega($this->view->idLista, $this->view->userLoggedIn);
     }
 
@@ -263,8 +217,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->access->setRedirect('solicitacao/');
         $this->access->clearAccessList();
-        $this->view->userLoggedIn = $this->access->authenticAccess([1, 3]);
-        $model = new $this->modelPath;
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'ENCARREGADO']);
+        $model = new SolicitacaoModel();
         $model->aprovar($this->getParametro('id'));
     }
 
@@ -272,13 +226,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $licitacao = new Licitacao;
 
         $this->view->result = $licitacao->listaPorFornecedor($this->view->idLista);
-        // Atribui título à página através do atributo padrão '$this->view->title'
         $this->view->title = 'Lista de fornecedor';
-
         $this->render('mostra_fornecedor');
     }
 
@@ -286,7 +238,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 2, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
         $pdf = new Pdf();
         $pdf->url = $this->view->controller . 'papeleta/id/' . $this->getParametro('id');
         $pdf->gerar();
@@ -294,7 +247,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
     public function papeletaAction()
     {
-        $model = new $this->modelPath();
+        $model = new SolicitacaoModel();
         $this->view->title = 'Solicitação de Material';
         $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'));
         $this->render('papeleta_solicitacao', true, 'blank');
@@ -304,15 +257,13 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess([1, 3, 4]);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $solicitacao = new SolicitacaoModel();
-
         $resultSolicitacao = $solicitacao->findById($this->getParametro('id'));
         if ($resultSolicitacao['nao_licitado'] == 1) {
             $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
         }
-
         $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
     }
 }

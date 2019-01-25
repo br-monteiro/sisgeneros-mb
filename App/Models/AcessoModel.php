@@ -133,11 +133,11 @@ class AcessoModel extends CRUD
         // consulta dados o usuário logado
         $user = $this->findById($_SESSION['userId']);
 
-        if ($user['nivel'] == 1 && ($user['id'] != $this->getId())) {
+        if ($user['nivel'] == 'ADMINISTRADOR' && ($user['id'] != $this->getId())) {
             // seta a troca de senha na próxima vez que o usuário logar
             $dados['trocar_senha'] = 1;
         } else {
-            // Para usuário com o nível diferente de 1-Addministrador
+            // Para usuário com o nível diferente de 1-Administrador
             $this->setId($user['id']);
             $dados['active'] = $user['active'];
             $dados['nivel'] = $user['nivel'];
@@ -158,13 +158,12 @@ class AcessoModel extends CRUD
 
     public function findById($id)
     {
-        $cripto = new Cripto;
         $value = parent::findById($id);
 
         if ($value) {
             // decodifica os campos de USERNAME e EMAIL
-            $value['username'] = $cripto->decode($value['username']);
-            $value['email'] = $cripto->decode($value['email']);
+            $value['username'] = $value['username'];
+            $value['email'] = $value['email'];
             return $value;
         }
 
@@ -296,7 +295,7 @@ class AcessoModel extends CRUD
             ->setOmId(filter_input(INPUT_POST, 'om_id', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setEmail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
-            ->setNivel(filter_input(INPUT_POST, 'nivel', FILTER_SANITIZE_NUMBER_INT))
+            ->setNivel(filter_input(INPUT_POST, 'nivel', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT))
             ->setIp($_SERVER["REMOTE_ADDR"]);
         return $this;
@@ -394,7 +393,7 @@ class AcessoModel extends CRUD
 
     private function validaNivel()
     {
-        $value = v::intVal()->notEmpty()->validate($this->getNivel());
+        $value = v::stringType()->notEmpty()->validate($this->getNivel());
         if (!$value) {
             msg::showMsg('O campo Nível de Acesso deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nivel");</script>', 'danger');

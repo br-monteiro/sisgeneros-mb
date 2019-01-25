@@ -28,22 +28,20 @@
                             <i class="fa fa-history"></i> Histórico
                         </a>
                     </li>
-                    <?php if ($this->view->userLoggedIn['nivel'] != 2) { ?>
-                        <li>
-                            <a href="<?= APPDIR; ?>solicitacao/licitacao/">
-                                <i class="fa fa-group"></i> Licitado
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?= APPDIR; ?>solicitacao/naolicitado/">
-                                <i class="fa fa-shopping-cart"></i> Não Licitado
-                            </a>
-                        </li>
-                    <?php } ?>
+                    <li>
+                        <a href="<?= APPDIR; ?>solicitacao/licitacao/">
+                            <i class="fa fa-group"></i> Licitado
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= APPDIR; ?>solicitacao/naolicitado/">
+                            <i class="fa fa-shopping-cart"></i> Não Licitado
+                        </a>
+                    </li>
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
-            <?php if ($this->view->userLoggedIn['nivel'] != 2 && $this->view->userLoggedIn['nivel'] != 1) : ?>
+            <?php if (!in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
                 <li>
                     <a href="#">
                         <i class="fa fa-suitcase fa-fw"></i> Fornecedor
@@ -60,7 +58,7 @@
                 </li>
             <?php endif; ?>
 
-            <?php if ($this->view->userLoggedIn['nivel'] == 1) { ?>
+            <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR') { ?>
                 <li>
                     <a href="#">
                         <i class="fa fa-users fa-fw"></i> Usuários
@@ -82,7 +80,7 @@
             <?php } ?>
             <!-- /.nav-second-level -->
 
-            <?php if ($this->view->userLoggedIn['nivel'] <= 2) { ?>
+            <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) { ?>
                 <li>
                     <a href="#">
                         <i class="fa fa-list-ol fa-fw"></i> Relatório
