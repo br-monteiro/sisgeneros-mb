@@ -408,7 +408,8 @@ class SolicitacaoModel extends CRUD
         $sql = ($user['nivel'] != 1 && $user['nivel'] != 2) ? " AND om_id = '{$user['om_id']}'" : null;
         $result = [];
         foreach ($this->arrayDate() as $key) {
-            $stmt = $this->pdo->prepare("SELECT id FROM {$this->getEntidade()} "
+            $stmt = $this->pdo->prepare(""
+                . "SELECT id FROM {$this->getEntidade()} "
                 . "WHERE status = 3 AND created_at > ? AND created_at < ? " . $sql);
             $stmt->bindValue(1, $key['inicio']);
             $stmt->bindValue(2, $key['fim']);
@@ -437,6 +438,36 @@ class SolicitacaoModel extends CRUD
         ];
     }
 
+    /**
+     * Generate the number of Solicitação
+     * @return int The solictação number
+     */
+    public function numberGenerator(int $number = 0): int
+    {
+        if ($number > 0) {
+            $hasEqualsRegister = $this->pdo
+                ->query("SELECT id FROM solicitacao WHERE numero = {$number}")
+                ->fetch(\PDO::FETCH_OBJ);
+
+            // If exists a register with this number, try with the number plus one
+            if ($hasEqualsRegister) {
+                return $this->numberGenerator($number + 1);
+            }
+
+            return $number;
+        }
+
+        $currentYear = date('Y');
+        $currentYearShort = date('y');
+        $query = "SELECT COUNT(id) as quantity FROM solicitacao WHERE ano = '{$currentYear}'";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $registersQuantity = $stmt->fetch(\PDO::FETCH_OBJ)->quantity;
+        $number = (int) $currentYearShort . ($registersQuantity + 1);
+        // check if in the exact moment exists a register with this number
+        return $this->numberGenerator($number);
+    }
+
     private function validaAll($om)
     {
         $value = filter_input_array(INPUT_POST);
@@ -448,7 +479,7 @@ class SolicitacaoModel extends CRUD
             ->setIdLista()
             ->setOmId(filter_var($om, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setIdLicitacao(filter_var($value['id_licitacao'], FILTER_VALIDATE_INT))
-            ->setNumero(time());
+            ->setNumero($this->numberGenerator());
 
         $this->validaNumeroNotaFiscal($this->getNumeroNotaFiscal());
 
