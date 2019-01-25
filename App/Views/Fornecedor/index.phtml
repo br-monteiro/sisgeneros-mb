@@ -4,10 +4,14 @@
         <div class="row">
             <div class="col-lg-12">
                 <h3>Fornecedores</h3>
-                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
-                <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
-                    <i class="fa fa-asterisk"></i> Novo Registro
-                </a>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
+                            <i class="fa fa-plus-circle"></i> Novo Registro
+                        </a>
+                    </div>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -20,17 +24,17 @@
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['nome']; ?></td>
+                                <td><?= strlen($value['nome']) > 35 ? (substr($value['nome'], 0, 35) . ' ...') : $value['nome']; ?></td>
                                 <td><?= $value['cnpj']; ?></td>
-                                <td><?= substr($value['dados'], 0, 35) . ' ...'; ?></td>
+                                <td><?= strlen($value['dados']) > 35 ? (substr($value['dados'], 0, 35) . ' ...') : $value['dados']; ?></td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success">
-                                        <i class="fa fa-edit"></i> Editar
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <i class="fa fa-edit"></i>
                                     </a>
                                     <a href="#"
                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                       class="btn btn-danger">
-                                        <i class="fa fa-trash"></i> Eliminar
+                                       class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
