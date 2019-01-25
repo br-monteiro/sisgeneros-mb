@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * HTR FIREBIRD FRAMEWORK 2.2 - Copyright (C) <2015>  <BRUNO MONTEIRO>
  * Framework PHP e MVC para agilizar o desenvolvimento de Aplicativos Web
  * bruno.monteirodg@gmail.com
@@ -16,17 +15,27 @@ use HTR\Database\Database as DB;
 
 abstract class ModelAbstract
 {
-    protected $db, $pdo;
+
+    /**
+     * @var HTR\Database\Database
+     */
+    protected $db;
+
+    /**
+     * @var \PDO The PDO Instance
+     */
+    protected $pdo;
 
     public function __construct()
     {
         if (class_exists('\App\Config\DatabaseConfig')) {
-            $config_db = new Config();
-            $this->db = new DB($config_db->db);
+            $configDb = new Config();
+            $this->db = new DB($configDb->db);
             $this->pdo = $this->db->conecta();
         } else {
-            throw new \Exception('Você não criou o arquivo de configuração do banco de dados em App\Config\DatabaseConfig');
+            throw new \Exception(''
+                . 'Arquivo de configuração do banco de dados não encontrado '
+                . 'em App\Config\DatabaseConfig');
         }
     }
-
 }
