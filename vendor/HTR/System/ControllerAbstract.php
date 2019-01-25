@@ -48,7 +48,7 @@ class ControllerAbstract
         include_once $filename;
     }
 
-    protected function getParametro($key = null)
+    public function getParametro($key = null)
     {
         return $this->bootstrap->getParametros($key);
     }
