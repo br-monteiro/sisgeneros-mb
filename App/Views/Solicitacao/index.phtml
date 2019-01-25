@@ -52,7 +52,6 @@
                             <th>NF</th>
                             <th>Tipo</th>
                             <th>Status</th>
-                            <th>Criação</th>
                             <th>Alteração</th>
                             <th>Data Ent.</th>
                             <th></th>
@@ -63,68 +62,49 @@
                             <tr>
                                 <td><small><?= $value['numero']; ?></small></td>
                                 <td><small><?= $value['indicativo_naval']; ?></small></td>
-                                <td><small><?= $value['fornecedor_nome']; ?></small></td>
+                                <td><small><?= substr($value['fornecedor_nome'], 0, 17); ?> ... </small></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
                                 <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
                                 <td>
-                                    <?php
-                                    if ($value['status'] == 1) {
-                                        echo 'Solicitado';
-                                    } else if ($value['status'] == 2) {
-                                        echo 'Aprovado';
-                                    } else {
-                                        echo 'Entregue';
-                                    }
-
-                                    ?>
+                                    <?= $value['status'] ?>
                                 </td>
                                 <td>
-                                    <span class="label label-default">    
-                                        <?= date('d-m-Y', $value['created_at']); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="label label-default">    
+                                    <span class="label label-default">
                                         <?= date('d-m-Y', $value['updated_at']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="label label-info">    
+                                    <span class="label label-info">
                                         <?= $value['data_entrega']; ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary">
+                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Itens
                                     </a>
-                                    <?php if (($this->view->userLoggedIn['nivel'] == 1 OR $this->view->userLoggedIn['nivel'] == 3) AND $value['status'] == 1): ?>
-                                        <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success">
+                                    <?php if (($this->view->userLoggedIn['nivel'] == 1 OR $this->view->userLoggedIn['nivel'] == 3) AND $value['status'] == 'ABERTO'): ?>
+                                        <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Aprovar
                                         </a>
-                                        <?php
+                                    <?php
                                     endif;
-                                    if ($this->view->userLoggedIn['nivel'] != 2 AND $value['status'] == 1):
-
-                                        ?>
+                                    if ($this->view->userLoggedIn['nivel'] != 2 AND $value['status'] == 'ABERTO'): ?>
                                         <a href="#"
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
-                                           class="btn btn-danger">
+                                           class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i> Eliminar
                                         </a>
-                                        <?php
+                                    <?php
                                     endif;
-                                    if ($value['status'] >= 2):
-
-                                        ?>
-                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default">
+                                    if ($value['status'] >= 'APROVADO'): ?>
+                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default btn-sm">
                                             <i class="fa fa-file"></i> PDF
                                         </a>
-                                        <?php
+                                    <?php
                                     endif;
-                                    if ($this->view->userLoggedIn['nivel'] != 2 AND$value['status'] == 2):
-
-                                        ?>
-                                        <a href="<?= $this->view->controller; ?>receber/id/<?= $value['id']; ?>" class="btn btn-success">
+                                    if ($this->view->userLoggedIn['nivel'] != 2 AND$value['status'] == 'APROVADO'):
+                                    ?>
+                                        <a href="<?= $this->view->controller; ?>receber/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
