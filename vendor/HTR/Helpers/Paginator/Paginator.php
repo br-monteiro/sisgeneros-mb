@@ -212,8 +212,9 @@ class Paginator extends CRUD
         $allResults = $this->getTotalResult();
         $limit = $this->getMaxResult();
         $lastPage = ceil($allResults / $limit);
+        $chunkValue = $lastPage < 10 ? $lastPage : 10;
         $allButtons = array_keys(array_fill(1, $allResults, ''));
-        $allButtonsGroup = array_chunk($allButtons, 10);
+        $allButtonsGroup = array_chunk($allButtons, $chunkValue);
 
         if ($page > $lastPage) {
             $page = $lastPage;
