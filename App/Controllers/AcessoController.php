@@ -96,7 +96,7 @@ class AcessoController extends Controller implements CtrlInterface
 
     public function autenticaAction()
     {
-        $model = new $this->modelPath;
+        $model = new AcessoModel();
         $model->login();
     }
 
