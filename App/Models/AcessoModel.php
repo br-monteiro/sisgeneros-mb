@@ -158,13 +158,12 @@ class AcessoModel extends CRUD
 
     public function findById($id)
     {
-        $cripto = new Cripto;
         $value = parent::findById($id);
 
         if ($value) {
             // decodifica os campos de USERNAME e EMAIL
-            $value['username'] = $cripto->decode($value['username']);
-            $value['email'] = $cripto->decode($value['email']);
+            $value['username'] = $value['username'];
+            $value['email'] = $value['email'];
             return $value;
         }
 
