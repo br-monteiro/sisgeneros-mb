@@ -5,8 +5,8 @@
             <div class="col-lg-12">
                 <h3>Itens da Solicitação</h3>
                 <div class="alert alert-info" role="alert">
-                    Número da Solicitação: <strong><?= $this->view->resultSolicitacao['numero']; ?></strong><br>
-                    Organização Militar Solicitante: <strong><?= $this->view->resultSolicitacao['om_nome']; ?></strong><br>
+                    Número da Solicitação: <strong><?= $this->view->resultSolicitacao['numero_solicitacao']; ?></strong><br>
+                    Organização Militar: <strong><?= $this->view->resultSolicitacao['om_nome']; ?></strong><br>
                     Data da Solicitação: 
                     <span class="text-danger">
                         <?= date('d-m-Y', $this->view->resultSolicitacao['created_at']); ?>
@@ -14,19 +14,51 @@
                     Data estipulada para entrega: 
                     <span class="text-danger">
                         <?= $this->view->resultSolicitacao['data_entrega']; ?>
-                    </span><br>
+                    </span>
+                    <br>
                     <?php if ($this->view->resultSolicitacao['nao_licitado'] == 0): ?>
                         Fornecedor: <strong><?= $this->view->resultSolicitacao['fornecedor_nome']; ?></strong><br>
-                        Númeno da Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
-                        UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
-                        Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
+                        Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                        Órgão:
+                        <strong>
+                            <?= $this->view->resultLicitacao['uasg']; ?> - 
+                            <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                        </strong>
                     <?php else: ?>
+                        <br>
                         <strong>
                             <i class="fa fa-info-circle"></i> Não Licitado
                         </strong>
                     <?php endif; ?>
                 </div>
-                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <nav>
+                            <ul class="pagination">
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php foreach ($this->view->btn['link'] as $value): ?>
+                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                        <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                            <?= $value; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
                 <table class="table">
                     <thead>
                         <tr>
@@ -58,7 +90,11 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
@@ -67,7 +103,6 @@
                         </li>
                     </ul>
                 </nav>
-
             </div>
             <!-- /.col-lg-12 -->
         </div>

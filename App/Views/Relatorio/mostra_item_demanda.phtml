@@ -9,7 +9,33 @@
                     Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong> | 
                     UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong>
                 </div>
-                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <nav>
+                            <ul class="pagination">
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previus']; ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php foreach ($this->view->btn['link'] as $value): ?>
+                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                        <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                            <?= $value; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
                 <table class="table table-condensed table-hover table-striped">
                     <thead>
                         <tr>
@@ -42,19 +68,19 @@
 
                                         ?>
                                         <span class="label label-info">
-                                        <?= $demanda ?>
+                                            <?= $demanda ?>
                                         </span>
                                     <?php else: ?>
                                         ---
-    <?php endif; ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <span class="label <?= $restante < 0 ? "label-danger" : "label-default"; ?>">
-    <?= $restante; ?>
+                                        <?= $restante; ?>
                                     </span>
                                 </td>
                             </tr>
-<?php endforeach; ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
 
@@ -66,8 +92,12 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>"><?= $value; ?></a></li>
-<?php endforeach; ?>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
@@ -75,7 +105,6 @@
                         </li>
                     </ul>
                 </nav>
-
             </div>
             <!-- /.col-lg-12 -->
         </div>
