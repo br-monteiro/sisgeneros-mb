@@ -27,8 +27,7 @@ class Access extends CRUD
     private function setNivelAcesso(array $nivelAcesso)
     {
         // seta para o array os possíveis níveis de acesso
-        array_push($this->nivelAcesso, $nivelAcesso);
-        $this->nivelAcesso = $this->nivelAcesso[0];
+        $this->nivelAcesso = array_merge($this->nivelAcesso, $nivelAcesso);
     }
 
     /**
@@ -63,6 +62,7 @@ class Access extends CRUD
                 // Redireciona o usuário sem permissão
                 // de acesso para página inicial
                 $this->redirectTo();
+                return;
             }
             if ($result[COLMOP]) {
                 $this->redirectTo(CTRMOP);
