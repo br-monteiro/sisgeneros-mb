@@ -364,3 +364,7 @@ table.dataTable thead .sorting:after {
 table.table td {
     font-size: 12px !important;
 }
+
+.label {
+    font-size: 10px;
+}

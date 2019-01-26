@@ -7,11 +7,13 @@ class Pdf
 {
 
     public $url = '';
+    public $number;
     private $urlBase = 'http://' . DOMAIN;
 
     public function gerar()
     {
         $url = $this->urlBase . $this->url;
+        $number = $this->number ?? time();
         // deve ser alterado para o Path do binário correspondente na máquina
         $snappy = new Snappy('/usr/bin/wkhtmltopdf-i386');
         $snappy->setOptions([
@@ -21,7 +23,7 @@ class Pdf
         ]);
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="solicitacao_' . time() . '.pdf"');
+        header('Content-Disposition: attachment; filename="solicitacao_' . $number . '.pdf"');
         echo $snappy->getOutput($url);
     }
 }
