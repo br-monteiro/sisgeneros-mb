@@ -91,8 +91,8 @@ class SolicitacaoModel extends CRUD
 
     public function retornaDadosPapeleta($id, $user = null, $controllerReceber = false)
     {
-        $where = $user['nivel'] !== 'ADMINISTRADOR' ? ' AND om.id = ' . $user['om_id'] : null;
-        $where .= !$controllerReceber ? " AND status != 'ABERTO' " : " AND status = 'SOLICITADO' ";
+        $where = $user['nivel'] !== 'ADMINISTRADOR' ? ' AND om.id = ' . $user['om_id'] : '';
+        $where .= !$controllerReceber ? " AND status != 'ABERTO' AND status != 'APROVADO' " : " AND status = 'SOLICITADO' ";
         $stmt = $this->pdo->prepare("SELECT nao_licitado FROM solicitacao WHERE id = ? ");
         $stmt->execute([$id]);
         $s = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -467,6 +467,39 @@ class SolicitacaoModel extends CRUD
         $number = (int) $currentYearShort . ($registersQuantity + 1);
         // check if in the exact moment exists a register with this number
         return $this->numberGenerator($number);
+    }
+
+    /**
+     * Process the solcitação status. The status allowed
+     * is PROCESSADO, EMPENHADO and SOLICITADO
+     * @param int $id Identification of Solicitação
+     * @param string $status The status to be changing
+     */
+    public function processarStatus(int $id, string $status)
+    {
+        /**
+         * This array is filled with the index as new status and the
+         * value as the current status in the register
+         */
+        $statusPatterns = [
+            'PROCESSADO' => 'APROVADO',
+            'EMPENHADO' => 'PROCESSADO',
+            'SOLICITADO' => 'EMPENHADO'
+        ];
+        $currentStatus = $statusPatterns[$status] ?? false;
+        $solcitacao = $this->findById($id);
+
+        if (
+            $currentStatus !== false &&
+            $solcitacao &&
+            $solcitacao['status'] === $currentStatus
+        ) {
+            $dados = [
+                'status' => $status,
+                'updated_at' => time()
+            ];
+            parent::editar($dados, $id);
+        }
     }
 
     private function validaAll($om)
