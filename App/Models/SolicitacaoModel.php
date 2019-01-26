@@ -227,12 +227,17 @@ class SolicitacaoModel extends CRUD
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'solicitacao.created_at DESC'
+            'orderBy' => 'solicitacao.updated_at DESC'
         ];
         // para usuários com nível de acesso diferente de administrador
-        if ($user['nivel'] !== 'ADMINISTRADOR') {
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $dados['where'] = 'om_id = :omId ';
             $dados['bindValue'] = [':omId' => $user['om_id']];
+        }
+
+        if ($user['nivel'] === 'CONTROLADOR') {
+            $dados['where'] = 'status != :status ';
+            $dados['bindValue'] = [':status' => 'ABERTO'];
         }
 
         if ($busca) {
