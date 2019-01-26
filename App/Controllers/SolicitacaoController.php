@@ -240,16 +240,22 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->clearAccessList()
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
+        $id = $this->getParametro('id');
         $pdf = new Pdf();
-        $pdf->url = $this->view->controller . 'papeleta/id/' . $this->getParametro('id');
+        $pdf->number = $id;
+        $pdf->url = $this->view->controller . 'papeleta/id/' . $id;
         $pdf->gerar();
     }
 
     public function papeletaAction()
     {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
         $model = new SolicitacaoModel();
         $this->view->title = 'Solicitação de Material';
-        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'));
+        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'), $this->view->userLoggedIn);
         $this->render('papeleta_solicitacao', true, 'blank');
     }
 
@@ -265,5 +271,19 @@ class SolicitacaoController extends Controller implements CtrlInterface
             $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
         }
         $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
+    }
+
+    public function processarAction()
+    {
+        $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+        $id = (int) $this->getParametro('id');
+        $status = strtoupper($this->getParametro('status') ?? '');
+
+        (new SolicitacaoModel())->processarStatus($id, $status);
+
+        header('location: ' . $this->view->controller);
     }
 }
