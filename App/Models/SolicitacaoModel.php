@@ -92,7 +92,7 @@ class SolicitacaoModel extends CRUD
     public function retornaDadosPapeleta($id, $user = null, $controllerReceber = false)
     {
         $where = $user['nivel'] !== 'ADMINISTRADOR' ? ' AND om.id = ' . $user['om_id'] : null;
-        $where .= !$controllerReceber ? " AND status != 'ABERTO' " : " AND status = 'APROVADO' ";
+        $where .= !$controllerReceber ? " AND status != 'ABERTO' " : " AND status = 'SOLICITADO' ";
         $stmt = $this->pdo->prepare("SELECT nao_licitado FROM solicitacao WHERE id = ? ");
         $stmt->execute([$id]);
         $s = $stmt->fetch(\PDO::FETCH_ASSOC);
