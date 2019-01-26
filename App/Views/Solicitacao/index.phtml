@@ -117,7 +117,7 @@ $userNivel = $this->view->userLoggedIn['nivel'];
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php endif; ?>
-                                    <?php if ($value['status'] == 'SOLICITADO'): ?>
+                                    <?php if (in_array($value['status'], ['RECEBIDO', 'SOLICITADO'])): ?>
                                         <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default btn-sm">
                                             <i class="fa fa-file-pdf-o"></i> PDF
                                         </a>

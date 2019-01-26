@@ -6,11 +6,10 @@
                 <h3>Itens da Solicitação</h3>
                 <?php if (isset($this->view->resultLicitacao['numero'])): ?>
                     <div class="alert alert-info" role="alert">
-                        Solicitação: <strong><?= $this->view->resultSolicitacao['numero']; ?></strong><br>
+                        Órgão: <strong><?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
                         Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
-                        UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
-                        Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
-
+                        Solicitação: <strong><?= $this->view->resultSolicitacao['numero']; ?></strong><br>
+                        Status: <strong><?= $this->view->resultSolicitacao['status']; ?></strong><br>
                         Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
