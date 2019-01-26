@@ -20,7 +20,7 @@ define('APPDIR', '/');
 // Nome da Aplicação
 define('APPNAM', 'SisGêneros');
 // Versão da Aplicação
-define('APPVER', '0.6');
+define('APPVER', '1.7');
 // Salt String usado na criptografia
 define('STRSAL', 'n%0$8VgDH6U6At %% (B16XZdZwVPGT^55u4I)TBU3VV');
 // Entidade Padrão usada para login
