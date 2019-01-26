@@ -249,13 +249,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
     public function papeletaAction()
     {
-        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
-            ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
-
         $model = new SolicitacaoModel();
         $this->view->title = 'Solicitação de Material';
-        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'), $this->view->userLoggedIn);
+        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'));
         $this->render('papeleta_solicitacao', true, 'blank');
     }
 
