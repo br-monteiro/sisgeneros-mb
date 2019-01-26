@@ -64,7 +64,7 @@
                                 <td><?= $value['item_uf']; ?></td>
                                 <td><?= $value['item_nome']; ?></td>
                                 <td>
-                                    <?php if ($this->view->userLoggedIn['nivel'] != 'CONTROLADOR' && $this->view->resultSolicitacao['status'] == 'ABERTO') { ?>
+                                    <?php if ($this->view->userLoggedIn['nivel'] != 'CONTROLADOR' && $this->view->resultSolicitacao['status'] == 'ABERTO') : ?>
                                         <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success">
                                             <i class="fa fa-edit"></i>
                                         </a>
@@ -73,7 +73,7 @@
                                            class="btn btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
-                                    <?php } ?>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
