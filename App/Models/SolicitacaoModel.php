@@ -489,7 +489,10 @@ class SolicitacaoModel extends CRUD
         $statusPatterns = [
             'PROCESSADO' => 'APROVADO',
             'EMPENHADO' => 'PROCESSADO',
-            'SOLICITADO' => 'EMPENHADO'
+            'SOLICITADO' => 'EMPENHADO',
+            'NF-ENTREGUE' => 'RECEBIDO',
+            'NF-FINANCAS' => 'NF-ENTREGUE',
+            'NF-PAGA' => 'NF-FINANCAS'
         ];
         $currentStatus = $statusPatterns[$status] ?? false;
         $solcitacao = $this->findById($id);
