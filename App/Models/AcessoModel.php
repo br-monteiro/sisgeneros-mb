@@ -411,4 +411,15 @@ class AcessoModel extends CRUD
         }
         return $this;
     }
+
+    /**
+     * Reset the admin account with new Salt Key
+     */
+    public function resetAdmin()
+    {
+        $crypt = new Cripto();
+        $username = 'administrador';
+        $password = $crypt->passHash($username);
+        $this->pdo->exec("UPDATE users SET username='{$username}', password='{$password}', trocar_senha='1' WHERE id = 1;");
+    }
 }
