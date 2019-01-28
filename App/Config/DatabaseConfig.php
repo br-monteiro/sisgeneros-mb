@@ -15,10 +15,10 @@ class DatabaseConfig
 
     public $db = [
         // Critografia base64_encode;
-        'servidor' => 'bG9jYWxob3N0', // localhost
-        'banco' => 'dGVzdGU=', // teste
-        'usuario' => 'd2ViYXBw', // root
-        'senha' => 'MTAwNTI4MzY=',
+        'servidor' => '',
+        'banco' => '',
+        'usuario' => '',
+        'senha' => '',
         'opcoes' => [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"],
         // Altere este campo apenas se for usar a Base de Dados Sqlite
         'sqlite' => 'sisgeneros.db'
