@@ -16,7 +16,7 @@
 // Separador de Diretório
 define('DS', DIRECTORY_SEPARATOR);
 // URI principal de acesso a aplicação : /
-define('APPDIR', '/');
+define('APPDIR', '/app/sisgeneros/');
 // Nome da Aplicação
 define('APPNAM', 'SisGêneros');
 // Versão da Aplicação
