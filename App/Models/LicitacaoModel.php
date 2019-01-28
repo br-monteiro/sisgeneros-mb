@@ -238,7 +238,7 @@ class LicitacaoModel extends CRUD
             msg::showMsg('O campo Validade deve ser preenchido corretamente.'
                 . '<script>focusOn("validade");</script>', 'danger');
         }
-        $this->validade = strtotime($validade);
+        $this->validade = strtotime($validade) + 79199; // fix the validate request
         return $this;
     }
 }
