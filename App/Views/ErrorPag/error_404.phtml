@@ -1,9 +1,7 @@
-<!--A Design by W3layouts
-Author: W3layout
-Author URL: http://w3layouts.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
+<?php
+@http_response_code(404);
+
+?>
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -71,7 +69,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <h1>404</h1>
                 <p> Opss - Arquivo ou página não encontrados!</p>
                 <div class="sub">
-                    <p><a href="<?php echo APPDIR; ?>"> Voltar ao Início</a></p>
+                    <p><a href="<?php echo App\Config\Configurations::DEFAULT_URI; ?>"> Voltar ao Início</a></p>
                 </div>
             </div>
         </div>

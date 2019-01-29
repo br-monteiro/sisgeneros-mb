@@ -7,6 +7,7 @@ use HTR\Helpers\Access\Access;
 use App\Models\FornecedorModel as Fornecedor;
 use App\Models\LicitacaoModel as Licitacao;
 use App\Models\ItemModel;
+use App\Config\Configurations as cfg;
 
 class ItemController extends Controller implements CtrlInterface
 {
@@ -16,12 +17,12 @@ class ItemController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'item/';
+        $this->view->controller = cfg::DEFAULT_URI . 'item/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $this->view->idLista = $this->getParametro('idlista');
         if (!$this->view->idLista) {
-            header("Location:" . APPDIR . "licitacao/");
+            header("Location:" . cfg::DEFAULT_URI . "licitacao/");
         }
     }
 
