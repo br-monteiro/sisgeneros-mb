@@ -8,6 +8,7 @@ use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
+use App\Config\Configurations as cfg;
 
 class ItemModel extends CRUD
 {
@@ -116,7 +117,7 @@ class ItemModel extends CRUD
     public function remover($id, $idLista)
     {
         if (parent::remover($id)) {
-            header('Location: ' . APPDIR . 'item/listar/idlista/' . $idLista);
+            header('Location: ' . cfg::DEFAULT_URI . 'item/listar/idlista/' . $idLista);
         }
     }
 
