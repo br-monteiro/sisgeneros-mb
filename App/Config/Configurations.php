@@ -12,6 +12,7 @@ class Configurations extends InternalConfigurations
     const ADMIN_CONTACT = 'E-mail: bruno.monteirodg@gmail.com';
     const PATH_CORE = '/path/to/core/';
     const DIR_DATABASE = self::PATH_CORE . 'App/Database/DbRepository/';
+    const DEFAULT_URI = '/app/sisgeneros/';
 
     /**
      * Returns the configurations of htr.json files
