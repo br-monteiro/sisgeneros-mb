@@ -8,6 +8,7 @@ use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
+use App\Config\Configurations as cfg;
 
 class LicitacaoModel extends CRUD
 {
@@ -97,7 +98,7 @@ class LicitacaoModel extends CRUD
 
         if (parent::novo($dados)) {
             msg::showMsg('Licitação Registrada com Sucesso. '
-                . "<a href='" . APPDIR . "item/novo/idlista/" . $this->getIdLista() . "' class='btn btn-info'>"
+                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $this->getIdLista() . "' class='btn btn-info'>"
                 . "<i class='fa fa-plus-circle'></i> Add Item</a>"
                 . '<script>resetForm();</script>', 'success');
         }

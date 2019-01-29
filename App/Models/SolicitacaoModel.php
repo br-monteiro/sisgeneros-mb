@@ -11,6 +11,7 @@ use App\Models\LicitacaoModel as Licitacao;
 use App\Models\SolicitacaoItemModel as Itens;
 use Respect\Validation\Validator as v;
 use App\Models\AvaliacaoFornecedorModel;
+use App\Config\Configurations as cfg;
 
 class SolicitacaoModel extends CRUD
 {
@@ -68,7 +69,7 @@ class SolicitacaoModel extends CRUD
             // verifica se a solicitação é da mesma OM que o usuário lodado
             if ($sol['id_om'] != $user['om_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
-                header("location:" . APPDIR . "solicitacao/");
+                header("location:" . cfg::DEFAULT_URI . "solicitacao/");
             }
         }
 
@@ -312,7 +313,7 @@ class SolicitacaoModel extends CRUD
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                     . "<strong>Solicitação Nº {$this->getNumero()} <br>"
                     . "Status: ABERTO.</strong><br>"
-                    . "<a href='" . APPDIR . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                    . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
             }
@@ -347,7 +348,7 @@ class SolicitacaoModel extends CRUD
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                     . "<strong>Solicitação Nº {$this->getNumero()} <br>"
                     . "Status: ABERTO.</strong><br>"
-                    . "<a href='" . APPDIR . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                    . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
             }
@@ -368,7 +369,7 @@ class SolicitacaoModel extends CRUD
         $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ?");
         $stmt->bindValue(1, $id);
         if ($stmt->execute()) {
-            header('Location: ' . APPDIR . 'solicitacao/');
+            header('Location: ' . cfg::DEFAULT_URI . 'solicitacao/');
         }
     }
 
@@ -389,7 +390,7 @@ class SolicitacaoModel extends CRUD
         ];
 
         if (parent::editar($dados, $id)) {
-            header('Location: ' . APPDIR . 'solicitacao/');
+            header('Location: ' . cfg::DEFAULT_URI . 'solicitacao/');
         }
     }
 
@@ -398,12 +399,12 @@ class SolicitacaoModel extends CRUD
         $solicitacao = $this->findById_lista($idlista);
         // verifica se a solicitação já foi aprovada
         if ($solicitacao['status'] !== 'ABERTO') {
-            header("Location:" . APPDIR . "solicitacao/");
+            header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
             return true;
             // verifica se o usuário é da mensa OM da solicitação
         } elseif ($user['nivel'] !== 'ADMINISTRADOR') {
             if ($user['om'] != $solicitacao['om']) {
-                header("Location:" . APPDIR . "solicitacao/");
+                header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
                 return true;
             }
         }

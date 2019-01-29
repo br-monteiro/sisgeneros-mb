@@ -10,6 +10,7 @@ use HTR\Helpers\Paginator\Paginator;
 use HTR\Helpers\Session\Session;
 use HTR\Helpers\Criptografia\Criptografia as Cripto;
 use Respect\Validation\Validator as v;
+use App\Config\Configurations as cfg;
 
 class AcessoModel extends CRUD
 {
@@ -152,7 +153,7 @@ class AcessoModel extends CRUD
     public function remover($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . APPDIR . 'acesso/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'acesso/ver/');
         }
     }
 
@@ -168,7 +169,7 @@ class AcessoModel extends CRUD
         }
 
         msg::showMsg('Este registro não foi encontrado. Você será redirecionado em 5 segundos.'
-            . '<meta http-equiv="refresh" content="0;URL=' . APPDIR . 'acesso" />', 'danger', false);
+            . '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . 'acesso" />', 'danger', false);
     }
     /*
      * Método usado para alterar a senha do usuário no primeiro acesso
@@ -189,8 +190,8 @@ class AcessoModel extends CRUD
         if (parent::editar($dados, $id)) {
             msg::showMsg('A senha foi alterada com sucesso! '
                 . 'Você será redirecionado para a página inicial em 5 segundos.'
-                . '<meta http-equiv="refresh" content="5;URL=' . APPDIR . '" />'
-                . '<script>setTimeout(function(){ window.location = "' . APPDIR . '"; }, 5000); </script>', 'success');
+                . '<meta http-equiv="refresh" content="5;URL=' . cfg::DEFAULT_URI . '" />'
+                . '<script>setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . '"; }, 5000); </script>', 'success');
         }
     }
 
@@ -274,8 +275,8 @@ class AcessoModel extends CRUD
         $session->startSession();
         $_SESSION['token'] = $session->getToken();
         $_SESSION['userId'] = $dados['id'];
-        echo '<meta http-equiv="refresh" content="0;URL=' . APPDIR . '" />'
-        . '<script>window.location = "' . APPDIR . '"; </script>';
+        echo '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . '" />'
+        . '<script>window.location = "' . cfg::DEFAULT_URI . '"; </script>';
         return true; // stop script
     }
 
@@ -410,16 +411,5 @@ class AcessoModel extends CRUD
             $this->$attribute = $cripto->passHash($value);
         }
         return $this;
-    }
-
-    /**
-     * Reset the admin account with new Salt Key
-     */
-    public function resetAdmin()
-    {
-        $crypt = new Cripto();
-        $username = 'administrador';
-        $password = $crypt->passHash($username);
-        $this->pdo->exec("UPDATE users SET username='{$username}', password='{$password}', trocar_senha='1' WHERE id = 1;");
     }
 }
