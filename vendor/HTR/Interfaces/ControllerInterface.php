@@ -4,7 +4,6 @@
  * Framework PHP e MVC para agilizar o desenvolvimento de Aplicativos Web
  * bruno.monteirodg@gmail.com
  * 
- * @file ControllerInterface.php
  * @version 0.1
  * - Interface padrão para Controllers
  */

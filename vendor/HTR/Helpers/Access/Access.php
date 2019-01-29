@@ -12,13 +12,14 @@ namespace HTR\Helpers\Access;
 
 use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Session\Session;
+use App\Config\Configurations as cfg;
 
 class Access extends CRUD
 {
 
-    protected $entidade = TBLOGI;
-    private $nivelAcesso = [];
+    protected $entidade = cfg::DB_USER_TABLE;
     private $url;
+    private $nivelAcesso = [];
     private $breakRedirect = false;
 
     /**
@@ -51,7 +52,7 @@ class Access extends CRUD
         // token gerado automaticamente
         if (!isset($_SESSION['token'])) {
             $session->stopSession();
-            $this->redirectTo(CTRLOG);
+            $this->redirectTo(cfg::URI_LOGIN);
         }
         if ($_SESSION['token'] == $session->getToken()) {
             $result = $this->findById($_SESSION['userId']);
@@ -64,8 +65,8 @@ class Access extends CRUD
                 $this->redirectTo();
                 return;
             }
-            if ($result[COLMOP]) {
-                $this->redirectTo(CTRMOP);
+            if (isset($result[cfg::DB_USER_CHANGE_PASSWORD_FIELD]) && $result[cfg::DB_USER_CHANGE_PASSWORD_FIELD]) {
+                $this->redirectTo(cfg::URI_CHANGE_PASSWORD);
             }
             // Retorna o resultado da consulta
             // feita no Banco de Dados com o ID fornecido
@@ -83,11 +84,9 @@ class Access extends CRUD
         $session = new Session();
         $session->startSession();
         // Compara o registro de token da sessão com o token gerado automaticamente
-        if (!empty($_SESSION)) {
-            if ($_SESSION['token'] == $session->getToken()) {
-                // Redireciona para página incial
-                $this->redirectTo(); // url = /
-            }
+        if (isset($_SESSION['token']) && $_SESSION['token'] == $session->getToken()) {
+            // Redireciona para página incial
+            $this->redirectTo(); // url = /
         }
         $session->stopSession();
         return true;
@@ -98,9 +97,9 @@ class Access extends CRUD
         $url = $this->url ?: $url;
         // Redireciona se o atributo breakRedirect conter o valor false
         if (!$this->breakRedirect) {
-            echo '<meta http-equiv="refresh" content="0;URL=' . APPDIR . $url . '" />'
-            . '<script>window.location = "' . APPDIR . $url . '"; </script>';
-            header('Location:' . APPDIR . $url);
+            echo '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . $url . '" />'
+            . '<script>window.location = "' . cfg::DEFAULT_URI . $url . '"; </script>';
+            header('Location:' . cfg::DEFAULT_URI . $url);
             exit;
         }
     }
@@ -119,7 +118,7 @@ class Access extends CRUD
 
     public function clearAccessList()
     {
-        $this->nivelAcesso = array_splice($this->nivelAcesso, count($this->nivelAcesso));
+        $this->nivelAcesso = [];
         return $this;
     }
 }

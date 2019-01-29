@@ -10,6 +10,8 @@
  */
 namespace HTR\Database;
 
+use App\Config\Configurations as cfg;
+
 class Database
 {
 
@@ -32,16 +34,20 @@ class Database
         $pdo = null;
 
         try {
-            if ($this->config['sqlite'] == null) {
-                $dns = 'mysql:host=' . $this->decode($this->config['servidor']) . ';dbname=' . $this->decode($this->config['banco']);
-                $pdo = new \PDO($dns, $this->decode($this->config['usuario']), $this->decode($this->config['senha']), $this->config['opcoes']);
+            if (!$this->config['sqlite']) {
+                $dns = ''
+                    . 'mysql:host=' . $this->config['servidor']
+                    . ';dbname=' . $this->config['banco'];
+                $pdo = new \PDO($dns, $this->config['usuario'], $this->config['senha'], $this->config['opcoes']);
             } else {
-                $pdo = new \PDO('sqlite:' . DATADR . $this->config['sqlite']);
+                $pdo = new \PDO('sqlite:' . cfg::DIR_DATABASE . $this->config['sqlite']);
                 $pdo->exec('PRAGMA encoding = "UTF-8";');
             }
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
-            throw new \Exception('Erro ao conectar. Código: ' . $e->getCode() . '! Mensagem: ' . $e->getMessage());
+            throw new \Exception('Erro ao conectar. '
+                . 'Código: ' . $e->getCode() . '!'
+                . 'Mensagem: ' . $e->getMessage());
         }
         self::$pdo = $pdo;
 
@@ -89,7 +95,7 @@ class Database
 
     private function validaConexao()
     {
-        if (is_array($this->config)) {
+        if (is_array($this->config) && !$this->config['sqlite']) {
             if (empty($this->config['servidor'])) {
                 throw new \Exception('Você não informou o servidor!');
             }
@@ -106,14 +112,12 @@ class Database
                 throw new \Exception('Você não informou as opções ou não é '
                 . 'um array, você precisa informar isso mesmo que vazio!');
             }
-
-            return true;
+        } elseif (is_array($this->config) && $this->config['sqlite']) {
+            if (!file_exists(cfg::DIR_DATABASE . $this->config['sqlite'])) {
+                throw new \Exception('O arquivo Sqlite não foi encontrado');
+            }
+        } else {
+            throw new \Exception('Esta não é uma configuração válida!');
         }
-        throw new \Exception('Esta não é uma configuração válida!');
-    }
-
-    private function decode($str)
-    {
-        return base64_decode($str);
     }
 }

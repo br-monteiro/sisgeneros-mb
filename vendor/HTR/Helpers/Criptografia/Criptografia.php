@@ -10,6 +10,8 @@
  */
 namespace HTR\Helpers\Criptografia;
 
+use App\Config\Configurations as cfg;
+
 class Criptografia
 {
 
@@ -19,10 +21,10 @@ class Criptografia
     {
         if ($definitivo) {
             /// ENCRIPTOGRAFA A STRING PASSADA
-            $valor = sha1(STRSAL . md5($valor) . STRSAL);
+            $valor = sha1(cfg::STR_SALT . md5($valor) . cfg::STR_SALT);
         } else {
             //$key previously generated safely, ie: openssl_random_pseudo_bytes
-            $key = STRSAL;
+            $key = cfg::STR_SALT;
             $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
             $iv = openssl_random_pseudo_bytes($ivlen);
             $ciphertextRaw = openssl_encrypt($valor, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
@@ -39,7 +41,7 @@ class Criptografia
         $iv = substr($c, 0, $ivlen);
         substr($c, $ivlen, $sha2len = 32);
         $ciphertextRaw = substr($c, $ivlen + $sha2len);
-        $valor = openssl_decrypt($ciphertextRaw, $cipher, STRSAL, $options = OPENSSL_RAW_DATA, $iv);
+        $valor = openssl_decrypt($ciphertextRaw, $cipher, cfg::STR_SALT, $options = OPENSSL_RAW_DATA, $iv);
         return $valor;
     }
 

@@ -134,9 +134,8 @@ class Bootstrap
 
     protected function run()
     {
-        if (file_exists(DRINST . 'App/Controllers/' . $this->getController() . '.php')) {
-
-            $class = "App\\Controllers\\" . $this->getController();
+        $class = 'App\\Controllers\\' . $this->getController();
+        if (class_exists($class)) {
 
             // instacia o Controller
             $controller = new $class($this);

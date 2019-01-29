@@ -10,6 +10,8 @@
  */
 namespace HTR\Helpers\ErrorPag;
 
+use App\Config\Configurations as cfg;
+
 class ErrorPag
 {
 
@@ -20,7 +22,8 @@ class ErrorPag
 
     private function getError($layout_error)
     {
-        require_once '../App/Views/ErrorPag/' . $layout_error . '.phtml';
-        exit();
+        echo cfg::PATH_CORE . '/App/Views/ErrorPag/';exit;
+        require_once cfg::PATH_CORE . '/App/Views/ErrorPag/' . $layout_error . '.phtml';
+        exit;
     }
 }

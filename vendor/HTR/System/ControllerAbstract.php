@@ -11,6 +11,7 @@
 namespace HTR\System;
 
 use HTR\Helpers\ErrorPag\ErrorPag as Error;
+use App\Config\Configurations as cfg;
 
 class ControllerAbstract
 {
@@ -28,7 +29,7 @@ class ControllerAbstract
     protected function render($pagina, $useLaytou = true, $alternativeLayout = 'default')
     {
         $this->pagina = $pagina;
-        $fileLayout = DRINST . "App/Views/Layout/{$alternativeLayout}.phtml";
+        $fileLayout = cfg::PATH_CORE . "App/Views/Layout/{$alternativeLayout}.phtml";
         if ($useLaytou == true && file_exists($fileLayout)) {
             include_once "$fileLayout";
         } else {
@@ -41,7 +42,7 @@ class ControllerAbstract
         $classAtua = get_class($this);
         $controller = strtolower(str_replace("App\Controllers\\", "", $classAtua));
         $singleClassName = str_replace("controller", "", $controller);
-        $filename = DRINST . 'App/Views/' . ucfirst($singleClassName) . '/' . $this->pagina . '.phtml';
+        $filename = cfg::PATH_CORE . 'App/Views/' . ucfirst($singleClassName) . '/' . $this->pagina . '.phtml';
         if (!file_exists($filename)) {
             new Error('error_404');
         }

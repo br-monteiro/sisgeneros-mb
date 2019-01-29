@@ -12,6 +12,7 @@
 namespace HTR\Helpers\Session;
 
 use HTR\Helpers\Criptografia\Criptografia as Cripto;
+use App\Config\Configurations as cfg;
 
 class Session
 {
@@ -49,9 +50,9 @@ class Session
      */
     private function setToken()
     {
-        // String usada como Salt
+        $app = cfg::htrFileConfigs()->application;
         // "salt+ip+ProgramaNome+ProgramaVersao+User Agent+salt"
-        $strSalt = STRSAL.$this->ip.APPNAM.APPVER.$this->userAgent.STRSAL;
+        $strSalt = cfg::STR_SALT . $this->ip . $app->name . $app->vesion . $this->userAgent.cfg::STR_SALT;
         $this->token = $this->cripto->encode($strSalt, true);
     }
 
@@ -85,8 +86,8 @@ class Session
             /// Caso a Sessão não seja iniciada, inicia o processo de criação da sessão
             session_set_cookie_params( 
                 1800, // Tempo de vida da sessão. Padrão 30min
-                APPDIR, // Path da Sessão
-                DOMAIN, // Nome no Domínio
+                cfg::DEFAULT_URI, // Path da Sessão
+                cfg::DOMAIN, // Nome no Domínio
                 false, // SSL
                 true // HTTP Only
             );
