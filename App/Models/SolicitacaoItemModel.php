@@ -10,6 +10,7 @@ use HTR\Helpers\Paginator\Paginator;
 use App\Models\ItemModel as Item;
 use App\Models\SolicitacaoModel as Solicitacao;
 use Respect\Validation\Validator as v;
+use App\Config\Configurations as cfg;
 
 class SolicitacaoItemModel extends CRUD
 {
@@ -39,7 +40,7 @@ class SolicitacaoItemModel extends CRUD
         return true;
     }
 
-    public function recebimentoNaoLicitado($idLista)
+    public function recebimentoNaoLicitado()
     {
         $value = filter_input_array(INPUT_POST);
         for ($i = 0; $i < count($value['id']); $i++) {
@@ -129,7 +130,7 @@ class SolicitacaoItemModel extends CRUD
 
         if ($solicitacao['status'] != 1) {
             // redireciona para solicitacao/ se a Solicitação ja estiver aprovada
-            header("Location:" . APPDIR . 'solicitacao/');
+            header("Location:" . cfg::DEFAULT_URI . 'solicitacao/');
             return true;
         }
         if ($item['id_lista'] != $idLista) {
@@ -141,7 +142,7 @@ class SolicitacaoItemModel extends CRUD
         // se a Om da Solicitação for diferente da do usuário
         if ($user['nivel'] !== 'ADMINISTRADOR') {
             if ($solicitacao['om'] != $user['om']) {
-                header("Location:" . APPDIR . 'solicitacao/');
+                header("Location:" . cfg::DEFAULT_URI . 'solicitacao/');
                 return true;
             }
         }
@@ -173,7 +174,7 @@ class SolicitacaoItemModel extends CRUD
         if ($numRows > 1) {
             parent::remover($id);
         }
-        header("Location:" . APPDIR . "solicitacao/detalhar/idlista/{$idlitsa}");
+        header("Location:" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$idlitsa}");
     }
 
     public function quantidadeDemanda($itemNumero, $idLicitacao)

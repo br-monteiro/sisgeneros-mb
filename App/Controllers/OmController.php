@@ -5,6 +5,7 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\OmModel;
+use App\Config\Configurations as cfg;
 
 class OmController extends Controller implements CtrlInterface
 {
@@ -14,7 +15,7 @@ class OmController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'om/';
+        $this->view->controller = cfg::DEFAULT_URI . 'om/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
     }

@@ -1,0 +1,167 @@
+<div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="sidebar-search" style="display: none;">
+                <div class="input-group custom-search-form">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+                <!-- /input-group -->
+            </li>
+            <li>
+                <a href="<?= App\Config\Configurations::DEFAULT_URI ?>">
+                    <i class="fa fa-home fa-fw"></i> Início
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-list fa-fw"></i> Solicitações
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="solicitacao">
+                            <i class="fa fa-history"></i> Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="solicitacao/licitacao/">
+                            <i class="fa fa-group"></i> Licitado
+                        </a>
+                    </li>
+                    <li>
+                        <a href="solicitacao/naolicitado/">
+                            <i class="fa fa-shopping-cart"></i> Não Licitado
+                        </a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
+            <?php if (!in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-suitcase fa-fw"></i> Fornecedor
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="fornecedor/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+            <?php endif; ?>
+
+            <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR') : ?>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-users fa-fw"></i> Usuários
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="acesso/">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="acesso/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            <?php endif; ?>
+            <!-- /.nav-second-level -->
+
+            <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-list-ol fa-fw"></i> Relatório
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="relatorio/solicitacao/">
+                                <i class="fa fa-list"></i> Rel. de Solicitação
+                            </a>
+                        </li>
+                        <li>
+                            <a href="relatorio/demanda/">
+                                <i class="fa fa-list"></i> Rel. Demanda de Itens
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-university fa-fw"></i> Organização Militar
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="om/">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="om/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-suitcase fa-fw"></i> Fornecedor
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="fornecedor/">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="fornecedor/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-list fa-fw"></i> Licitações
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="licitacao/">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="licitacao/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+            <?php endif; ?>
+            <li>
+                <a href="acesso/logout/"><i class="fa fa-sign-out fa-fw"></i> Sair</a>
+            </li>
+        </ul>
+    </div>
+    <!-- /.sidebar-collapse -->
+</div>

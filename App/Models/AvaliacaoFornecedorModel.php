@@ -52,7 +52,6 @@ class AvaliacaoFornecedorModel extends CRUD
 
     public function novo($value)
     {
-        // Valida dados
         $this->validaAll($value);
 
         $dados = [
@@ -61,9 +60,8 @@ class AvaliacaoFornecedorModel extends CRUD
             'nota' => $this->getNota(),
             'nao_entregue' => $this->getNaoEntregue()
         ];
-        if (parent::novo($dados)) {
-            return true;
-        }
+
+        parent::novo($dados);
     }
 
     private function validaAll($value)

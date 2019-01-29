@@ -4,10 +4,8 @@
     "minimum-stability":"dev",
     "require": {
         "php": ">=5.4",
-        "respect/validation": "1.1.5",
-        "rah/danpu": "2.6.*",
-        "rych/phpass": "3.0.*@beta",
-        "h4cc/wkhtmltopdf-i386": "0.12.x",
+        "respect/validation": "1.1.29",
+        "h4cc/wkhtmltopdf-i386": "0.12.3",
         "knplabs/knp-snappy": "0.4.3"
     },
     "authors": [

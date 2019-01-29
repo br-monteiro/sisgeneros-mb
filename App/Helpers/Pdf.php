@@ -2,13 +2,14 @@
 namespace App\Helpers;
 
 use Knp\Snappy\Pdf as Snappy;
+use App\Config\Configurations as cfg;
 
 class Pdf
 {
 
     public $url = '';
     public $number;
-    private $urlBase = 'http://' . DOMAIN;
+    private $urlBase = 'http://' . cfg::DOMAIN;
 
     public function gerar()
     {

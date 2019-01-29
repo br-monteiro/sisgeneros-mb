@@ -8,6 +8,7 @@ use App\Models\SolicitacaoModel as Solicitacao;
 use App\Models\LicitacaoModel as Licitacao;
 use App\Models\SolicitacaoItemModel as SolItem;
 use App\Models\ItemModel as Item;
+use App\Config\Configurations as cfg;
 
 class RelatorioController extends Controller implements CtrlInterface
 {
@@ -18,7 +19,7 @@ class RelatorioController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'relatorio/';
+        $this->view->controller = cfg::DEFAULT_URI . 'relatorio/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $this->view->idLista = $this->getParametro('idlista');

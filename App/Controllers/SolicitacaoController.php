@@ -10,6 +10,7 @@ use App\Models\SolicitacaoItemModel as SolicitacaoItem;
 use App\Models\SolicitacaoModel;
 use App\Models\FornecedorModel;
 use App\Helpers\Pdf;
+use App\Config\Configurations as cfg;
 
 class SolicitacaoController extends Controller implements CtrlInterface
 {
@@ -19,7 +20,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'solicitacao/';
+        $this->view->controller = cfg::DEFAULT_URI . 'solicitacao/';
         $this->access = new Access();
         $this->view->idLista = $this->getParametro('idlista');
     }

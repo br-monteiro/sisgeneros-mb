@@ -5,6 +5,7 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\FornecedorModel;
+use App\Config\Configurations as cfg;
 
 class FornecedorController extends Controller implements CtrlInterface
 {
@@ -15,7 +16,7 @@ class FornecedorController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = APPDIR . 'fornecedor/';
+        $this->view->controller = cfg::DEFAULT_URI . 'fornecedor/';
         $this->access = new Access();
     }
 

@@ -6,6 +6,7 @@ use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\OmModel;
 use App\Models\AcessoModel;
+use App\Config\Configurations as cfg;
 
 class AcessoController extends Controller implements CtrlInterface
 {
@@ -15,7 +16,7 @@ class AcessoController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'acesso/';
+        $this->view->controller = cfg::DEFAULT_URI . 'acesso/';
         $this->access = new Access();
     }
 
@@ -91,7 +92,7 @@ class AcessoController extends Controller implements CtrlInterface
     {
         $model = new AcessoModel();
         $model->logout();
-        header('Location:' . APPDIR);
+        header('Location:' . cfg::DEFAULT_URI);
     }
 
     public function autenticaAction()

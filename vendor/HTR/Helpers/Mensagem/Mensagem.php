@@ -24,14 +24,15 @@ class Mensagem
         ];
     }
 
-    public static function showMsg($msg, $tipo, $exit = true)
+    public static function showMsg($message, $tipo, $exit = true)
     {
         self::setMsgDefault();
+        $msg = '';
 
-        if (array_key_exists($msg, self::$msg)) {
-            $msg = "<img src='" . DIRIMG . "icn_alert_" . $tipo . ".png' > " . self::$msg[$msg];
+        if (isset(self::$msg[$message])) {
+            $msg = "<img src='/images/icn_alert_" . $tipo . ".png' > " . self::$msg[$message];
         } else {
-            $msg = "<img src='" . DIRIMG . "icn_alert_" . $tipo . ".png' > " . $msg;
+            $msg = "<img src='/images/icn_alert_" . $tipo . ".png' > " . $message;
         }
         echo "<div class='alert alert-{$tipo}'>{$msg}</div>";
 

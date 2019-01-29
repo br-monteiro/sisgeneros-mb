@@ -5,6 +5,7 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\LicitacaoModel;
+use App\Config\Configurations as cfg;
 
 class LicitacaoController extends Controller implements CtrlInterface
 {
@@ -14,7 +15,7 @@ class LicitacaoController extends Controller implements CtrlInterface
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
-        $this->view->controller = APPDIR . 'licitacao/';
+        $this->view->controller = cfg::DEFAULT_URI . 'licitacao/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
     }

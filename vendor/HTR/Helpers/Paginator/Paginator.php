@@ -262,7 +262,7 @@ class Paginator extends CRUD
     {
         $btn = [];
         $btn['link'] = $this->getBtn();
-        $btn['previus'] = $this->getPrevious();
+        $btn['previous'] = $this->getPrevious();
         $btn['next'] = $this->getNext();
         $btn['current'] = $this->currentPage;
         return $btn;
@@ -275,7 +275,7 @@ class Paginator extends CRUD
             echo '<style>.pagination{display:none !important;}</style>';
             return [
                 'link' => [],
-                'previus' => '#',
+                'previous' => '#',
                 'next' => '#'
             ];
         }
