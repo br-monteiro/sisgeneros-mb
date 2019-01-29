@@ -24,7 +24,7 @@ abstract class ModelAbstract
     /**
      * @var \PDO The PDO Instance
      */
-    protected $pdo;
+    public $pdo;
 
     public function __construct()
     {
