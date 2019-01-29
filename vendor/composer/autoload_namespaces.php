@@ -6,9 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Rah\\Danpu\\' => array($vendorDir . '/rah/danpu/src'),
-    'PHPassLib' => array($vendorDir . '/rych/phpass/src'),
     'Knp\\Snappy' => array($vendorDir . '/knplabs/knp-snappy/src'),
-    'HTR' => array($vendorDir),
+    'HTR' => array($vendorDir . ''),
     'App' => array($baseDir . '/'),
 );
