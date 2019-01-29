@@ -126,7 +126,7 @@ class LicitacaoModel extends CRUD
     public function remover($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . APPDIR . 'licitacao/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'licitacao/ver/');
         }
     }
 

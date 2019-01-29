@@ -8,6 +8,7 @@ use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
+use App\Config\Configurations as cfg;
 
 class FornecedorModel extends CRUD
 {
@@ -89,7 +90,7 @@ class FornecedorModel extends CRUD
     public function remover($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . APPDIR . 'fornecedor/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'fornecedor/ver/');
         }
     }
 

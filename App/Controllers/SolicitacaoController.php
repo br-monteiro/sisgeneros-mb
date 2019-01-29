@@ -34,7 +34,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
             ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO']);
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $licitacao = new Licitacao();
         $this->view->title = 'Licitações Disponíveis';
