@@ -3,6 +3,23 @@ $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
 $userNivel = $this->view->userLoggedIn['nivel'];
 
+/**
+ * This function build the string used in src attribute of action buttons
+ * @param array $value The current solicitation
+ * @param string $action The action to be executed
+ * @return string The build string
+ */
+$buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
+{
+    return $this->view->controller
+        . 'processar/acao/'
+        . $action
+        . '/status/'
+        . $value['status']
+        . '/id/'
+        . $value['id'];
+}
+
 ?>
 <!-- Page Content -->
 <div id="page-wrapper">
@@ -96,32 +113,32 @@ $userNivel = $this->view->userLoggedIn['nivel'];
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'APROVADO'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/processado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value); ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-cogs"></i> Processar
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'PROCESSADO'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/empenhado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value) ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-file"></i> Empenhar
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'EMPENHADO'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/solicitado/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value) ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-bullhorn"></i> Solicitar
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'RECEBIDO'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/nf-entregue/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value) ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-file"></i> Receber NF
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'NF-ENTREGUE'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/nf-financas/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value) ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-square-o"></i> Enc. NF
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] == 'NF-FINANCAS'): ?>
-                                        <a href="<?= $this->view->controller; ?>processar/status/nf-paga/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $buildUrlBtnAction($value) ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-dollar"></i> Pagar NF
                                         </a>
                                     <?php endif; ?>
@@ -140,6 +157,11 @@ $userNivel = $this->view->userLoggedIn['nivel'];
                                     <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'SOLICITADO'): ?>
                                         <a href="<?= $this->view->controller; ?>receber/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Receber
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO', 'APROVADO', 'RECEBIDO'])): ?>
+                                        <a href="<?= $buildUrlBtnAction($value, 'anterior') ?>" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-rotate-left"></i>
                                         </a>
                                     <?php endif; ?>
                                     <!-- END BUTTOS -->
