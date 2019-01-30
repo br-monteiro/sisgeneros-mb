@@ -64,7 +64,7 @@ class ItemModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novo()
+    public function novoRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -91,7 +91,7 @@ class ItemModel extends CRUD
         }
     }
 
-    public function editar()
+    public function editarRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -114,7 +114,7 @@ class ItemModel extends CRUD
         }
     }
 
-    public function remover($id, $idLista)
+    public function removerRegistro($id, $idLista)
     {
         if (parent::remover($id)) {
             header('Location: ' . cfg::DEFAULT_URI . 'item/listar/idlista/' . $idLista);

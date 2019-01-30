@@ -57,7 +57,7 @@ class OmModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novo()
+    public function novoRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -82,7 +82,7 @@ class OmModel extends CRUD
         }
     }
 
-    public function editar()
+    public function editarRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -107,7 +107,7 @@ class OmModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         if (parent::remover($id)) {
             header('Location: ' . cfg::DEFAULT_URI . 'om/ver/');

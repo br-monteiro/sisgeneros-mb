@@ -58,12 +58,12 @@ class LicitacaoController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $model = new LicitacaoModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $model = new LicitacaoModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }

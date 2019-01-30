@@ -70,12 +70,12 @@ class ItemController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $model = new ItemModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $model = new ItemModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }

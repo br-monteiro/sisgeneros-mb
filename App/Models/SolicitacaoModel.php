@@ -328,7 +328,7 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function novo($om)
+    public function novoRegistro($om)
     {
         // Valida dados
         $this->validaAll($om);
@@ -373,7 +373,7 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ?");
         $stmt->bindValue(1, $id);
@@ -426,7 +426,7 @@ class SolicitacaoModel extends CRUD
         foreach ($this->arrayDate() as $key) {
             $stmt = $this->pdo->prepare(""
                 . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE status = 'RECEBIDO' AND created_at > ? AND created_at < ? " . $sql);
+                . "WHERE status = 'NF-PAGA' AND created_at > ? AND created_at < ? " . $sql);
             $stmt->bindValue(1, $key['inicio']);
             $stmt->bindValue(2, $key['fim']);
             $stmt->execute();

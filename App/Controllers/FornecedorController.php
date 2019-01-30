@@ -63,13 +63,13 @@ class FornecedorController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new FornecedorModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new FornecedorModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }

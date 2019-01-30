@@ -75,7 +75,7 @@ class SolicitacaoItemModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novo($dados)
+    public function novoRegistro($dados)
     {
         // Seta todos os dados
         $this->setAll($dados);
@@ -116,7 +116,7 @@ class SolicitacaoItemModel extends CRUD
         return true;
     }
 
-    public function editar($idLista, $user)
+    public function editarRegistro($idLista, $user)
     {
         $this->setQuantidade(filter_input(INPUT_POST, 'quantidade', FILTER_VALIDATE_INT))
             ->setId(filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT))
@@ -157,7 +157,7 @@ class SolicitacaoItemModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ? ;");
         $stmt->bindValue(1, $id);

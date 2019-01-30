@@ -58,12 +58,12 @@ class OmController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $model = new OmModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $model = new OmModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }
