@@ -15,8 +15,7 @@ class Pdf
     {
         $url = $this->urlBase . $this->url;
         $number = $this->number ?? time();
-        // deve ser alterado para o Path do binário correspondente na máquina
-        $snappy = new Snappy('/usr/bin/wkhtmltopdf-i386');
+        $snappy = new Snappy('/usr/bin/wkhtmltopdf');
         $snappy->setOptions([
             'orientation' => 'Landscape',
             //'default-header' => true,
