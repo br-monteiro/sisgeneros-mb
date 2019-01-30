@@ -37,6 +37,7 @@ $ sudo chgrp www-data ~/sisgeneros-mb-master/App/Database/DbRepository/sisgenero
 // código omitido
 ```
 A constante `DOMAIN` deve ser alterada para o domínio da sua OM. Quanto a constante `ADMIN_CONTACT`, deve ser alterada para o e-mail do Administrador do sistema.
+
 4. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
 ```bash
 $ php setup.php
