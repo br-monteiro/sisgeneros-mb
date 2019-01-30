@@ -520,6 +520,25 @@ class SolicitacaoModel extends CRUD
         }
     }
 
+    /**
+     * Select the Solicitation by Id Lista Field
+     * @param int $idLista
+     * @return array
+     */
+    public function findByIdLista($idLista)
+    {
+        $query = ""
+            . "SELECT "
+            . "sol.*, f.nome AS fornecedor_nome, f.cnpj AS fornecedor_cnpj "
+            . "FROM {$this->entidade} AS sol "
+            . "INNER JOIN "
+            . "fornecedor AS f ON f.id = sol.fornecedor_id "
+            . "WHERE sol.id_lista = :idLista";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':idLista' => $idLista]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     private function validaAll($om)
     {
         $value = filter_input_array(INPUT_POST);
