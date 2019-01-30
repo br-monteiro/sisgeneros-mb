@@ -50,6 +50,7 @@
                             <th>Item</th>
                             <th>Solicitado</th>
                             <th>Recebido</th>
+                            <th>Valor (R$)</th>
                             <th>UF</th>
                             <th>Nome</th>
                             <th></th>
@@ -61,6 +62,7 @@
                                 <td><?= $value['item_numero'] ?: ''; ?></td>
                                 <td><?= $value['item_quantidade']; ?></td>
                                 <td><?= $value['item_quantidade_atendida']; ?></td>
+                                <td><?= number_format($value['item_valor'], 2, ',', '.'); ?></td>
                                 <td><?= $value['item_uf']; ?></td>
                                 <td><?= $value['item_nome']; ?></td>
                                 <td>
