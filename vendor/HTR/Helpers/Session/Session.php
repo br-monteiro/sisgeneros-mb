@@ -52,7 +52,7 @@ class Session
     {
         $app = cfg::htrFileConfigs()->application;
         // "salt+ip+ProgramaNome+ProgramaVersao+User Agent+salt"
-        $strSalt = cfg::STR_SALT . $this->ip . $app->name . $app->vesion . $this->userAgent.cfg::STR_SALT;
+        $strSalt = cfg::STR_SALT . $this->ip . $app->name . $app->version . $this->userAgent.cfg::STR_SALT;
         $this->token = $this->cripto->encode($strSalt, true);
     }
 

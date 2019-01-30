@@ -60,7 +60,7 @@ class AcessoModel extends CRUD
         $this->navPaginator = $paginator->getNaveBtn();
     }
 
-    public function novo()
+    public function novoRegistro()
     {
         // Seta automaticamente os atributos necessários
         $this->startSeters()
@@ -96,7 +96,7 @@ class AcessoModel extends CRUD
         }
     }
 
-    public function editar()
+    public function editarRegistro()
     {
         // Seta automaticamente os atributos necessários
         $this->startSeters()
@@ -150,7 +150,7 @@ class AcessoModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         if (parent::remover($id)) {
             header('Location: ' . cfg::DEFAULT_URI . 'acesso/ver/');
@@ -257,7 +257,7 @@ class AcessoModel extends CRUD
             if ($cripto->passVerify($password, $result['password'])) {
                 // Caso seja um usuário autêntico, inicia a sessão
                 $this->registerSession($result);
-                return; // stop script
+                return; // just stop execution
             } else {
                 // retorna a mensagem de dialogo
                 msg::showMsg('<strong>Algo está errado...</strong>'

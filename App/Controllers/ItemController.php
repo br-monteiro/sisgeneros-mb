@@ -52,7 +52,7 @@ class ItemController extends Controller implements CtrlInterface
     public function eliminarAction()
     {
         $model = new ItemModel();
-        $model->remover($this->getParametro('id'), $this->view->idLista);
+        $model->removerRegistro($this->getParametro('id'), $this->view->idLista);
     }
 
     public function listarAction()
@@ -70,12 +70,12 @@ class ItemController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $model = new ItemModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $model = new ItemModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }

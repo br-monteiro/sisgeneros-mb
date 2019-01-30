@@ -42,7 +42,7 @@ class OmController extends Controller implements CtrlInterface
     public function eliminarAction()
     {
         $model = new OmModel();
-        $model->remover($this->getParametro('id'));
+        $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
@@ -58,12 +58,12 @@ class OmController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $model = new OmModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $model = new OmModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 }

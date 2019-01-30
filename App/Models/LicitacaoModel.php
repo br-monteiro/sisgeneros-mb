@@ -80,7 +80,7 @@ class LicitacaoModel extends CRUD
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function novo()
+    public function novoRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -104,7 +104,7 @@ class LicitacaoModel extends CRUD
         }
     }
 
-    public function editar()
+    public function editarRegistro()
     {
         // Valida dados
         $this->validaAll();
@@ -123,7 +123,7 @@ class LicitacaoModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         if (parent::remover($id)) {
             header('Location: ' . cfg::DEFAULT_URI . 'licitacao/ver/');

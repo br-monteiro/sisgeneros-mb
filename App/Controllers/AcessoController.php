@@ -53,7 +53,7 @@ class AcessoController extends Controller implements CtrlInterface
     {
         $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
-        $model->remover($this->getParametro('id'));
+        $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
@@ -71,14 +71,14 @@ class AcessoController extends Controller implements CtrlInterface
     {
         $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
-        $model->novo();
+        $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new AcessoModel();
-        $model->editar();
+        $model->editarRegistro();
     }
 
     public function loginAction()

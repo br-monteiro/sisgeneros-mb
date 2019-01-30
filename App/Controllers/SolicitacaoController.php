@@ -131,8 +131,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
         $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
-        if ($solicitacaoItem->remover($this->getParametro('id'))) {
-            $model->remover($this->getParametro('id'));
+        if ($solicitacaoItem->removerRegistro($this->getParametro('id'))) {
+            $model->removerRegistro($this->getParametro('id'));
         }
     }
 
@@ -181,7 +181,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $model = new SolicitacaoModel();
-        $model->novo($this->view->userLoggedIn['om_id']);
+        $model->novoRegistro($this->view->userLoggedIn['om_id']);
     }
 
     public function registranaolicitadoAction()
@@ -201,7 +201,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $solicitacaoItem = new SolicitacaoItem();
-        $solicitacaoItem->editar($this->view->idLista, $this->view->userLoggedIn);
+        $solicitacaoItem->editarRegistro($this->view->idLista, $this->view->userLoggedIn);
     }
 
     public function alterandodataAction()

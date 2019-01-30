@@ -171,7 +171,7 @@ class SolicitacaoModel extends CRUD
             $value['fornecedor_id'] = $solicitacao['fornecedor_id'];
             $value['nao_entregue'] = 0;
 
-            $avalicao->novo($value);
+            $avalicao->novoRegistro($value);
             if ($dados === true) {
                 msg::showMsg('Operação efetuada com sucesso!'
                     . '<script>'
@@ -328,7 +328,7 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function novo($om)
+    public function novoRegistro($om)
     {
         // Valida dados
         $this->validaAll($om);
@@ -351,7 +351,7 @@ class SolicitacaoModel extends CRUD
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             $itens = new Itens();
-            $dados = $itens->novo($dados);
+            $dados = $itens->novoRegistro($dados);
 
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
@@ -373,7 +373,7 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function remover($id)
+    public function removerRegistro($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ?");
         $stmt->bindValue(1, $id);
@@ -426,7 +426,7 @@ class SolicitacaoModel extends CRUD
         foreach ($this->arrayDate() as $key) {
             $stmt = $this->pdo->prepare(""
                 . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE status = 'RECEBIDO' AND created_at > ? AND created_at < ? " . $sql);
+                . "WHERE (status != 'ABERTO' OR status != 'APROVADO') AND created_at > ? AND created_at < ? " . $sql);
             $stmt->bindValue(1, $key['inicio']);
             $stmt->bindValue(2, $key['fim']);
             $stmt->execute();

@@ -50,7 +50,7 @@ class AvaliacaoFornecedorModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novo($value)
+    public function novoRegistro($value)
     {
         $this->validaAll($value);
 
