@@ -46,7 +46,7 @@ Se tudo ocorrer com sucesso, a seguinte saída deve ser observada no terminal:
 $ php setup.php
 > Chave SALT alterada com sucesso
 > Path do Core alterado com sucesso
-> Path do Core alterado com sucesso (public)
+> Path do autoload alterado com sucesso
 > Usuário Administrador alterado com sucesso
 >> Configurações finalizadas.
 ```
