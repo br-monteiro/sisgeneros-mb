@@ -33,6 +33,28 @@ function changeConstants()
     }
 }
 
+function changePathAutoload()
+{
+    $pathToIndex = __DIR__ . '/public/index.php';
+
+    if (file_exists($pathToIndex) || !is_readable($pathToIndex)) {
+        $fileRawContent = file_get_contents($pathToIndex);
+        // init all replaces
+        $fileNewContent = preg_replace("/(require_once\s')(.+)(\/vendor\/autoload\.php')/", '$1' . getcwd() . '$3', $fileRawContent);
+        // init the write changes
+        $file = fopen($pathToIndex, 'w+');
+        fwrite($file, $fileNewContent);
+        fclose($file);
+
+        echo "> Path do autoload alterado com sucesso" . PHP_EOL;
+    } else {
+        throw new \Exception(""
+        . "O arquivo de index não foi encontrado "
+        . "ou não é legível" . PHP_EOL
+        . "Arquivo: " . $pathToIndex . PHP_EOL);
+    }
+}
+
 function changeAdminUser()
 {
     try {
@@ -54,6 +76,7 @@ function changeAdminUser()
 (function () {
     try {
         changeConstants();
+        changePathAutoload();
         changeAdminUser();
 
         print ">> Configurações finalizadas." . PHP_EOL;
