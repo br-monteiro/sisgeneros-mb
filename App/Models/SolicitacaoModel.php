@@ -485,37 +485,54 @@ class SolicitacaoModel extends CRUD
     }
 
     /**
-     * Process the solcitação status. The status allowed
-     * is PROCESSADO, EMPENHADO and SOLICITADO
+     * Process the solcitação status.
      * @param int $id Identification of Solicitação
      * @param string $status The status to be changing
+     * @param stritn $action The action to be executed
      */
-    public function processarStatus(int $id, string $status)
+    public function processStatus(int $id, string $status, string $action)
     {
-        /**
-         * This array is filled with the index as new status and the
-         * value as the current status in the register
-         */
         $statusPatterns = [
-            'PROCESSADO' => 'APROVADO',
-            'EMPENHADO' => 'PROCESSADO',
-            'SOLICITADO' => 'EMPENHADO',
-            'NF-ENTREGUE' => 'RECEBIDO',
-            'NF-FINANCAS' => 'NF-ENTREGUE',
-            'NF-PAGA' => 'NF-FINANCAS'
+            'APROVADO' => 'PROCESSADO',
+            'PROCESSADO' => 'EMPENHADO',
+            'EMPENHADO' => 'SOLICITADO',
+            'RECEBIDO' => 'NF-ENTREGUE',
+            'NF-ENTREGUE' => 'NF-FINANCAS',
+            'NF-FINANCAS' => 'NF-PAGA'
         ];
-        $currentStatus = $statusPatterns[$status] ?? false;
-        $solcitacao = $this->findById($id);
+        $allowedActions = [
+            'PROXIMO',
+            'ANTERIOR'
+        ];
 
-        if (
-            $currentStatus !== false &&
-            $solcitacao &&
-            $solcitacao['status'] === $currentStatus
-        ) {
-            $dados = [
-                'status' => $status,
-                'updated_at' => time()
-            ];
+        if (in_array($action, $allowedActions)) {
+            $dados = [];
+            $nextSatus = $statusPatterns[$status] ?? false;
+            $previousStatus = array_search($status, $statusPatterns);
+            $solcitacao = $this->findById($id);
+
+            if (
+                $nextSatus !== false &&
+                $solcitacao &&
+                $solcitacao['status'] === $status &&
+                $action === 'PROXIMO'
+            ) {
+                $dados = [
+                    'status' => $nextSatus,
+                    'updated_at' => time()
+                ];
+            } elseif (
+                $previousStatus !== false &&
+                $solcitacao &&
+                $solcitacao['status'] === $status &&
+                $action === 'ANTERIOR'
+            ) {
+                $dados = [
+                    'status' => $previousStatus,
+                    'updated_at' => time()
+                ];
+            }
+
             parent::editar($dados, $id);
         }
     }
