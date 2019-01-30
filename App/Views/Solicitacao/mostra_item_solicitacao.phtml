@@ -6,10 +6,20 @@
                 <h3>Itens da Solicitação</h3>
                 <?php if (isset($this->view->resultLicitacao['numero'])): ?>
                     <div class="alert alert-info" role="alert">
-                        Órgão: <strong><?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
                         Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
-                        Solicitação: <strong><?= $this->view->resultSolicitacao['numero']; ?></strong><br>
-                        Status: <strong><?= $this->view->resultSolicitacao['status']; ?></strong><br>
+                        Órgão: <strong><?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
+                        Fornecedor:
+                        <strong>
+                            <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
+                            - <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
+                        </strong>
+                        <br>
+                        Solicitação:
+                        <strong>
+                            <?= $this->view->resultSolicitacao['numero']; ?>
+                            - <?= $this->view->resultSolicitacao['status']; ?>
+                        </strong>
+                        <br>
                         Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
@@ -23,11 +33,35 @@
                                 Alterar <i class="fa fa-edit"></i>
                             </a>)
                         <?php endif; ?>
-
                     </div>
                 <?php else: ?>
                     <div class="alert alert-info" role="alert">
-                        Não licitado
+                        <h4>NÃO LICITADO</h4>
+                        Fornecedor:
+                        <strong>
+                            <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
+                            - <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
+                        </strong>
+                        <br>
+                        Solicitação:
+                        <strong>
+                            <?= $this->view->resultSolicitacao['numero']; ?>
+                            - <?= $this->view->resultSolicitacao['status']; ?>
+                        </strong>
+                        <br>
+                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        <?php
+                        if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
+                            $solicitacaoId = $this->view->resultSolicitacao['id'];
+                            $idLista = $this->view->resultSolicitacao['id_lista'];
+                            $url = $this->view->controller . 'alterardata/id/' . $solicitacaoId . '/idlista/' . $idLista;
+
+                            ?>
+                            (<a href="<?= $url; ?>"
+                                class="text-danger">
+                                Alterar <i class="fa fa-edit"></i>
+                            </a>)
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->resultSolicitacao['status'] == 'ABERTO'): ?>
@@ -50,6 +84,7 @@
                             <th>Item</th>
                             <th>Solicitado</th>
                             <th>Recebido</th>
+                            <th>Valor (R$)</th>
                             <th>UF</th>
                             <th>Nome</th>
                             <th></th>
@@ -61,6 +96,7 @@
                                 <td><?= $value['item_numero'] ?: ''; ?></td>
                                 <td><?= $value['item_quantidade']; ?></td>
                                 <td><?= $value['item_quantidade_atendida']; ?></td>
+                                <td><?= number_format($value['item_valor'], 2, ',', '.'); ?></td>
                                 <td><?= $value['item_uf']; ?></td>
                                 <td><?= $value['item_nome']; ?></td>
                                 <td>
