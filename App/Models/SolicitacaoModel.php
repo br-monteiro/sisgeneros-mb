@@ -426,7 +426,7 @@ class SolicitacaoModel extends CRUD
         foreach ($this->arrayDate() as $key) {
             $stmt = $this->pdo->prepare(""
                 . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE status = 'NF-PAGA' AND created_at > ? AND created_at < ? " . $sql);
+                . "WHERE (status != 'ABERTO' OR status != 'APROVADO') AND created_at > ? AND created_at < ? " . $sql);
             $stmt->bindValue(1, $key['inicio']);
             $stmt->bindValue(2, $key['fim']);
             $stmt->execute();
