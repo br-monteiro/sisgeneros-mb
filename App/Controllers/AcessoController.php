@@ -53,7 +53,7 @@ class AcessoController extends Controller implements CtrlInterface
     {
         $this->access->authenticAccess(['ADMINISTRADOR']);
         $model = new AcessoModel();
-        $model->remover($this->getParametro('id'));
+        $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()

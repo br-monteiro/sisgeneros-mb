@@ -171,7 +171,7 @@ class SolicitacaoModel extends CRUD
             $value['fornecedor_id'] = $solicitacao['fornecedor_id'];
             $value['nao_entregue'] = 0;
 
-            $avalicao->novo($value);
+            $avalicao->novoRegistro($value);
             if ($dados === true) {
                 msg::showMsg('Operação efetuada com sucesso!'
                     . '<script>'
@@ -351,7 +351,7 @@ class SolicitacaoModel extends CRUD
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             $itens = new Itens();
-            $dados = $itens->novo($dados);
+            $dados = $itens->novoRegistro($dados);
 
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'

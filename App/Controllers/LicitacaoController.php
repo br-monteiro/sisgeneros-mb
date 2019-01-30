@@ -42,7 +42,7 @@ class LicitacaoController extends Controller implements CtrlInterface
     public function eliminarAction()
     {
         $model = new LicitacaoModel();
-        $model->remover($this->getParametro('id'));
+        $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
