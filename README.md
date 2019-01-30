@@ -51,7 +51,7 @@ $ php setup.php
 > Usuário Administrador alterado com sucesso
 >> Configurações finalizadas.
 ```
-5. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomei `public` dentro de `app` para `sisgeneros`.
+5. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
 
 Após realizar todas as configurações descritas acima, já é possível acessar o sistema no browser. O endereço deve parecer com [www.suaom.mb/app/sisgeneros](http://www.suaom.mb/app/sisgeneros).
 Por padrão o sistema tem uma conta com nível `ADMINISTRADOR` que pode ser acessada para dar início as edições dentro do sistema. Para acessar o sistema basta usar as seguintes credenciais:
