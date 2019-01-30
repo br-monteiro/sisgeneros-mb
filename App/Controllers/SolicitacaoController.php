@@ -166,7 +166,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
         $this->view->title = 'Itens da Solicitação';
-        $this->view->resultSolicitacao = $model->findById_lista($this->view->idLista);
+        $this->view->resultSolicitacao = $model->findByIdLista($this->view->idLista);
         $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
         $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idLista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
@@ -278,8 +278,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $id = (int) $this->getParametro('id');
         $status = strtoupper($this->getParametro('status') ?? '');
+        $action = strtoupper($this->getParametro('acao') ?? '');
 
-        (new SolicitacaoModel())->processarStatus($id, $status);
+        (new SolicitacaoModel())->processStatus($id, $status, $action);
 
         header('location: ' . $this->view->controller);
     }
