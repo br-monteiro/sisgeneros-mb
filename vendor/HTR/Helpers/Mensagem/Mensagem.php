@@ -30,9 +30,9 @@ class Mensagem
         $msg = '';
 
         if (isset(self::$msg[$message])) {
-            $msg = "<img src='/images/icn_alert_" . $tipo . ".png' > " . self::$msg[$message];
+            $msg = "<img src='images/icn_alert_" . $tipo . ".png' > " . self::$msg[$message];
         } else {
-            $msg = "<img src='/images/icn_alert_" . $tipo . ".png' > " . $message;
+            $msg = "<img src='images/icn_alert_" . $tipo . ".png' > " . $message;
         }
         echo "<div class='alert alert-{$tipo}'>{$msg}</div>";
 
