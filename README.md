@@ -90,7 +90,7 @@ $ sudo service apache2 restart
 Agora seu servidor já está configurado e a aplicação já pode ser acessada.
 
 #### Geração de PDF
-A aplicação faz uso de um binário que auxilía na criação de arquivos PDF pela biblioteca `knp-snappy` (já presente no sistema). Este binário é o [wkhtmltopdf](https://wkhtmltopdf.org/) e encontra-se no path `~/sisgeneros-mb-master/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386`. Será necessário criar um link simbólico dentro de `/usr/bin/`.
+A aplicação faz uso de um binário que auxilia na criação de arquivos PDF pela biblioteca `knp-snappy` (já presente no sistema). Este binário é o [wkhtmltopdf](https://wkhtmltopdf.org/) e encontra-se no path `~/sisgeneros-mb-master/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386`. Será necessário criar um link simbólico dentro de `/usr/bin/`.
 ```bash
 $ sudo ln -s ~/sisgeneros-mb-master/vendor/h4cc/wkhtmltopdf-i386/bin/wkhtmltopdf-i386 /usr/bin/wkhtmltopdf
 ```
