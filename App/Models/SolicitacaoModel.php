@@ -304,27 +304,24 @@ class SolicitacaoModel extends CRUD
             'id_licitacao' => $this->getIdLicitacao(),
             'id_lista' => $this->getIdLista(),
             'om_id' => $this->getOmId(),
-            'fornecedor_id' => $this->getFornecedorId(),
+            'fornecedor_id' => 0,
             'numero' => $this->getNumero(),
             'status' => 'ABERTO',
             'ano' => date('Y'),
             'created_at' => time(),
             'updated_at' => time(),
-            'nao_licitado' => $this->getNaoLicitado(),
+            'nao_licitado' => 1,
             'data_entrega' => $this->getDataEntrega()
         ];
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
-            $itens = new Itens();
-            $dados = $itens->novoNaolicitado($dados);
-            if ($dados === true) {
-                msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                    . "<strong>Solicitação Nº {$this->getNumero()} <br>"
-                    . "Status: ABERTO.</strong><br>"
-                    . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
-                    . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
-                    . '<script>resetForm(); </script>', 'success');
-            }
+            (new Itens())->novoNaoLicitado($dados);
+            msg::showMsg('Solicitação Registrada com Sucesso!<br>'
+                . "<strong>Solicitação Nº {$this->getNumero()} <br>"
+                . "Status: ABERTO.</strong><br>"
+                . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
+                . '<script>resetForm(); </script>', 'success');
         }
     }
 
@@ -576,7 +573,7 @@ class SolicitacaoModel extends CRUD
             $id = filter_var($value['id'][$i], FILTER_VALIDATE_INT);
             $quantidade = str_replace(",", ".", $value['quantidade'][$i]);
             $quantidade = filter_var($quantidade, FILTER_VALIDATE_FLOAT);
-            $this->setFornecedorId(filter_var($value['fornecedor'][0], FILTER_VALIDATE_INT));
+            $this->setFornecedorId(filter_var($value['fornecedor'][0] ?? null, FILTER_VALIDATE_INT));
 
             if ($id AND $quantidade) {
                 $this->listaItens[$id] = $quantidade;
@@ -594,7 +591,10 @@ class SolicitacaoModel extends CRUD
         for ($i = 0; $i < count($value['quantidade']); $i++) {
             $quantidade = $this->validaQuantidade($value['quantidade'][$i]);
             $uf = $this->validaUf($value['uf'][$i]);
-            $valor = $this->validaValor($value['valor'][$i]);
+            $valor = 0;
+            if (!$this->getNaoLicitado()) {
+                $valor = $this->validaValor($value['valor'][$i]);
+            }
             $nome = $this->validaNome($value['nome'][$i]);
             $this->listaItens[] = [
                 'id_lista' => $this->getIdLista(),
