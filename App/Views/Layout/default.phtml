@@ -1,5 +1,7 @@
 <?php
+
 use App\Config\Configurations as cfg;
+
 $cfg = cfg::htrFileConfigs();
 
 ?>
@@ -44,6 +46,8 @@ $cfg = cfg::htrFileConfigs();
     </head>
 
     <body>
+        <!-- jQuery -->
+        <script src="attach/jquery/dist/jquery.min.js"></script>
         <div id="wrapper">
             <!-- Navigation -->
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -60,15 +64,13 @@ $cfg = cfg::htrFileConfigs();
 
                 <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_horizontal_top.phtml'; ?>
 
-                <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml';?>
+                <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml'; ?>
             </nav>
 
             <?= $this->content(); ?> 
 
         </div>
         <!-- /#wrapper -->
-        <!-- jQuery -->
-        <script src="attach/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap Core JavaScript -->
         <script src="attach/bootstrap/dist/js/bootstrap.min.js"></script>
 
@@ -105,7 +107,6 @@ $cfg = cfg::htrFileConfigs();
             }
 
             $(document).ready(function () {
-                //$("#preco").maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
                 $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
                 $('#data_entrega').mask('00-00-0000', {reverse: true});
                 $('#validade').mask('00/00/0000', {reverse: true});
@@ -114,13 +115,13 @@ $cfg = cfg::htrFileConfigs();
                 $('#form').submit(function () {
                     var dados = $(this).serialize();
                     $.ajax({
-                        type: "POST", // Tipo de metodo
-                        url: $(this).attr("action"), //Recebe o valor da action do form
-                        data: dados,
-                        success: function (data) //Se tiver sucesso...
-                        {
+                    type: "POST", // Tipo de metodo
+                            url: $(this).attr("action"), //Recebe o valor da action do form
+                            data: dados,
+                            success: function (data) //Se tiver sucesso...
+                            {
                             $("#resultado").html(data);
-                        }
+                            }
                     });
                     return false;
                 });
