@@ -8,7 +8,6 @@ use App\Models\LicitacaoModel as Licitacao;
 use App\Models\ItemModel as Item;
 use App\Models\SolicitacaoItemModel as SolicitacaoItem;
 use App\Models\SolicitacaoModel;
-use App\Models\FornecedorModel;
 use App\Helpers\Pdf;
 use App\Config\Configurations as cfg;
 
