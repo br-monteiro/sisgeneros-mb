@@ -159,7 +159,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO', 'APROVADO', 'RECEBIDO'])): ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] !== 'ABERTO'): ?>
                                         <a href="<?= $buildUrlBtnAction($value, 'anterior') ?>" class="btn btn-warning btn-sm">
                                             <i class="fa fa-rotate-left"></i>
                                         </a>

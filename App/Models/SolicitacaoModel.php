@@ -493,6 +493,7 @@ class SolicitacaoModel extends CRUD
     public function processStatus(int $id, string $status, string $action)
     {
         $statusPatterns = [
+            'ABERTO' => 'APROVADO',
             'APROVADO' => 'PROCESSADO',
             'PROCESSADO' => 'EMPENHADO',
             'EMPENHADO' => 'SOLICITADO',
