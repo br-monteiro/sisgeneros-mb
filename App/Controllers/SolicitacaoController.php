@@ -44,20 +44,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $this->render('mostra_licitacao_disponivel');
     }
 
-    public function naolicitadoAction()
-    {
-        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
-            ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
-
-        $this->view->title = "Solicitação - Não Licitado";
-        $fornecedorModel = new FornecedorModel();
-        $fornecedorModel->paginator($this->getParametro('pagina'));
-        $this->view->result = $fornecedorModel->getResultadoPaginator();
-        $this->view->btn = $fornecedorModel->getNavePaginator();
-        $this->render('form_nao_licitado');
-    }
-
     public function formnaolicitadoAction()
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
@@ -65,7 +51,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $this->view->title = "Adicionar itens";
-        $this->view->idFornecedor = $this->getParametro('id');
         $this->render('mostra_item_nao_licitado');
     }
 
