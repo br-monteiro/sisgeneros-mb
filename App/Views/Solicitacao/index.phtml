@@ -52,9 +52,12 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                     </div>
 
                     <div class="col-lg-5">
-                        <form action="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['current']; ?>" class="search-form">
+                        <form
+                            action="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['current']; ?>"
+                            class="search-form"
+                            onsubmit="return false">
                             <div class="input-group search-input-box">
-                                <input type="text" class="form-control search-input" placeholder="Nº Solicitação, Fornecedor ou Data (DD-MM-YYYY)">
+                                <input type="text" class="form-control search-input" placeholder="Nº Solicitação, Status ou Data (DD-MM-YYYY)">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default search-button" type="button">
                                         <i class="fa fa-search"></i>
