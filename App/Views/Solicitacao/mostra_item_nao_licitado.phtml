@@ -76,4 +76,55 @@
         <!-- /.col-lg-12 -->
     </div>
     <!-- /.row -->
+</div>              </table>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+<script>
+$(document).ready(function () {
+    var x = 1;
+    $('#add').click(function (e) {
+        e.preventDefault();
+        $('#lista').append('\
+                    <tr class="remove' + x + '">\
+                        <td>\
+                            <input type="hidden"\
+                                   name="id[]"\
+                                   value="">\
+                            <input type="text"\
+                                   name="quantidade[]"\
+                                   id="quantidade"\
+                                   class="form-control"\
+                                   required\
+                                   maxlength="10">\
+                        </td>\
+                        <td><input type="text"\
+                                   name="uf[]"\
+                                   id="uf"\
+                                   class="form-control"\
+                                   required\
+                                   maxlength="5"></td>\
+                        <td><input type="text"\
+                                   name="nome[]"\
+                                   id="nome"\
+                                   class="form-control"\
+                                   required\
+                                   maxlength="50"></td>\
+                        <td><a href="#" class="remove btn btn-danger" id="remove' + x + '">\
+                            <i class="fa fa-times"></i>\
+                        </td>\
+                    </tr>\
+            ');
+        x++;
+    });
+
+    $('#lista').on("click", ".remove", function (e) {
+        e.preventDefault();
+        var tr = $(this).attr('id');
+        $('#lista tr.' + tr).remove();
+        x--;
+    });
+});
+</script>
