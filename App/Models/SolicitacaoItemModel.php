@@ -112,8 +112,6 @@ class SolicitacaoItemModel extends CRUD
             $value['item_nome'] = strtoupper($value['item_nome']);
             parent::novo($value);
         }
-
-        return true;
     }
 
     public function editarRegistro($idLista, $user)
