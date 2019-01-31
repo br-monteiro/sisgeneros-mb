@@ -224,20 +224,17 @@ class SolicitacaoModel extends CRUD
 
     public function paginator($pagina, $user, $busca = null)
     {
-        $innerJoin = ""
-            . " INNER JOIN om "
-            . "    ON om.id = solicitacao.om_id "
-            . " INNER JOIN fornecedor "
-            . "    ON fornecedor.id = solicitacao.fornecedor_id ";
+        $innerJoin = " AS sol INNER JOIN om ON om.id = sol.om_id ";
+        $subQuery = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_nome ';
 
         $dados = [
-            'select' => 'solicitacao.*, fornecedor.nome AS fornecedor_nome, om.indicativo_naval',
+            'select' => 'sol.*, ' . $subQuery . ', om.indicativo_naval',
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'solicitacao.updated_at DESC'
+            'orderBy' => 'sol.updated_at DESC'
         ];
-        // para usuários com nível de acesso diferente de administrador
+
         if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $dados['where'] = 'om_id = :omId ';
             $dados['bindValue'] = [':omId' => $user['om_id']];
@@ -265,11 +262,11 @@ class SolicitacaoModel extends CRUD
 
             $andExists = isset($dados['where']) ? 'AND' : '';
             $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
-                . 'fornecedor.nome LIKE :search '
-                . 'OR solicitacao.numero LIKE :search '
-                . 'OR solicitacao.created_at BETWEEN :dInit AND :dEnd '
-                . 'OR solicitacao.updated_at BETWEEN :dInit AND :dEnd '
-                . 'OR solicitacao.data_entrega LIKE :search '
+                . 'sol.status LIKE :search '
+                . 'OR sol.numero LIKE :search '
+                . 'OR sol.created_at BETWEEN :dInit AND :dEnd '
+                . 'OR sol.updated_at BETWEEN :dInit AND :dEnd '
+                . 'OR sol.data_entrega LIKE :search '
                 . ') ';
 
             $bindValue = [
