@@ -208,7 +208,6 @@ class Paginator extends CRUD
 
     private function setBtn()
     {
-        $this->btn = [];
         $page = $this->getPagina();
         $allResults = $this->getTotalResult();
         $limit = $this->getMaxResult();
