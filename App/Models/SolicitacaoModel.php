@@ -1,7 +1,4 @@
 <?php
-/**
- * @Model Solicitacao
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
