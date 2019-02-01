@@ -299,7 +299,5 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $id = (int) $this->getParametro('id');
 
         (new SolicitacaoModel())->processNotBiddings($id);
-
-        //header('location: ' . $this->view->controller);
     }
 }
