@@ -548,12 +548,62 @@ class SolicitacaoModel extends CRUD
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Process the solicitations of not biddings
+     * @param int $id The solicitacao ID
+     */
     public function processNotBiddings(int $id)
     {
         $solicitacao = $this->findById($id);
+        // only for status APROVADO
         if (isset($solicitacao['id'], $solicitacao['status']) && $solicitacao['status'] === 'APROVADO') {
             if ($this->isDesmembrado()) {
-                
+                $fornecedores = $this->validaFornecedores();
+                $idLista = time();
+                $newSolicitations = [];
+                foreach ($fornecedores as $itens) {
+                    $idLista = $idLista + 1; // just create a new list
+                    $numero = $this->numberGenerator();
+                    $newSolicitations[] = $numero; // save temporary the number
+                    $dados = [
+                        'id_licitacao' => 0,
+                        'id_lista' => $idLista,
+                        'om_id' => $solicitacao['om_id'],
+                        'fornecedor_id' => $itens[0]['fornecedor_id'],
+                        'numero' => $numero,
+                        'status' => 'PROCESSADO',
+                        'ano' => date('Y'),
+                        'created_at' => time(),
+                        'updated_at' => time(),
+                        'nao_licitado' => 1,
+                        'data_entrega' => $solicitacao['data_entrega']
+                    ];
+                    // create a new solicitation
+                    parent::novo($dados);
+                    // added new item into solicitation
+                    foreach ($itens as $item) {
+                        (new Itens())->novoDesmembrado($item, $idLista);
+                    }
+                }
+
+                if (count($fornecedores)) {
+                    $dados = [
+                        'updated_at' => time(),
+                        'status' => 'DESMEMBRADO',
+                        'lista_desmembramento' => implode(' - ', $newSolicitations)
+                    ];
+                    parent::editar($dados, $id);
+
+                    msg::showMsg('A solicitação foi desmembrada com sucesso.<br>'
+                        . 'As novas solicitações originadas foram: <strong>' . $dados['lista_desmembramento']
+                        . '</strong><br>Você será redirecionado para a página de Histórico de Solicitações em 5 segundos.'
+                        . '<meta http-equiv="refresh" content="5;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
+                        . '<script>'
+                        . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 5000);'
+                        . 'freezeForm();'
+                        . '</script>', 'success');
+                }
+                // for solicitations without 'desmembramento'
             } else {
                 $dados = [
                     'updated_at' => time(),
@@ -562,25 +612,55 @@ class SolicitacaoModel extends CRUD
                 ];
                 parent::editar($dados, $id);
                 (new Itens())->atualizaValor($this->buildItens());
+
+                msg::showMsg('A solicitação foi processada com sucesso.<br>'
+                    . '<br>Você será redirecionado para a página de Histórico de Solicitações em 5 segundos.'
+                    . '<meta http-equiv="refresh" content="5;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
+                    . '<script>'
+                    . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 5000);'
+                    . 'freezeForm();'
+                    . '</script>', 'success');
             }
+        } else {
+            /**
+             * This script is necessary to redirect the user using Ajax
+             */
+            echo ''
+            . '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
+            . '<script>'
+            . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 1);'
+            . '</script>';
         }
-        d($dados ?? false);
     }
 
+    /**
+     * Check if the solicitation is 'desmembrado'
+     * @return bool
+     */
     private function isDesmembrado(): bool
     {
         return filter_input(INPUT_POST, 'isDesmembrado', FILTER_VALIDATE_INT) === 1;
     }
 
-    private function validaFornecedorId(): int
+    /**
+     * Check if the fornecedor ID is an integer
+     * @param mixed $value The fornecedor ID
+     * @return int
+     */
+    private function validaFornecedorId($value = null): int
     {
-        $value = filter_input(INPUT_POST, 'fornecedor');
+        $value = $value ?? filter_input(INPUT_POST, 'fornecedor');
         if (!v::intVal()->validate($value)) {
             msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
         }
         return $value;
     }
 
+    /**
+     * Check if the item ID is an integer
+     * @param mixed $value
+     * @return int
+     */
     private function validaItensId($value): int
     {
         if (!v::intVal()->validate($value)) {
@@ -589,18 +669,42 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
+    /**
+     * Build the values (R$) according item id
+     * @return array
+     */
     private function buildItens(): array
     {
         $result = [];
         $requestPost = filter_input_array(INPUT_POST);
-        $itens = is_array($requestPost['id']) ? $requestPost['id'] : [];
+        $itens = is_array($requestPost['id'] ?? null) ? $requestPost['id'] : [];
 
         foreach ($itens as $index => $value) {
             $id = $this->validaItensId($value);
-            $valor = $this->validaValor($requestPost['valor'][$index]);
+            $valor = $this->validaValor($requestPost['valor'][$index] ?? null);
             $result[$id] = $valor;
         }
 
+        return $result;
+    }
+
+    /**
+     * Build the itens values according fornecedor ID
+     * @return array
+     */
+    private function validaFornecedores(): array
+    {
+        $result = [];
+        $requestPost = filter_input_array(INPUT_POST);
+        $fornecedores = is_array($requestPost['arrFornecedor'] ?? null) ? $requestPost['arrFornecedor'] : [];
+
+        foreach ($fornecedores as $index => $value) {
+            $result[$value][] = [
+                'fornecedor_id' => $this->validaFornecedorId($value),
+                'valor' => $this->validaValor($requestPost['valor'][$index] ?? ''),
+                'id' => $this->validaId($requestPost['id'][$index] ?? '')
+            ];
+        }
         return $result;
     }
 
@@ -673,13 +777,13 @@ class SolicitacaoModel extends CRUD
     }
 
     // Validação
-    private function validaId()
+    private function validaId($input = null)
     {
-        $value = v::intVal()->validate($this->getId());
+        $value = v::intVal()->validate($input ?? $this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
-        return $this;
+        return $input ?? $this;
     }
 
     private function validaIdLicitacao()
