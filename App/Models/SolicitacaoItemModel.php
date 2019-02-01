@@ -186,6 +186,14 @@ class SolicitacaoItemModel extends CRUD
         return $result ? $result['quantidade'] : false;
     }
 
+    public function atualizaValor(array $itens)
+    {
+        foreach ($itens as $id => $valor) {
+            $dados = ['item_valor' => $valor];
+            parent::editar($dados, $id);
+        }
+    }
+
     private function setAll($dados)
     {
         // Seta todos os valores
