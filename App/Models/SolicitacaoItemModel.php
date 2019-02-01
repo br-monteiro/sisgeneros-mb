@@ -194,6 +194,27 @@ class SolicitacaoItemModel extends CRUD
         }
     }
 
+    /**
+     * Create a new register based on item
+     * @param array $item The item to be based
+     * @param int $idLista Id of list
+     */
+    public function novoDesmembrado(array $item, int $idLista)
+    {
+        $oldItem = $this->findById($item['id']);
+        if ($oldItem) {
+            $dados = [
+                'id_lista' => $idLista,
+                'item_numero' => 0,
+                'item_nome' => $oldItem['item_nome'],
+                'item_uf' => $oldItem['item_uf'],
+                'item_quantidade' => $oldItem['item_quantidade'],
+                'item_valor' => $item['valor']
+            ];
+            parent::novo($dados);
+        }
+    }
+
     private function setAll($dados)
     {
         // Seta todos os valores
