@@ -8,6 +8,7 @@ use App\Models\LicitacaoModel as Licitacao;
 use App\Models\ItemModel as Item;
 use App\Models\SolicitacaoItemModel as SolicitacaoItem;
 use App\Models\SolicitacaoModel;
+use App\Models\FornecedorModel;
 use App\Helpers\Pdf;
 use App\Config\Configurations as cfg;
 
@@ -267,5 +268,38 @@ class SolicitacaoController extends Controller implements CtrlInterface
         (new SolicitacaoModel())->processStatus($id, $status, $action);
 
         header('location: ' . $this->view->controller);
+    }
+
+    public function processarnaolicitadoAction()
+    {
+        $id = $this->getParametro('id');
+        $solicitacao = (new SolicitacaoModel())->findById($id);
+
+        if (isset($solicitacao['id'])) {
+            $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+                ->clearAccessList()
+                ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+            $this->view->resultSolicitacao = $solicitacao;
+            $this->view->resultSolicitacaoItens = (new SolicitacaoItem())->findAllById_lista($solicitacao['id_lista']);
+            $this->view->resultFornecedor = (new FornecedorModel())->findAll();
+
+            $this->render('processar_nao_licitado');
+        } else {
+            header('location: ' . $this->view->controller);
+        }
+    }
+
+    public function registrarfornecedornaolicitadoAction()
+    {
+        $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+        $id = (int) $this->getParametro('id');
+
+        (new SolicitacaoModel())->processNotBiddings($id);
+
+        //header('location: ' . $this->view->controller);
     }
 }
