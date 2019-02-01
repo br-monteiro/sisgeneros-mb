@@ -17,13 +17,19 @@
                     <input type="hidden" name="nao_licitado" value="0">
                     <input type="hidden" name="numero_nota_fiscal" value="S/N">
                     <input type="hidden" name="observacao" value="">
-                    <button class="btn btn-info">
-                        <i class="fa fa-plus-circle"></i> Confirmar Registro
+                    <button class="btn btn-success">
+                        <i class="fa fa-check"></i> Confirmar Registro
                     </button>
                     <div class="row">
                         <div class="col-md-4" style="margin-top: 10px;">
                             <label>Data estipulada para entrega:</label>
-                            <input type="text" name="data_entrega" id="data_entrega" class="form-control" placeholder="dd-mm-aaaa" maxlength="10">
+                            <input type="text"
+                                   name="data_entrega"
+                                   id="data_entrega"
+                                   class="form-control"
+                                   placeholder="Data no formato DD-MM-AAAA"
+                                   maxlength="10"
+                                   required>
                         </div>
                     </div>
                     <table class="table">
@@ -49,7 +55,8 @@
                                         <input type="text"
                                                name="quantidade[]"
                                                id="quantidade"
-                                               class="form-control">
+                                               class="form-control"
+                                               required>
                                     </td>
                                     <td><?= $value['numero']; ?></td>
                                     <td>R$ <?= number_format($value['valor'], 2, ",", "."); ?></td>
