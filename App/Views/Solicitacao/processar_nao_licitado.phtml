@@ -1,0 +1,127 @@
+<?php
+$this->view->selectFornecedor = '';
+$buildSelectWithFornecedor = function (bool $nameAsArray = false): string {
+    if (isset($this->view->resultFornecedor)) {
+        $name = $nameAsArray ? 'arrFornecedor[]' : 'fornecedor';
+        $class = $nameAsArray ? 'arr-fornecedor' : 'fornecedor';
+        $selectTag = ""
+            . "<select name='{$name}' class='form-control {$class}'>";
+        foreach ($this->view->resultFornecedor as $value) {
+            $selectTag .= "<option value='{$value['id']}'>";
+            $selectTag .= $value['cnpj'];
+            $selectTag .= ' - ' . $value['nome'];
+            $selectTag .= "</option>";
+        }
+        $selectTag .= "</select>";
+        $this->view->selectFornecedor = $selectTag;
+        return $selectTag;
+    }
+    return '';
+};
+
+?>
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3></h3>
+                <div id="resultado"></div>
+                <form action="<?= $this->view->controller; ?>registrarfornecedornaolicitado/id/<?= $this->view->resultSolicitacao['id']; ?>" method="post" id="form">
+                    <input type="hidden" name="isDesmembrado" class="input-desbembrado" value="0">
+                    <button class="btn btn-success" id='btn_enviar'>
+                        <i class="fa fa-check"></i> Confirmar Registro
+                    </button>
+                    <?php if (count($this->view->resultSolicitacaoItens) > 1) : ?>
+                        <a class="btn btn-warning btn-desmembrar">
+                            <i class="fa fa-outdent"></i> Desmembrar Solicitação
+                        </a>
+                        <a class="btn btn-danger btn-cancelar-desmembramento">
+                            <i class="fa fa-close"></i> Cancelar Desmembramento
+                        </a>
+                    <?php endif; ?>
+                    <div class="row" style="padding-top: 10px;">
+                        <div class="col-lg-6 container-fornecedor" id="numero_nota_fiscal_container">
+                            <label>Fornecedor: </label>
+                            <?= $buildSelectWithFornecedor(); ?>
+                        </div>
+                    </div>
+                    <table class="table" id='tabela_result'>
+                        <thead>
+                            <tr>
+                                <th width="8%">Solicitado</th>
+                                <th width="15%">Valor (R$)</th>
+                                <th width="8%">UF</th>
+                                <th width="40%">Nome</th>
+                                <th>Fornecedor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->view->resultSolicitacaoItens as $index => $value): ?>
+                            <input type="hidden" name="id[]" value="<?= $value['id']; ?>">
+                            <tr>
+                                <td><?= $value['item_quantidade']; ?></td>
+                                <td>
+                                    <input type="text"
+                                           name="valor[]"
+                                           id="valor-<?= $index; ?>"
+                                           placeholder="0,00"
+                                           class="form-control"
+                                           required>
+                                </td>
+                                <td><?= $value['item_uf']; ?></td>
+                                <td><?= $value['item_nome']; ?></td>
+                                <td>
+                                    <div class="solicitacaoNormal">
+                                        <span class="label label-default">
+                                            SEM FORNECEDOR
+                                        </span>
+                                    </div>
+                                    <div class="solicitacaoDesmembrada">
+                                        <?= $buildSelectWithFornecedor(true); ?>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .solicitacaoDesmembrada, .btn-cancelar-desmembramento {
+        display: none;
+    }
+</style>
+<script>
+    var divSolicitacaoNormal = $('.solicitacaoNormal');
+    var divSolicitacaoDesmembrada = $('.solicitacaoDesmembrada');
+    var btnDesmembrar = $('.btn-desmembrar');
+    var btnCancelarDesmembramento = $('.btn-cancelar-desmembramento');
+    var selectFonecedor = $('select.fornecedor');
+    var inputDesmembrado = $('input.input-desbembrado');
+
+    btnDesmembrar.click(function () {
+        $(this).hide();
+        divSolicitacaoNormal.hide();
+        divSolicitacaoDesmembrada.show();
+        btnCancelarDesmembramento.show();
+        selectFonecedor.prop("disabled", true);
+        inputDesmembrado.val(1);
+    });
+    btnCancelarDesmembramento.click(function () {
+        $(this).hide();
+        divSolicitacaoNormal.show();
+        divSolicitacaoDesmembrada.hide();
+        btnDesmembrar.show();
+        selectFonecedor.prop("disabled", false);
+        inputDesmembrado.val(0);
+    });
+    $(document).ready(function () {
+    <?php foreach ($this->view->resultSolicitacaoItens as $index => $v) :?>
+        $('#valor-<?= $index; ?>').mask('000.000.000.000.000,00', {reverse: true});
+    <?php endforeach; ?>
+    });
+</script>
