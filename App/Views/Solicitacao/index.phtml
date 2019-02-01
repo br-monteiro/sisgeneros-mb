@@ -90,7 +90,13 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                 <td><small><?= $value['indicativo_naval']; ?></small></td>
                                 <td><small><?= substr($value['fornecedor_nome'], 0, 17); ?> ... </small></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
-                                <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
+                                <td>
+                                    <?php if ($value['nao_licitado'] === '0') : ?>
+                                        <i class="fa fa-group"></i> LIC
+                                    <?php else : ?>
+                                        <i class="fa fa-shopping-cart"></i> NL
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?= $value['status'] ?>
                                 </td>
