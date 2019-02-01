@@ -124,4 +124,7 @@ $buildSelectWithFornecedor = function (bool $nameAsArray = false): string {
         $('#valor-<?= $index; ?>').mask('000.000.000.000.000,00', {reverse: true});
     <?php endforeach; ?>
     });
+    function freezeForm() {
+        $('form').hide();
+    }
 </script>
