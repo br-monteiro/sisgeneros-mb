@@ -11,6 +11,15 @@ $userNivel = $this->view->userLoggedIn['nivel'];
  */
 $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
 {
+    if (
+        isset($value['status'], $value['nao_licitado']) && 
+        $value['status'] === 'APROVADO' &&
+        $value['nao_licitado'] === '1'
+    ) {
+        return $this->view->controller
+            . 'processarnaolicitado/id/' . $value['id'];
+    }
+
     return $this->view->controller
         . 'processar/acao/'
         . $action
@@ -67,7 +76,6 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                         </form>
                     </div>
                 </div>
-
 
                 <table class="table">
                     <thead>
