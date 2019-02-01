@@ -551,6 +551,62 @@ class SolicitacaoModel extends CRUD
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function processNotBiddings(int $id)
+    {
+        $solicitacao = $this->findById($id);
+        if (isset($solicitacao['id'], $solicitacao['status']) && $solicitacao['status'] === 'APROVADO') {
+            if ($this->isDesmembrado()) {
+                
+            } else {
+                $dados = [
+                    'updated_at' => time(),
+                    'status' => 'PROCESSADO',
+                    'fornecedor_id' => $this->validaFornecedorId()
+                ];
+                parent::editar($dados, $id);
+                (new Itens())->atualizaValor($this->buildItens());
+            }
+        }
+        d($dados ?? false);
+    }
+
+    private function isDesmembrado(): bool
+    {
+        return filter_input(INPUT_POST, 'isDesmembrado', FILTER_VALIDATE_INT) === 1;
+    }
+
+    private function validaFornecedorId(): int
+    {
+        $value = filter_input(INPUT_POST, 'fornecedor');
+        if (!v::intVal()->validate($value)) {
+            msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
+        }
+        return $value;
+    }
+
+    private function validaItensId($value): int
+    {
+        if (!v::intVal()->validate($value)) {
+            msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
+        }
+        return $value;
+    }
+
+    private function buildItens(): array
+    {
+        $result = [];
+        $requestPost = filter_input_array(INPUT_POST);
+        $itens = is_array($requestPost['id']) ? $requestPost['id'] : [];
+
+        foreach ($itens as $index => $value) {
+            $id = $this->validaItensId($value);
+            $valor = $this->validaValor($requestPost['valor'][$index]);
+            $result[$id] = $valor;
+        }
+
+        return $result;
+    }
+
     private function validaAll($om)
     {
         $value = filter_input_array(INPUT_POST);
