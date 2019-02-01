@@ -64,9 +64,10 @@ $buildSelectWithFornecedor = function (bool $nameAsArray = false): string {
                                 <td>
                                     <input type="text"
                                            name="valor[]"
-                                           id="valor-<?= $index; ?>"
                                            placeholder="0,00"
                                            class="form-control"
+                                           data-mask="000.000.000,00"
+                                           data-mask-reverse="true"
                                            required>
                                 </td>
                                 <td><?= $value['item_uf']; ?></td>
@@ -118,11 +119,6 @@ $buildSelectWithFornecedor = function (bool $nameAsArray = false): string {
         btnDesmembrar.show();
         selectFonecedor.prop("disabled", false);
         inputDesmembrado.val(0);
-    });
-    $(document).ready(function () {
-    <?php foreach ($this->view->resultSolicitacaoItens as $index => $v) :?>
-        $('#valor-<?= $index; ?>').mask('000.000.000.000.000,00', {reverse: true});
-    <?php endforeach; ?>
     });
     function freezeForm() {
         $('form').hide();
