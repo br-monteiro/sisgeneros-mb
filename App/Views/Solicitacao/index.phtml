@@ -14,7 +14,8 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
     if (
         isset($value['status'], $value['nao_licitado']) && 
         $value['status'] === 'APROVADO' &&
-        $value['nao_licitado'] === '1'
+        $value['nao_licitado'] === '1' &&
+        $action !== 'anterior'
     ) {
         return $this->view->controller
             . 'processarnaolicitado/id/' . $value['id'];
@@ -96,7 +97,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                             <tr>
                                 <td><small><?= $value['numero']; ?></small></td>
                                 <td><small><?= $value['indicativo_naval']; ?></small></td>
-                                <td><small><?= substr($value['fornecedor_nome'], 0, 17); ?> ... </small></td>
+                                <td><small><?= count($value['fornecedor_nome']) > 17 ? substr($value['fornecedor_nome'], 0, 17) . '..' : $value['fornecedor_nome']; ?></small></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
                                 <td>
                                     <?php if ($value['nao_licitado'] === '0') : ?>
@@ -176,7 +177,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] !== 'ABERTO'): ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO', 'DESMEMBRADO'])): ?>
                                         <a href="<?= $buildUrlBtnAction($value, 'anterior') ?>" class="btn btn-warning btn-sm">
                                             <i class="fa fa-rotate-left"></i>
                                         </a>
