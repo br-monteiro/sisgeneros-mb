@@ -19,7 +19,7 @@ class DatabaseConfig
         'banco' => '',
         'usuario' => '',
         'senha' => '',
-        'opcoes' => [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"],
+        'opcoes' => [],
         // Altere este campo apenas se for usar a Base de Dados Sqlite
         'sqlite' => 'sisgeneros.db'
     ];
