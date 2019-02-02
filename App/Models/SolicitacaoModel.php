@@ -309,8 +309,7 @@ class SolicitacaoModel extends CRUD
 
     public function paginatorSolicitacoes($pagina, $user, $busca = null, $omId = null, $dtInicio = null, $dtFim = null) {
         $innerJoin = ""
-            . " as sol INNER JOIN om "
-            . "    ON om.id = sol.om_id ";
+            . " as sol INNER JOIN om ON om.id = sol.om_id ";
 
         $dados = [
             'select' => 'sol.*, om.indicativo_naval',
@@ -363,8 +362,6 @@ class SolicitacaoModel extends CRUD
                 ':omId' => $omId
             ];
 
-            d(date('d-m-Y H:i:s', $dtInicio), "nonstop");
-            d(date('d-m-Y H:i:s', $dtFim));
             $dados['bindValue'] = $dados['bindValue'] ?? [];
             $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
         }
