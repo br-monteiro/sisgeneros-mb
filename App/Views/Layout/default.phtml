@@ -16,14 +16,10 @@ $cfg = cfg::htrFileConfigs();
             <?= ' :: ' . $cfg->application->name . ' ' . $cfg->application->version . ' ::' ?>
         </title>
 
-        <!-- Bootstrap Core CSS -->
-        <link href="attach/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- MetisMenu CSS -->
-        <link href="attach/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+        <!--<link href="css/fonts.googleapis.css" rel="stylesheet">-->
 
         <!-- Custom CSS -->
-        <link href="css/sb-admin-2.css" rel="stylesheet">
+        <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
         <!-- Custom Fonts -->
         <link href="attach/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -41,39 +37,68 @@ $cfg = cfg::htrFileConfigs();
                 }
             }
         </style>
-    </head>
-
-    <body>
-        <div id="wrapper">
-            <!-- Navigation -->
-            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?= cfg::DEFAULT_URI; ?>"><?= $cfg->application->name . ' ' . $cfg->application->version ?></a>
-                </div>
-                <!-- /.navbar-header -->
-
-                <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_horizontal_top.phtml'; ?>
-
-                <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml';?>
-            </nav>
-
-            <?= $this->content(); ?> 
-
-        </div>
-        <!-- /#wrapper -->
         <!-- jQuery -->
         <script src="attach/jquery/dist/jquery.min.js"></script>
+    </head>
+
+    <body id="page-top">
+
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml'; ?>
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_horizontal_top.phtml'; ?>
+
+                    <!-- Begin Page Content -->
+                    <div class="container-fluid">
+
+                        <?= $this->content(); ?>
+
+                    </div>
+                    <!-- /.container-fluid -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span> Centro de Intendência da Marinha em Belém (CeIMBe) &copy; <?= date('Y'); ?></span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- /#wrapper -->
         <!-- Bootstrap Core JavaScript -->
-        <script src="attach/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="js/bootstrap.bundle.js"></script>
+
+        <script src="js/jquery.easing.min.js"></script>
 
         <!-- Metis Menu Plugin JavaScript -->
         <script src="attach/metisMenu/dist/metisMenu.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin-2.min.js"></script>
 
         <!-- Mask Money Plugin JavaScript -->
         <!--<script src="attach/maskMoney/jquery.maskMoney.js"></script>-->
