@@ -73,7 +73,7 @@ $cfg = cfg::htrFileConfigs();
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span> Centro de Intendência da Marinha em Belém (CeIMBe) &copy; <?= date('Y'); ?></span>
+                            <span> <?= $cfg->application->om ?> &copy; <?= date('Y'); ?></span>
                         </div>
                     </div>
                 </footer>
@@ -85,10 +85,9 @@ $cfg = cfg::htrFileConfigs();
         </div>
         <!-- End of Page Wrapper -->
 
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
+        <!--a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-arrow"></i>
+        </a-->
 
         <!-- /#wrapper -->
         <!-- Bootstrap Core JavaScript -->
