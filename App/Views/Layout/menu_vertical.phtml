@@ -10,7 +10,6 @@
                         </button>
                     </span>
                 </div>
-                <!-- /input-group -->
             </li>
             <li>
                 <a href="<?= App\Config\Configurations::DEFAULT_URI ?>">
@@ -39,7 +38,6 @@
                         </a>
                     </li>
                 </ul>
-                <!-- /.nav-second-level -->
             </li>
             <?php if (!in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
                 <li>
@@ -54,7 +52,6 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
                 </li>
             <?php endif; ?>
 
@@ -78,8 +75,6 @@
                     </ul>
                 </li>
             <?php endif; ?>
-            <!-- /.nav-second-level -->
-
             <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
                 <li>
                     <a href="#">
@@ -98,7 +93,24 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-newspaper-o fa-fw"></i> Quadro de Avisos
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="avisos/ver">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="avisos/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="#">
@@ -117,7 +129,6 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
                 </li>
                 <li>
                     <a href="#">
@@ -136,7 +147,6 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
                 </li>
                 <li>
                     <a href="#">
@@ -155,7 +165,6 @@
                             </a>
                         </li>
                     </ul>
-                    <!-- /.nav-second-level -->
                 </li>
             <?php endif; ?>
             <li>
@@ -163,5 +172,4 @@
             </li>
         </ul>
     </div>
-    <!-- /.sidebar-collapse -->
 </div>

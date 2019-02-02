@@ -5,6 +5,7 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\SolicitacaoModel as Solicitacao;
+use App\Models\AvisosModel;
 
 class IndexController extends Controller implements CtrlInterface
 {
@@ -21,6 +22,7 @@ class IndexController extends Controller implements CtrlInterface
     public function indexAction()
     {
         $solicitacao = new Solicitacao();
+        $this->view->resultAvisos = (new AvisosModel())->fetchAllAvisosByOmId($this->view->userLoggedIn['om_id']);
         $this->view->chart = $solicitacao->chart($this->view->userLoggedIn);
         $this->render('index');
     }

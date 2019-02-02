@@ -1,4 +1,11 @@
-<!-- Page Content -->
+<?php
+$formatDate = function(string $value) {
+    $explodedDate = explode('-', $value);
+    $explodedDate = array_reverse($explodedDate);
+    return implode('-', $explodedDate);
+};
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -15,25 +22,42 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>CNPJ</th>
-                            <th>Dados</th>
+                            <th>Criado Por</th>
+                            <th>Título</th>
+                            <th>Mensagem</th>
+                            <th>Criação</th>
+                            <th>Validade</th>
+                            <th>Disponível para</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= strlen($value['nome']) > 35 ? (substr($value['nome'], 0, 35) . ' ...') : $value['nome']; ?></td>
-                                <td><?= $value['cnpj']; ?></td>
-                                <td><?= strlen($value['dados']) > 35 ? (substr($value['dados'], 0, 35) . ' ...') : $value['dados']; ?></td>
+                                <td><?= $value['usuario_criador_nome'] ?? ''; ?></td>
+                                <td><?= strlen($value['titulo']) > 35 ? (substr($value['titulo'], 0, 35) . ' ...') : $value['titulo']; ?></td>
+                                <td><?= strlen($value['corpo']) > 35 ? (substr($value['corpo'], 0, 35) . ' ...') : $value['corpo']; ?></td>
+                                <td><?= $formatDate($value['created_at']); ?></td>
+                                <td>
+                                    <strong>
+                                        <?= $formatDate($value['data_inicio']); ?>
+                                    </strong>
+                                    à 
+                                    <strong>
+                                        <?= $formatDate($value['data_fim']); ?>
+                                    </strong>
+                                </td>
+                                <td>
+                                    <?= $value['om_quantidade']; ?>
+                                    <?= $value['om_quantidade'] > 1 ? 'OMs' : 'OM'; ?>
+                                </td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a
-                                       onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                       class="btn btn-danger btn-sm">
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -50,7 +74,11 @@
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li>
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
                         <li>
                             <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
@@ -60,10 +88,6 @@
                     </ul>
                 </nav>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
-<!-- /#page-wrapper -->
