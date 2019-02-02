@@ -49,6 +49,13 @@
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
+                        <?php if ($this->view->resultSolicitacao['lista_desmembramento']) : ?>
+                            Desmembrado nas solicitações:
+                            <strong>
+                                <?= $this->view->resultSolicitacao['lista_desmembramento']; ?>
+                            </strong>
+                            <br>
+                        <?php endif; ?>
                         Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):

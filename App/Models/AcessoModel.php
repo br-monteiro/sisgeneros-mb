@@ -249,8 +249,8 @@ class AcessoModel extends CRUD
                 // retorna a mensagem de dialogo
                 msg::showMsg('<strong>Usuário Bloqueado!</strong><br>'
                     . ' Consulte o Admistrador do Sistema para mais informações.'
-                    . '<br><style>body{background-color:#CD2626;</style>'
-                    . ADCONT, 'danger');
+                    . '<style>body{background-color:#CD2626;</style>'
+                    . cfg::ADMIN_CONTACT, 'danger');
             }
 
             // verifica a autenticidade da senha
