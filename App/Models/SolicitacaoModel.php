@@ -64,7 +64,7 @@ class SolicitacaoModel extends CRUD
             // colsuta a solicitação por id_lista
             $sol = $this->findById_lista($idLista);
             // verifica se a solicitação é da mesma OM que o usuário lodado
-            if ($sol['id_om'] != $user['om_id']) {
+            if ($sol['om_id'] != $user['om_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
                 header("location:" . cfg::DEFAULT_URI . "solicitacao/");
             }
@@ -537,7 +537,7 @@ class SolicitacaoModel extends CRUD
     public function findByIdLista($idLista)
     {
         $subQueryName = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_nome ';
-        $subQueryCnpj = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_cnpj ';
+        $subQueryCnpj = ' (SELECT cnpj FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_cnpj ';
         $query = ""
             . "SELECT "
             . "sol.*, {$subQueryName}, {$subQueryCnpj} "

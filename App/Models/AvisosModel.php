@@ -212,7 +212,7 @@ class AvisosModel extends CRUD
     {
         // Seta todos os valores
         $this->setId()
-            ->setTitutlo(filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setTitulo(filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setCorpo(filter_input(INPUT_POST, 'corpo', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setDataInicio(filter_input(INPUT_POST, 'data_inicio', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setDataFim(filter_input(INPUT_POST, 'data_fim', FILTER_SANITIZE_SPECIAL_CHARS));
