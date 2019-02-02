@@ -22,7 +22,7 @@ CREATE TABLE avaliacao_fornecedor (
 DROP TABLE IF EXISTS fornecedor;
 
 CREATE TABLE fornecedor (
-    id    INTEGER      PRIMARY KEY,
+    id    INTEGER      PRIMARY KEY AUTOINCREMENT,
     nome  TEXT,
     cnpj  VARCHAR (18),
     dados TEXT
@@ -33,7 +33,7 @@ CREATE TABLE fornecedor (
 DROP TABLE IF EXISTS licitacao;
 
 CREATE TABLE licitacao (
-    id        INTEGER      PRIMARY KEY,
+    id        INTEGER      PRIMARY KEY AUTOINCREMENT,
     numero    VARCHAR (10),
     uasg      INT (6),
     nome_uasg VARCHAR (50),
@@ -47,7 +47,7 @@ CREATE TABLE licitacao (
 DROP TABLE IF EXISTS licitacao_item;
 
 CREATE TABLE licitacao_item (
-    id            INTEGER     PRIMARY KEY,
+    id            INTEGER     PRIMARY KEY AUTOINCREMENT,
     id_lista      INT,
     id_fornecedor INT,
     numero        INT,
@@ -56,15 +56,6 @@ CREATE TABLE licitacao_item (
     quantidade    INT,
     valor         REAL (9, 2) DEFAULT (0),
     active        INTEGER
-);
-
-
--- Table: nao_licitado
-DROP TABLE IF EXISTS nao_licitado;
-
-CREATE TABLE nao_licitado (
-    id INTEGER PRIMARY KEY AUTOINCREMENT
-             NOT NULL
 );
 
 
@@ -92,7 +83,7 @@ INSERT INTO om (id, nome, uasg, indicativo_naval, created_at, updated_at, agente
 DROP TABLE IF EXISTS solicitacao;
 
 CREATE TABLE solicitacao (
-    id                 INTEGER,
+    id                 INTEGER AUTOINCREMENT,
     id_licitacao       INT,
     id_lista           INT,
     om_id              INTEGER (10),
@@ -121,7 +112,7 @@ CREATE TABLE solicitacao (
 DROP TABLE IF EXISTS solicitacao_item;
 
 CREATE TABLE solicitacao_item (
-    id                       INTEGER      PRIMARY KEY,
+    id                       INTEGER      PRIMARY KEY AUTOINCREMENT,
     id_lista                 INT,
     item_numero              INT,
     item_nome                VARCHAR (50),
