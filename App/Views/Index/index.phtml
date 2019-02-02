@@ -1,6 +1,5 @@
 <?php
 $cfg = App\Config\Configurations::htrFileConfigs();
-
 ?>
 <script src="attach/Chart.js-master/Chart.min.js"></script>
 <script>
@@ -27,10 +26,65 @@ $cfg = App\Config\Configurations::htrFileConfigs();
 </script>
 <div id="page-wrapper">
     <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        </div>
+
+        <!-- Content Row -->
         <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header"><?= $cfg->application->name . ' ' . $cfg->application->version; ?></h1>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Fornecedores</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= count($this->view->fornecedor); ?></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-suitcase fa-fw"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Solicitações (mensal)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesMensal['quantidade'] ?></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-list fa-fw"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Aguard. aprov.</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->pendAprov['quantidade'] ?></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fa fa-thumbs-up fa-fw"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
         </div>
 
         <?php foreach ($this->view->resultAvisos ?? [] as $value): ?>
@@ -56,5 +110,54 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                 <canvas id="canvas" height="90"></canvas>
             </div>
         </div>
+        <div class="row">
+            <!--div class="col-lg-6 mb-4">
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
+                    </div>
+                    <div class="card-body">
+                        <?php foreach ($this->view->melhoresAvaliacoes as $value): ?>
+                        <h4 class="small font-weight-bold">
+                            <?= $value['nome'] ?>
+                            <span class="float-right"><?= $value['nota'] ?></span>
+                        </h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-danger"
+                                 role="progressbar"
+                                 style="width: <?= $value['nota'] ?>%"
+                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
+                    </div>
+                    <div class="card-body">
+                        <?php foreach ($this->view->pioresAvaliacoes as $value): ?>
+                        <h4 class="small font-weight-bold">
+                            <?= $value['nome'] ?>
+                            <span class="float-right"><?= $value['nota'] ?></span>
+                        </h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-danger"
+                                 role="progressbar"
+                                 style="width: <?= $value['nota'] ?>%"
+                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div-->
+        </div>
     </div>
-</div>

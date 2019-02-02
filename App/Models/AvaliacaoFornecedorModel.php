@@ -72,4 +72,18 @@ class AvaliacaoFornecedorModel extends CRUD
             ->setLicitacaoId($value['licitacao_id'])
             ->setNaoEntregue($value['nao_entregue']);
     }
+
+    public function findBestBadSuppliers($orderBy = "DESC")
+    {
+        $query = ""
+            . "SELECT "
+            . "F.nome, sum(aval.nota) nota "
+            . "FROM {$this->entidade} AS aval "
+            . "INNER JOIN "
+            . "fornecedor AS f ON f.id = aval.fornecedor_id "
+            . "ORDER BY nota " . $orderBy;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
 }

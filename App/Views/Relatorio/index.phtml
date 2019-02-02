@@ -6,62 +6,104 @@
                 <h3>Relatório</h3>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <nav>
                             <ul class="pagination">
                                 <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous">
+                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 <?php foreach ($this->view->btn['link'] as $value): ?>
                                     <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
+                                        <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
                                             <?= $value; ?>
                                         </a>
                                     </li>
                                 <?php endforeach; ?>
                                 <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+<!--                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <select
+                                class="form-control"
+                                name="om"
+                                id="om">
+                                    <?php foreach ($this->view->oms as $value): ?>
+                                    <option value="<?= $value['id'] ?>">
+                                        <?= $value['nome'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateInit"
+                                   id="dateInit"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de inicial"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateEnd"
+                                   id="dateEnd"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de final"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="busca"
+                                   id="busca"
+                                   class="form-control search-input"
+                                   placeholder="Solicitação e Fornecedor">
+                        </div>
+                    </div>
+                    <div class="col-lg-1">
+                        <button class="btn btn-default btn-apply-search">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>-->
                 </div>
-                <table class="table">
+                <table class="table" id="result_itens">
                     <thead>
                         <tr>
-                            <th>Numero</th>
+                            <th>Nº</th>
                             <th>OM</th>
+                            <th>NF</th>
+                            <th>Tipo</th>
                             <th>Status</th>
-                            <th>Criação</th>
-                            <th>Alteração</th>
+                            <th>Entrega</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['numero']; ?></td>
-                                <td><?= $value['indicativo_naval']; ?></td>
-                                <td><?= $value['status']; ?>
+                                <td><small><?= $value['numero']; ?></small></td>
+                                <td><small><?= $value['indicativo_naval']; ?></small></td>
+                                <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
+                                <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
+                                <td>
+                                    <?= $value['status'] ?>
                                 </td>
                                 <td>
-                                    <span class="label label-default">    
-                                        <?= date('d-m-Y', $value['created_at']); ?>
+                                    <span class="label label-info">
+                                        <?= $value['data_entrega']; ?>
                                     </span>
-                                </td>
-                                <td>
-                                    <span class="label label-default">    
-                                        <?= date('d-m-Y', $value['updated_at']); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary">
-                                        <i class="fa fa-list"></i> List. Itens
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -71,19 +113,19 @@
                 <nav>
                     <ul class="pagination">
                         <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous">
+                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
                             <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
+                                <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
                                     <?= $value; ?>
                                 </a>
                             </li>
                         <?php endforeach; ?>
                         <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -96,3 +138,35 @@
     </div>
     <!-- /.container-fluid -->
 </div>
+<script>
+    $(document).ready(function () {
+        var btnApplySearch = $('.btn-apply-search');
+        var matchesPage = window.location.href.match(/\/pagina\/(\d+)/);
+        var page = matchesPage && matchesPage[1] || 1;
+        
+        btnApplySearch.click(function () {
+            var selectOm = $('#om').val();
+            var dateInit = $('#dateInit').val();
+            var dateEnd = $('#dateEnd').val();
+            var search = $('#busca').val();
+            var url = 'relatorio/solicitacao/';
+            
+            if (page) {
+                url += 'pagina/' + page + '/';
+            }
+            if (selectOm) {
+                url += 'om/' + selectOm + '/';
+            }
+            if (dateInit) {
+                url += 'dateInit/' + dateInit + '/';
+            }
+            if (dateEnd) {
+                url += 'dateEnd/' + dateEnd + '/';
+            }
+            if (search) {
+                url += 'busca/' + search;
+            }
+            window.location = url;
+        });
+    });
+</script>

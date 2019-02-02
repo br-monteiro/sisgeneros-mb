@@ -1,22 +1,38 @@
-<ul class="nav navbar-top-links navbar-right">
-    <li class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-        </a>
-        <ul class="dropdown-menu dropdown-user">
-            <li>
-                <a>
-                    <i class="fa fa-user fa-fw"></i> <?= $this->view->userLoggedIn['name'] ?? ''; ?>
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle"
+               href="#"
+               id="userDropdown"
+               role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $this->view->userLoggedIn['name'] ?? ''; ?></span>
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-user fa-fw"></i>
+                    <?= $this->view->userLoggedIn['name'] ?? ''; ?>
                 </a>
-            </li>
-            <li>
-                <a href="acesso/editar/id/<?= $this->view->userLoggedIn['id'] ?? ''; ?>">
-                    <i class="fa fa-gear fa-fw"></i> Configurações
+                <a class="dropdown-item" href="acesso/editar/id/<?= $this->view->userLoggedIn['id'] ?? ''; ?>">
+                    <i class="fa fa-gear fa-fw"></i>
+                    Configurações
                 </a>
-            </li>
-            <li class="divider"></li>
-            <li><a href="acesso/logout/"><i class="fa fa-sign-out fa-fw"></i> Sair</a>
-            </li>
-        </ul>
-    </li>
-</ul>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="acesso/logout/">
+                    <i class="fa fa-sign-out fa-fw"></i> Sair
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>
