@@ -222,7 +222,7 @@ class SolicitacaoModel extends CRUD
             . '</script>', 'success');
     }
 
-    public function paginator($pagina, $user, $busca = null)
+    public function paginator($pagina, $user, $busca = null, $om = null, $dtInicio = null, $dtFim = null)
     {
         $innerJoin = ""
             . " INNER JOIN om "
@@ -263,13 +263,34 @@ class SolicitacaoModel extends CRUD
                 $dateEnd = $date->getTimestamp();
             }
 
+            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtInicio)) {
+                $exDate = explode('-', $busca);
+                $exDate = array_reverse($exDate);
+                $exDate = implode('-', $exDate);
+                $exDate .= 'T00:00:00+00:00';
+
+                $date = new \DateTime($exDate);
+                $dateInit = $date->getTimestamp();
+            }
+
+            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtFim)) {
+                $exDate = explode('-', $busca);
+                $exDate = array_reverse($exDate);
+                $exDate = implode('-', $exDate);
+                $exDate .= 'T00:00:00+00:00';
+
+                $date = new \DateTime($exDate);
+                $dateEnd = $date->getTimestamp();
+            }
+
             $andExists = isset($dados['where']) ? 'AND' : '';
             $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
                 . 'fornecedor.nome LIKE :search '
                 . 'OR solicitacao.numero LIKE :search '
                 . 'OR solicitacao.created_at BETWEEN :dInit AND :dEnd '
                 . 'OR solicitacao.updated_at BETWEEN :dInit AND :dEnd '
-                . 'OR solicitacao.data_entrega LIKE :search '
+                . 'OR solicitacao.data_entrega LIKE :search AND '
+                . 'OR solicitacao.status LIKE :search '
                 . ') ';
 
             $bindValue = [
@@ -277,6 +298,73 @@ class SolicitacaoModel extends CRUD
                 ':dInit' => $dateInit,
                 ':dEnd' => $dateEnd
             ];
+            $dados['bindValue'] = $dados['bindValue'] ?? [];
+            $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
+        }
+
+        $paginator = new Paginator($dados);
+        $this->resultadoPaginator = $paginator->getResultado();
+        $this->navPaginator = $paginator->getNaveBtn();
+    }
+
+    public function paginatorSolicitacoes($pagina, $user, $busca = null, $omId = null, $dtInicio = null, $dtFim = null) {
+        $innerJoin = ""
+            . " as sol INNER JOIN om "
+            . "    ON om.id = sol.om_id ";
+
+        $dados = [
+            'select' => 'sol.*, om.indicativo_naval',
+            'entidade' => $this->entidade . $innerJoin,
+            'pagina' => $pagina,
+            'maxResult' => 100,
+            'orderBy' => 'sol.updated_at DESC'
+        ];
+
+        if ($user['nivel'] === 'CONTROLADOR') {
+            $dados['where'] = 'status != :status ';
+            $dados['bindValue'] = [':status' => 'ABERTO'];
+        }
+
+        if ($busca || $dtInicio || $dtFim) {
+
+            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtInicio)) {
+                $exDate = explode('-', $dtInicio);
+                $exDate = array_reverse($exDate);
+                $exDate = implode('-', $exDate);
+                $exDate .= 'T00:00:00+00:00';
+
+                $date = new \DateTime($exDate);
+                $dateInit = $date->getTimestamp();
+            }
+
+            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtFim)) {
+                $exDate = explode('-', $dtFim);
+                $exDate = array_reverse($exDate);
+                $exDate = implode('-', $exDate);
+                $exDate .= 'T00:00:00+00:00';
+
+                $date = new \DateTime($exDate);
+                $dateEnd = $date->getTimestamp();
+            }
+
+            $andExists = isset($dados['where']) ? 'AND' : '';
+            $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
+                . 'sol.numero LIKE :search '
+                . 'OR sol.created_at BETWEEN :dInit AND :dEnd '
+                . 'OR sol.updated_at BETWEEN :dInit AND :dEnd '
+                . 'OR sol.status LIKE :search '
+                . 'OR sol.om_id LIKE :omId '
+                . ') ';
+
+            $bindValue = [
+                ':search' => '%' . $busca . '%',
+                ':dInit' => $dateInit,
+                ':dEnd' => $dateEnd,
+                ':omId' => $omId
+            ];
+
+            d(date('d-m-Y H:i:s', $dtInicio), "nonstop");
+            d(date('d-m-Y H:i:s', $dtFim));
             $dados['bindValue'] = $dados['bindValue'] ?? [];
             $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
         }
@@ -554,6 +642,45 @@ class SolicitacaoModel extends CRUD
             . "WHERE sol.id_lista = :idLista";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':idLista' => $idLista]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function findQtdSolicitByStatus($user, $status = 'ABERTO')
+    {
+        $query = ""
+            . "SELECT "
+            . "COUNT(*) quantidade "
+            . "FROM {$this->entidade} "
+            . "WHERE status LIKE :status";
+
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND om_id = {$user['om_id']} ";
+            $query . $where;
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':status' => $status]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function findSolitacoesMensal($user)
+    {
+        $mesPassado = date(strtotime("- 1 month", time()));
+        $hoje = time();
+
+        $query = ""
+            . "SELECT "
+            . "COUNT(*) quantidade "
+            . "FROM {$this->entidade} "
+            . "WHERE updated_at BETWEEN :dInit AND :dEnd";
+
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND om_id = {$user['om_id']} ";
+            $query . $where;
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([":dInit" => $mesPassado, ":dEnd" => $hoje]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
