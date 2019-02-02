@@ -161,7 +161,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                         </a>
                                     <?php endif; ?>
                                     <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'ABERTO'): ?>
-                                        <a href="#"
+                                        <a
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
                                            class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>

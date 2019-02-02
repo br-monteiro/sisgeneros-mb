@@ -102,6 +102,8 @@ $cfg = cfg::htrFileConfigs();
             }
             function confirmar(texto, url) {
                 if (confirm(texto)) {
+                    console.log('###', url);
+                    return;
                     window.location = url;
                 }
             }
@@ -115,13 +117,12 @@ $cfg = cfg::htrFileConfigs();
                 $('#form').submit(function () {
                     var dados = $(this).serialize();
                     $.ajax({
-                    type: "POST", // Tipo de metodo
-                            url: $(this).attr("action"), //Recebe o valor da action do form
-                            data: dados,
-                            success: function (data) //Se tiver sucesso...
-                            {
+                        type: "POST", // Tipo de metodo
+                        url: $(this).attr("action"), //Recebe o valor da action do form
+                        data: dados,
+                        success: function (data) {
                             $("#resultado").html(data);
-                            }
+                        }
                     });
                     return false;
                 });

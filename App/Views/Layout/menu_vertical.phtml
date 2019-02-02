@@ -18,7 +18,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a>
                     <i class="fa fa-list fa-fw"></i> Solicitações
                     <span class="fa arrow"></span>
                 </a>
@@ -43,7 +43,7 @@
             </li>
             <?php if (!in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
                 <li>
-                    <a href="#">
+                    <a>
                         <i class="fa fa-suitcase fa-fw"></i> Fornecedor
                         <span class="fa arrow"></span>
                     </a>
@@ -60,7 +60,7 @@
 
             <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR') : ?>
                 <li>
-                    <a href="#">
+                    <a>
                         <i class="fa fa-users fa-fw"></i> Usuários
                         <span class="fa arrow"></span>
                     </a>
@@ -82,7 +82,7 @@
 
             <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
                 <li>
-                    <a href="#">
+                    <a>
                         <i class="fa fa-list-ol fa-fw"></i> Relatório
                         <span class="fa arrow"></span>
                     </a>
@@ -101,7 +101,25 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="#">
+                    <a>
+                        <i class="fa fa-newspaper-o fa-fw"></i> Quadro de Avisos
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="avisos/ver">
+                                <i class="fa fa-cog"></i> Gerenciar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="avisos/novo/">
+                                <i class="fa fa-plus-circle"></i> Novo Registro
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a>
                         <i class="fa fa-university fa-fw"></i> Organização Militar
                         <span class="fa arrow"></span>
                     </a>
@@ -120,7 +138,7 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="#">
+                    <a>
                         <i class="fa fa-suitcase fa-fw"></i> Fornecedor
                         <span class="fa arrow"></span>
                     </a>
@@ -139,7 +157,7 @@
                     <!-- /.nav-second-level -->
                 </li>
                 <li>
-                    <a href="#">
+                    <a>
                         <i class="fa fa-list fa-fw"></i> Licitações
                         <span class="fa arrow"></span>
                     </a>
