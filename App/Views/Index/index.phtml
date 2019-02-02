@@ -24,7 +24,6 @@ $cfg = App\Config\Configurations::htrFileConfigs();
     };
 
 </script>
-<!-- Page Content -->
 <div id="page-wrapper">
     <div class="container-fluid">
 
@@ -51,6 +50,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
@@ -86,13 +86,34 @@ $cfg = App\Config\Configurations::htrFileConfigs();
 
         </div>
 
+=======
+        </div>
+
+        <?php foreach ($this->view->resultAvisos ?? [] as $value): ?>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <i class="fa fa-bullhorn fa-fw"></i> <?= $value['titulo'] ?? ''; ?>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row well-sm">
+                                <?= $value['corpo'] ?? ''; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
+>>>>>>> master
         <div class="row">
             <div class="col-lg-12">
                 <h3>Gráfico de Solicitações em <?= date("Y"); ?></h3>
                 <canvas id="canvas" height="90"></canvas>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
+<<<<<<< HEAD
         <!-- /.row -->
         <div class="row">
 
@@ -146,6 +167,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                 </div>
             </div>
         </div>
+=======
+>>>>>>> master
     </div>
-    <!-- /.container-fluid -->
 </div>

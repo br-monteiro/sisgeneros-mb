@@ -1,0 +1,93 @@
+<?php
+$formatDate = function(string $value) {
+    $explodedDate = explode('-', $value);
+    $explodedDate = array_reverse($explodedDate);
+    return implode('-', $explodedDate);
+};
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Fornecedores</h3>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
+                            <i class="fa fa-plus-circle"></i> Novo Registro
+                        </a>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Criado Por</th>
+                            <th>Título</th>
+                            <th>Mensagem</th>
+                            <th>Criação</th>
+                            <th>Validade</th>
+                            <th>Disponível para</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td><?= $value['usuario_criador_nome'] ?? ''; ?></td>
+                                <td><?= strlen($value['titulo']) > 35 ? (substr($value['titulo'], 0, 35) . ' ...') : $value['titulo']; ?></td>
+                                <td><?= strlen($value['corpo']) > 35 ? (substr($value['corpo'], 0, 35) . ' ...') : $value['corpo']; ?></td>
+                                <td><?= $formatDate($value['created_at']); ?></td>
+                                <td>
+                                    <strong>
+                                        <?= $formatDate($value['data_inicio']); ?>
+                                    </strong>
+                                    à 
+                                    <strong>
+                                        <?= $formatDate($value['data_fim']); ?>
+                                    </strong>
+                                </td>
+                                <td>
+                                    <?= $value['om_quantidade']; ?>
+                                    <?= $value['om_quantidade'] > 1 ? 'OMs' : 'OM'; ?>
+                                </td>
+                                <td>
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li>
+                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

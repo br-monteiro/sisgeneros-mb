@@ -44,20 +44,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $this->render('mostra_licitacao_disponivel');
     }
 
-    public function naolicitadoAction()
-    {
-        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
-            ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
-
-        $this->view->title = "Solicitação - Não Licitado";
-        $fornecedorModel = new FornecedorModel();
-        $fornecedorModel->paginator($this->getParametro('pagina'));
-        $this->view->result = $fornecedorModel->getResultadoPaginator();
-        $this->view->btn = $fornecedorModel->getNavePaginator();
-        $this->render('form_nao_licitado');
-    }
-
     public function formnaolicitadoAction()
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
@@ -65,7 +51,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $this->view->title = "Adicionar itens";
-        $this->view->idFornecedor = $this->getParametro('id');
         $this->render('mostra_item_nao_licitado');
     }
 
@@ -283,5 +268,36 @@ class SolicitacaoController extends Controller implements CtrlInterface
         (new SolicitacaoModel())->processStatus($id, $status, $action);
 
         header('location: ' . $this->view->controller);
+    }
+
+    public function processarnaolicitadoAction()
+    {
+        $id = $this->getParametro('id');
+        $solicitacao = (new SolicitacaoModel())->findById($id);
+
+        if (isset($solicitacao['id'])) {
+            $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+                ->clearAccessList()
+                ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+            $this->view->resultSolicitacao = $solicitacao;
+            $this->view->resultSolicitacaoItens = (new SolicitacaoItem())->findAllById_lista($solicitacao['id_lista']);
+            $this->view->resultFornecedor = (new FornecedorModel())->findAll();
+
+            $this->render('processar_nao_licitado');
+        } else {
+            header('location: ' . $this->view->controller);
+        }
+    }
+
+    public function registrarfornecedornaolicitadoAction()
+    {
+        $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+        $id = (int) $this->getParametro('id');
+
+        (new SolicitacaoModel())->processNotBiddings($id);
     }
 }

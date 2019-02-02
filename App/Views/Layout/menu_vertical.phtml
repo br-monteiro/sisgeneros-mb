@@ -64,6 +64,23 @@
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#"
+           data-toggle="collapse" data-target="#menuQuadros"
+           aria-expanded="false" aria-controls="menuQuadros">
+           <i class="fa fa-newspaper-o fa-fw"></i> Quadro de Avisos
+            <span class="fa arrow"></span>
+        </a>
+        <div id="menuQuadros" class="collapse"
+             aria-labelledby="headingPages"
+             data-parent="#accordionSidebar" style="">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="avisos/ver/"><i class="fa fa-cog"></i> Gerenciar</a>
+                <a class="collapse-item" href="avisos/novo/"><i class="fa fa-plus-circle"></i> Novo Registro</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#"
            data-toggle="collapse" data-target="#OrgMilitar"
            aria-expanded="false" aria-controls="OrgMilitar">
             <i class="fa fa-university fa-fw"></i> Organização Militar

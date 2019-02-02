@@ -22,7 +22,6 @@ class ErrorPag
 
     private function getError($layout_error)
     {
-        echo cfg::PATH_CORE . '/App/Views/ErrorPag/';exit;
         require_once cfg::PATH_CORE . '/App/Views/ErrorPag/' . $layout_error . '.phtml';
         exit;
     }

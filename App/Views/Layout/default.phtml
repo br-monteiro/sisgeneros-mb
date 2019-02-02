@@ -1,5 +1,7 @@
 <?php
+
 use App\Config\Configurations as cfg;
+
 $cfg = cfg::htrFileConfigs();
 
 ?>
@@ -42,8 +44,8 @@ $cfg = cfg::htrFileConfigs();
     </head>
 
     <body id="page-top">
-
-        <!-- Page Wrapper -->
+        <!-- jQuery -->
+        <script src="attach/jquery/dist/jquery.min.js"></script>
         <div id="wrapper">
 
             <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml'; ?>
@@ -130,7 +132,6 @@ $cfg = cfg::htrFileConfigs();
             }
 
             $(document).ready(function () {
-                //$("#preco").maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
                 $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
                 $('#data_entrega').mask('00-00-0000', {reverse: true});
                 $('#validade').mask('00/00/0000', {reverse: true});
@@ -142,61 +143,11 @@ $cfg = cfg::htrFileConfigs();
                         type: "POST", // Tipo de metodo
                         url: $(this).attr("action"), //Recebe o valor da action do form
                         data: dados,
-                        success: function (data) //Se tiver sucesso...
-                        {
+                        success: function (data) {
                             $("#resultado").html(data);
                         }
                     });
                     return false;
-                });
-                //Requisita                           
-
-                var x = 1;
-                $('#add').click(function (e) {
-                    e.preventDefault();     //prevenir novos clicks
-                    $('#lista').append('\
-                            <tr class="remove' + x + '">\
-                                <td>\
-                                    <input type="hidden"\
-                                           name="id[]"\
-                                           value="">\
-                                    <input type="text"\
-                                           name="quantidade[]"\
-                                           id="quantidade"\
-                                           class="form-control"\
-                                           maxlength="10">\
-                                </td>\
-                                <td><input type="text"\
-                                           name="uf[]"\
-                                           id="uf"\
-                                           class="form-control"\
-                                           maxlength="5"></td>\
-                                <td><input type="text"\
-                                           name="valor[]"\
-                                           id="valor2"\
-                                           class="form-control"></td>\
-                                <td><input type="text"\
-                                           name="nome[]"\
-                                           id="nome"\
-                                           class="form-control"\
-                                           maxlength="50"></td>\
-                                <td><a href="#" class="remove" id="remove' + x + '">\
-                                    <i class="fa fa-times"></i>\
-                                </td>\
-                            </tr>\
-                    ');
-                    x++;
-                });
-
-                //this is not the best move, because will create overhead...
-                //but is for simplicity
-                //damn users
-                $('#lista').on("click", ".remove", function (e) {
-                    e.preventDefault();
-                    var tr = $(this).attr('id');
-                    //alert ('remove: ' + tr);
-                    $('#lista tr.' + tr).remove();
-                    x--;
                 });
             });
         </script>

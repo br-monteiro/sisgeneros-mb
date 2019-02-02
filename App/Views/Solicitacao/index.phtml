@@ -11,6 +11,16 @@ $userNivel = $this->view->userLoggedIn['nivel'];
  */
 $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
 {
+    if (
+        isset($value['status'], $value['nao_licitado']) && 
+        $value['status'] === 'APROVADO' &&
+        $value['nao_licitado'] === '1' &&
+        $action !== 'anterior'
+    ) {
+        return $this->view->controller
+            . 'processarnaolicitado/id/' . $value['id'];
+    }
+
     return $this->view->controller
         . 'processar/acao/'
         . $action
@@ -52,9 +62,12 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                     </div>
 
                     <div class="col-lg-5">
-                        <form action="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['current']; ?>" class="search-form">
+                        <form
+                            action="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['current']; ?>"
+                            class="search-form"
+                            onsubmit="return false">
                             <div class="input-group search-input-box">
-                                <input type="text" class="form-control search-input" placeholder="Nº Solicitação, Fornecedor ou Data (DD-MM-YYYY)">
+                                <input type="text" class="form-control search-input" placeholder="Nº Solicitação, Status ou Data (DD-MM-YYYY)">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default search-button" type="button">
                                         <i class="fa fa-search"></i>
@@ -64,7 +77,6 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                         </form>
                     </div>
                 </div>
-
 
                 <table class="table">
                     <thead>
@@ -85,9 +97,15 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                             <tr>
                                 <td><small><?= $value['numero']; ?></small></td>
                                 <td><small><?= $value['indicativo_naval']; ?></small></td>
-                                <td><small><?= substr($value['fornecedor_nome'], 0, 17); ?> ... </small></td>
+                                <td><small><?= count($value['fornecedor_nome']) > 17 ? substr($value['fornecedor_nome'], 0, 17) . '..' : $value['fornecedor_nome']; ?></small></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
-                                <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
+                                <td>
+                                    <?php if ($value['nao_licitado'] === '0') : ?>
+                                        <i class="fa fa-group"></i> LIC
+                                    <?php else : ?>
+                                        <i class="fa fa-shopping-cart"></i> NL
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <?= $value['status'] ?>
                                 </td>
@@ -143,7 +161,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                         </a>
                                     <?php endif; ?>
                                     <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'ABERTO'): ?>
-                                        <a href="#"
+                                        <a
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
                                            class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>
@@ -159,7 +177,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && $value['status'] !== 'ABERTO'): ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO', 'DESMEMBRADO'])): ?>
                                         <a href="<?= $buildUrlBtnAction($value, 'anterior') ?>" class="btn btn-warning btn-sm">
                                             <i class="fa fa-rotate-left"></i>
                                         </a>

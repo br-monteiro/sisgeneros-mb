@@ -49,6 +49,13 @@
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
+                        <?php if ($this->view->resultSolicitacao['lista_desmembramento']) : ?>
+                            Desmembrado nas solicitações:
+                            <strong>
+                                <?= $this->view->resultSolicitacao['lista_desmembramento']; ?>
+                            </strong>
+                            <br>
+                        <?php endif; ?>
                         Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
@@ -104,7 +111,7 @@
                                         <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a href="#"
+                                        <a
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminaritem/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
                                            class="btn btn-danger">
                                             <i class="fa fa-trash"></i>
