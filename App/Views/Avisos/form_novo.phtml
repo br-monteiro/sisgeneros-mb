@@ -1,0 +1,138 @@
+<?php
+$omsRight = [];
+$omsLeft = [];
+$omHalf = ceil(count($this->view->resultOms) / 2);
+
+foreach ($this->view->resultOms as $index => $value) {
+    if (($index + 1) <= $omHalf) {
+        $omsLeft[] = $value;
+    } else {
+        $omsRight[] = $value;
+    }
+}
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+        </div>
+        <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-university fa-fw"></i> Organizações Militares que receberão o Aviso
+                        </div>
+                        <div class="panel-body">
+                            <div id="resultado"></div>
+                            <div class="row">
+                                <?php foreach ($omsLeft as $value): ?>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox"
+                                                   name="om[]"
+                                                   value="<?= $value['id']; ?>"
+                                                   class="oms"
+                                                   checked="">
+                                            <?= $value['indicativo_naval']; ?>
+                                            -
+                                            <?= $value['nome']; ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php foreach ($omsRight as $value): ?>
+                                    <div class="col-md-6">
+                                        <label>
+                                            <input type="checkbox"
+                                                   name="om[]"
+                                                   value="<?= $value['id']; ?>"
+                                                   class="oms"
+                                                   checked="">
+                                            <?= $value['indicativo_naval']; ?>
+                                            -
+                                            <?= $value['nome']; ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-table fa-fw"></i> Dados do Aviso
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Título</label>
+                                        <input type="text"
+                                               id="titulo"
+                                               name="titulo"
+                                               placeholder="Título do aviso"
+                                               class="form-control"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Início</label>
+                                        <input type="text"
+                                               id="data_inicio"
+                                               name="data_inicio"
+                                               placeholder="Data no formato DD-MM-YYYY"
+                                               class="form-control"
+                                               data-mask="00-00-0000"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Final</label>
+                                        <input type="text"
+                                               id="data_fim"
+                                               name="data_fim"
+                                               placeholder="Data no formato DD-MM-YYYY"
+                                               class="form-control"
+                                               data-mask="00-00-0000"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Mensagem</label>
+                                        <textarea
+                                            maxlength="256"
+                                            name="corpo"
+                                            id="corpo"
+                                            class="form-control"
+                                            required></textarea>
+                                        <p class="help-block">
+                                            <i class="fa fa-info-circle"></i> Mensagem com
+                                            <span class="text-danger">
+                                                256 caracteres
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary"><i class="fa fa-check"></i> Registrar</button>
+                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
