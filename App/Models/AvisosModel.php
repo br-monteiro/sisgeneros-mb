@@ -58,7 +58,7 @@ class AvisosModel extends CRUD
         $this->validaAll();
 
         $dados = [
-            'titulo' => $this->getTitutlo(),
+            'titulo' => $this->getTitulo(),
             'corpo' => $this->getCorpo(),
             'usuario_criador' => $user['id'],
             'created_at' => date('d-m-Y'),
@@ -87,7 +87,7 @@ class AvisosModel extends CRUD
         $this->validaAll();
 
         $dados = [
-            'titulo' => $this->getTitutlo(),
+            'titulo' => $this->getTitulo(),
             'corpo' => $this->getCorpo(),
             'data_inicio' => $this->getDataInicio(),
             'data_fim' => $this->getDataFim()
@@ -219,7 +219,7 @@ class AvisosModel extends CRUD
 
         // Inicia a Validação dos dados
         $this->validaId()
-            ->validaTitutlo()
+            ->validaTitulo()
             ->validaCorpo()
             ->validaDataInicio()
             ->validaDataFim();
@@ -250,9 +250,9 @@ class AvisosModel extends CRUD
         return $this;
     }
 
-    private function validaTitutlo()
+    private function validaTitulo()
     {
-        $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getTitutlo());
+        $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getTitulo());
         if (!$value) {
             msg::showMsg('O campo Título deve ser preenchido corretamente.'
                 . '<script>focusOn("titulo");</script>', 'danger');
