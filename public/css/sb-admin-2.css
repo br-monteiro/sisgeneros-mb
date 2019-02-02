@@ -21,7 +21,7 @@ body {
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
-        margin: 0 0 0 200px;
+        margin: 0 0 0 250px;
         padding: 0 30px;
         border-left: 1px solid #e7e7e7;
     }
@@ -136,7 +136,7 @@ body {
     .sidebar {
         z-index: 1;
         position: absolute;
-        width: 200px;
+        width: 250px;
         margin-top: 51px;
     }
 
@@ -367,24 +367,4 @@ table.table td {
 
 .label {
     font-size: 10px;
-}
-
-.nav>li>a:focus, .nav>li>a:hover {
-    text-decoration: none;
-    background-color: #5d707f;
-    color: #fff;
-}
-
-.navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    border-color: #e7e7e7;
-    background-color: #fff;
-}
-
-.sidebar ul li a.active {
-    background-color: #6d8a96;
-    color: #fff;
-}
-
-.sidebar ul li a.active:hover {
-    background-color: #5d707f;
 }
