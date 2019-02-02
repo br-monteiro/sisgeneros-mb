@@ -8,6 +8,7 @@ use App\Models\SolicitacaoModel as Solicitacao;
 use App\Models\LicitacaoModel as Licitacao;
 use App\Models\SolicitacaoItemModel as SolItem;
 use App\Models\ItemModel as Item;
+use App\Models\OmModel;
 use App\Config\Configurations as cfg;
 
 class RelatorioController extends Controller implements CtrlInterface
@@ -34,8 +35,32 @@ class RelatorioController extends Controller implements CtrlInterface
     public function solicitacaoAction()
     {
         $model = new Solicitacao();
+        $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
-        $model->paginator($this->getParametro('pagina'), ['nivel' => 'ADMINISTRADOR']);
+        $this->view->oms = $modelOms->findAll();
+        $model->paginatorSolicitacoes($this->getParametro('pagina'),
+                $this->view->userLoggedIn,
+                $this->getParametro('busca'),
+                $this->getParametro('om'),
+                $this->getParametro('dateInit'),
+                $this->getParametro('dateEnd'));
+        $this->view->result = $model->getResultadoPaginator();
+        $this->view->btn = $model->getNavePaginator();
+        $this->render('index');
+    }
+
+    public function verAction()
+    {
+        $model = new Solicitacao();
+        $modelOms = new OmModel();
+        $this->view->title = 'Relatório de Solicitações';
+        $this->view->oms = $modelOms->findAll();
+        $model->paginatorSolicitacoes($this->getParametro('pagina'),
+                $this->view->userLoggedIn,
+                $this->getParametro('busca'),
+                $this->getParametro('om'),
+                $this->getParametro('dateInit'),
+                $this->getParametro('dateEnd'));
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
