@@ -53,15 +53,15 @@
                 <nav>
                     <ul class="pagination">
                         <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous">
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value; ?>"><?= $value; ?></a></li>
+                            <li><a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"  class="page-link"><?= $value; ?></a></li>
                         <?php endforeach; ?>
                         <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next">
+                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
