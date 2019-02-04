@@ -1,7 +1,7 @@
 {
-    "name":"HTR/Firebird-Framework",
-    "description":"Framework desenvolvido por Edson Monteiro",
-    "minimum-stability":"dev",
+    "name": "phbsis/sisgeneros-mb",
+    "description": "Sistema de Gerenciamento de Gêneros Licitados e Não Licitados do CeIMBe",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4",
         "respect/validation": "1.1.29",
@@ -12,12 +12,16 @@
         {
             "name": "Edson Monteiro",
             "email": "bruno.monteirodg@gmail.com"
+        },
+        {
+            "name": "Paulo Henrique Coelho Gaia",
+            "email": "phenriquegaia@gmail.com"
         }
     ],
     "autoload": {
         "psr-0": {
-            "HTR" : "vendor",
-            "App" : "./"
+            "HTR": "vendor",
+            "App": "./"
         }
     }
 }
