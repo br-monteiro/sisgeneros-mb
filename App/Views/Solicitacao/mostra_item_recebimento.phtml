@@ -11,7 +11,7 @@
                         <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
                         <input type="hidden" name="data_entrega" value="<?= date("d-m-Y", time()); ?>">
                         <button class="btn btn-success" id='btn_enviar'>
-                            <i class="fa fa-check"></i> Confirmar Registro
+                            <i class="fa fa-check"></i> Confirmar Recebimento
                         </button>
                         <div class="row" style="padding-top: 10px;">
                             <div class="col-lg-4" id="numero_nota_fiscal_container">
@@ -23,42 +23,46 @@
                                        placeholder="Número da nota fiscal"
                                        autofocus>
                             </div>
-                            <div class="col-lg-4" id="nota">
-                                <label>Avaliação da entrega: </label><br>
-                                <input type="radio" name="nota" value="1">
-                                <span class="label label-danger">
-                                    1
-                                </span>&nbsp;
-                                <input type="radio" name="nota" value="2">
-                                <span class="label label-default">
-                                    2
-                                </span>&nbsp;
-                                <input type="radio" name="nota" value="3" checked>
-                                <span class="label label-warning">
-                                    3
-                                </span>&nbsp;
-                                <input type="radio" name="nota" value="4">
-                                <span class="label label-success">
-                                    4
-                                </span>&nbsp;
-                                <input type="radio" name="nota" value="5">
-                                <span class="label label-info">
-                                    5
-                                </span>
-                            </div>
+                            <?php if (isset($this->view->result[0]['nao_licitado']) && $this->view->result[0]['nao_licitado'] !== '1'): ?>
+                                <div class="col-lg-4" id="nota">
+                                    <label>Avaliação da entrega: </label><br>
+                                    <input type="radio" name="nota" value="1">
+                                    <span class="label label-danger">
+                                        1
+                                    </span>&nbsp;
+                                    <input type="radio" name="nota" value="2">
+                                    <span class="label label-default">
+                                        2
+                                    </span>&nbsp;
+                                    <input type="radio" name="nota" value="3" checked>
+                                    <span class="label label-warning">
+                                        3
+                                    </span>&nbsp;
+                                    <input type="radio" name="nota" value="4">
+                                    <span class="label label-success">
+                                        4
+                                    </span>&nbsp;
+                                    <input type="radio" name="nota" value="5">
+                                    <span class="label label-info">
+                                        5
+                                    </span>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <div class="row" style="padding-top: 10px;">
+                        <div class="row" style="padding-top: 10px; margin-bottom: 20px;">
                             <div class="col-lg-4" id="observacao">
                                 <label>Observação: </label>
                                 <textarea name="observacao"
                                           placeholder="Observações"
                                           class="form-control"></textarea>
                             </div>
+                            <?php if (isset($this->view->result[0]['nao_licitado']) && $this->view->result[0]['nao_licitado'] !== '1'): ?>
                             <div class="col-lg-6" id="legenda">
                                 <label>Legenda:</label><br>
                                 <span class="label label-danger" style="font-size: 14px !important;">1 - Muito insatisfeito</span> à
                                 <span class="label label-info" style="font-size: 14px !important;">5 - Muito satisfeito</span>
                             </div>
+                            <?php endif; ?>
                         </div>
                         <table class="table" id='tabela_result'>
                             <thead>
