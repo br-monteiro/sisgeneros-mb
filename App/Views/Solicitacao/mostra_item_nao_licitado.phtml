@@ -1,31 +1,27 @@
-<!-- Page Content -->
 <div id="page-wrapper">
     <div class="container-fluid">
         <form action="<?= $this->view->controller; ?>registranaolicitado" method="post" id="form">
             <div class="row">
-                <div class="col-lg-12">
-                    <h3></h3>
-                    <div id="resultado"></div>
-                    <input type="hidden" name="id_licitacao" value="0">
-                    <input type="hidden" name="nao_licitado" value="1">
-                    <input type="hidden" name="numero_nota_fiscal" value="S/N">
-                    <input type="hidden" name="observacao">
-                    <div class="col-lg-6">
-                        <button class="btn btn-info">
-                            <i class="fa fa-check"></i> Confirmar Registro
-                        </button>
-                    </div>
-                    <div class="col-lg-6">
-                        <a class="btn btn-success pull-right" id="add">
-                            <i class="fa fa-plus-circle"></i> Adicionar Campo
-                        </a>
-                    </div>
+                <div id="resultado"></div>
+                <input type="hidden" name="id_licitacao" value="0">
+                <input type="hidden" name="nao_licitado" value="1">
+                <input type="hidden" name="numero_nota_fiscal" value="S/N">
+                <input type="hidden" name="observacao">
+                <div class="col-lg-6">
+                    <button class="btn btn-success">
+                        <i class="fa fa-check"></i> Confirmar Registro
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <a class="btn btn-info pull-right" id="add">
+                        <i class="fa fa-plus-circle"></i> Adicionar Campo
+                    </a>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4" style="margin-top: 10px;">
+                <div class="col-md-4" style="margin-top: 10px; margin-bottom: 20px;">
                     <label>Data estipulada para entrega:</label>
-                    <input type="text"
+                    <input text="text"
                            name="data_entrega"
                            id="data_entrega"
                            class="form-control"
@@ -74,7 +70,6 @@
                                 </td>
                                 <td></td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -85,46 +80,50 @@
 <script>
 $(document).ready(function () {
     var x = 1;
-    $('#add').click(function (e) {
-        e.preventDefault();
-        $('#lista').append('\
-                    <tr class="remove' + x + '">\
-                        <td>\
-                            <input type="hidden"\
-                                   name="id[]"\
-                                   value="">\
-                            <input type="text"\
-                                   name="quantidade[]"\
-                                   id="quantidade"\
-                                   class="form-control"\
-                                   required\
-                                   maxlength="10">\
-                        </td>\
-                        <td><input type="text"\
-                                   name="uf[]"\
-                                   id="uf"\
-                                   class="form-control"\
-                                   required\
-                                   maxlength="5"></td>\
-                        <td><input type="text"\
-                                   name="nome[]"\
-                                   id="nome"\
-                                   class="form-control"\
-                                   required\
-                                   maxlength="50"></td>\
-                        <td><a class="remove btn btn-danger" id="remove' + x + '">\
-                            <i class="fa fa-times"></i>\
-                        </td>\
-                    </tr>\
-            ');
+    $('#add').click(function addItem(event) {
+        event.preventDefault();
+        var elementTemplate = '\
+            <tr class="remove' + x + '">\
+                <td>\
+                    <input type="hidden"\
+                           name="id[]"\
+                           value="">\
+                    <input type="text"\
+                           name="quantidade[]"\
+                           id="quantidade"\
+                           class="form-control"\
+                           required\
+                           maxlength="10">\
+                </td>\
+                <td><input type="text"\
+                           name="uf[]"\
+                           id="uf"\
+                           class="form-control"\
+                           required\
+                           maxlength="5"></td>\
+                <td><input type="text"\
+                           name="nome[]"\
+                           id="nome"\
+                           class="form-control"\
+                           required\
+                           maxlength="50"></td>\
+                <td><a class="remove btn btn-danger btn-sm" id="remove' + x + '">\
+                    <i class="fa fa-times"></i>\
+                </td>\
+            </tr>';
+        $('#lista').append(elementTemplate);
         x++;
     });
-
-    $('#lista').on("click", ".remove", function (e) {
-        e.preventDefault();
+    $('#lista').on("click", ".remove", function removeItem(event) {
+        event.preventDefault();
         var tr = $(this).attr('id');
         $('#lista tr.' + tr).remove();
         x--;
     });
 });
 </script>
+<style>
+    #add {
+        color: #fff;
+    }
+</style>
