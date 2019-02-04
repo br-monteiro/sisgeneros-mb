@@ -251,8 +251,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $resultSolicitacao = $solicitacao->findById($this->getParametro('id'));
         if ($resultSolicitacao['nao_licitado'] == 1) {
             $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
+        } else {
+            $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
         }
-        $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
     }
 
     public function processarAction()
