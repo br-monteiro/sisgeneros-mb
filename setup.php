@@ -3,6 +3,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Config\Configurations as cfg;
+use App\Config\DatabaseConfig;
 
 function makeSaltKey()
 {
@@ -76,19 +77,21 @@ function changeAdminUser()
 function createDataBase()
 {
     if (!is_dir(cfg::DIR_DATABASE) || !is_writable(cfg::DIR_DATABASE)) {
-        echo 'ERRO!'
+        throw new \Exception(""
+        . "ERRO!"
         . PHP_EOL
-        . 'O diretório usado para salvar o Bando de dados não existe ou não tem permissão para escrita.'
+        . "O diretório usado para salvar o Bando de dados não existe ou não tem permissão para escrita."
         . PHP_EOL
-        . 'Path informado:' . cfg::DIR_DATABASE . PHP_EOL;
-        exit;
+        . "Path informado:" . cfg::DIR_DATABASE
+        . "" . PHP_EOL);
     }
 
     try {
         // load SQL query
         $sqlFile = file_get_contents('dump.sql');
+        $dbName = (new DatabaseConfig())->db['sqlite'];
         // create the database file
-        $file = fopen(cfg::DIR_DATABASE . cfg::DS . 'sisgeneros.db', 'w+');
+        $file = fopen(cfg::DIR_DATABASE . cfg::DS . $dbName, 'w+');
         fclose($file);
         // connect into database and execute the SQL queries
         (new HTR\System\ModelCRUD())->pdo->exec($sqlFile);
