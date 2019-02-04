@@ -216,6 +216,8 @@ class SolicitacaoModel extends CRUD
             . 'ocultar("btn_enviar");'
             . 'ocultar("numero_nota_fiscal_container");'
             . 'ocultar("observacao");'
+            . 'ocultar("nota");'
+            . 'ocultar("legenda");'
             . '</script>', 'success');
     }
 
@@ -280,7 +282,8 @@ class SolicitacaoModel extends CRUD
         $this->navPaginator = $paginator->getNaveBtn();
     }
 
-    public function paginatorSolicitacoes($pagina, $user, $busca = null, $omId = null, $dtInicio = null, $dtFim = null) {
+    public function paginatorSolicitacoes($pagina, $user, $busca = null, $omId = null, $dtInicio = null, $dtFim = null)
+    {
         $innerJoin = ""
             . " as sol INNER JOIN om ON om.id = sol.om_id ";
 
@@ -299,7 +302,7 @@ class SolicitacaoModel extends CRUD
 
         if ($busca || $dtInicio || $dtFim) {
 
-            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtInicio)) {
+            if (preg_match('/\d{2}-\d{2}-\d{4}/', $dtInicio)) {
                 $exDate = explode('-', $dtInicio);
                 $exDate = array_reverse($exDate);
                 $exDate = implode('-', $exDate);
@@ -309,7 +312,7 @@ class SolicitacaoModel extends CRUD
                 $dateInit = $date->getTimestamp();
             }
 
-            if(preg_match('/\d{2}-\d{2}-\d{4}/', $dtFim)) {
+            if (preg_match('/\d{2}-\d{2}-\d{4}/', $dtFim)) {
                 $exDate = explode('-', $dtFim);
                 $exDate = array_reverse($exDate);
                 $exDate = implode('-', $exDate);

@@ -9,10 +9,9 @@ $userNivel = $this->view->userLoggedIn['nivel'];
  * @param string $action The action to be executed
  * @return string The build string
  */
-$buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
-{
+$buildUrlBtnAction = function (array $value, string $action = 'proximo'): string {
     if (
-        isset($value['status'], $value['nao_licitado']) && 
+        isset($value['status'], $value['nao_licitado']) &&
         $value['status'] === 'APROVADO' &&
         $value['nao_licitado'] === '1' &&
         $action !== 'anterior'
@@ -162,8 +161,8 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                                     <?php endif; ?>
                                     <?php if ($userNivel != 'CONTROLADOR' && $value['status'] == 'ABERTO'): ?>
                                         <a
-                                           onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
-                                           class="btn btn-danger btn-sm">
+                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id_lista']; ?>')"
+                                            class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php endif; ?>
@@ -210,9 +209,15 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                     </ul>
                 </nav>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
+<script>
+    $('.search-button').click(function btnSearch() {
+        var searchValue = $('.search-input').val();
+        var formAction = $('.search-form').attr('action');
+        if (searchValue && formAction) {
+            window.location = formAction + '/busca/' + searchValue;
+        }
+    });
+</script>

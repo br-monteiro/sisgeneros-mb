@@ -138,11 +138,6 @@ class Paginator extends CRUD
         return $this;
     }
 
-    private function getTotalPagina()
-    {
-        return $this->totalPagina;
-    }
-
     private function setMaxOffSet()
     {
         $page = $this->getPagina();
@@ -275,8 +270,9 @@ class Paginator extends CRUD
             echo '<style>.pagination{display:none !important;}</style>';
             return [
                 'link' => [],
-                'previous' => '#',
-                'next' => '#'
+                'previous' => 1,
+                'next' => 1,
+                'current' => 1,
             ];
         }
         return $this->btn = $this->makeBtn();
