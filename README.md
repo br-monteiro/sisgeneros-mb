@@ -15,7 +15,7 @@
 
 #### Instalação
 A instalação do sistema pode ser feita seguindo os seguintes passos:
-> ATENÇÃO: Os passos para instalação descritos nesta documentação, assumem que a aplicação rodará em uma máquina Linux (preferencialmente Ubuntu 16.04 LTS) e que todas a dependências já estão instaladas e configuradas.
+> ATENÇÃO: Os passos para instalação descritos nesta documentação, assumem que a aplicação rodará em uma máquina Linux (preferencialmente Ubuntu 16.04 LTS) e que todas a dependências já foram instaladas e configuradas.
 
 1. Clonar ou Baixar a ultima versão deste projeto diretamente na `Home` de usuário
 ```bash
@@ -23,13 +23,14 @@ $ cd ~/
 ```
 Caso você tenha optado por baixar o arquivo zipado da ultima versão, descompacte o mesmo e entre no diretório criado por este processo.
 ```bash
-$ cd ~/sisgeneros-mb
+$ cd ~/sisgeneros-mb-master
 ```
-2. Após entrar no diretório do projeto, é necessário fornecer permissão de escrita no arquivo `~/sisgeneros-mb-master/App/Database/DbRepository/sisgeneros.db`. Estre processo pode ser feito de várias formas, porém, apenas alterar o **owner group** do arquivo já deve bastar.
+2. Após entrar no diretório do projeto, é necessário fornecer permissão de escrita ao diretório `~/sisgeneros-mb-master/App/Database/`.
 ```bash
-$ sudo chgrp www-data ~/sisgeneros-mb-master/App/Database/DbRepository/sisgeneros.db
+$ sudo chgrp www-data -R ~/sisgeneros-mb-master/App/Database/
+$ sudo chmod 775 -R ~/sisgeneros-mb-master/App/Database/
 ```
-3. Após dar permissão de escrita no arquivo informado no passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
+3. Após dar permissão de escrita no diretório informado no passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
 ```php
 // código omitido
     const DOMAIN = 'www.ceimbe.mb';
@@ -48,6 +49,8 @@ $ php setup.php
 > Chave SALT alterada com sucesso
 > Path do Core alterado com sucesso
 > Path do autoload alterado com sucesso
+> Arquivo de Sqlite criado com sucesso.
+> Dados padrão inseridos com sucesso.
 > Usuário Administrador alterado com sucesso
 >> Configurações finalizadas.
 ```

@@ -2,6 +2,9 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
 
+use App\Config\Configurations as cfg;
+use App\Config\DatabaseConfig;
+
 function makeSaltKey()
 {
     $strKey = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES-128-CBC"));
@@ -16,7 +19,7 @@ function changeConstants()
         $fileRawContent = file_get_contents($pathToConfig);
         $newSaltKey = makeSaltKey();
         // init all replaces
-        $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1\${$newSaltKey}$3", $fileRawContent);
+        $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1\${$newSaltKey}h$3", $fileRawContent);
         $fileNewContent = preg_replace("/(const PATH_CORE = ')(.+)(';)/", '$1' . getcwd() . '/$3', $fileNewContent);
         // init the write changes
         $file = fopen($pathToConfig, 'w+');
@@ -55,10 +58,9 @@ function changePathAutoload()
     }
 }
 
-function changeAdminUser()
+function changeAdminUser(\PDO $pdo)
 {
     try {
-        $pdo = (new HTR\System\ModelCRUD())->pdo;
         $username = 'administrador';
         $password = (new \HTR\Helpers\Criptografia\Criptografia())->passHash($username);
         $pdo->exec("UPDATE users SET username='{$username}', password='{$password}', trocar_senha='1' WHERE id = 1;");
@@ -70,14 +72,66 @@ function changeAdminUser()
         . "" . PHP_EOL);
     }
 }
+
+function createDataBase(): \PDO
+{
+    if (!is_dir(cfg::DIR_DATABASE) || !is_writable(cfg::DIR_DATABASE)) {
+        throw new \Exception(""
+        . "ERRO!"
+        . PHP_EOL
+        . "O diretório usado para salvar o Bando de dados não existe ou não tem permissão para escrita."
+        . PHP_EOL
+        . "Path informado:" . cfg::DIR_DATABASE
+        . "" . PHP_EOL);
+    }
+
+    try {
+        // load SQL query
+        $sqlFile = file_get_contents('dump.sql');
+        $dbName = (new DatabaseConfig())->db['sqlite'];
+        // create the database file
+        $file = fopen(cfg::DIR_DATABASE . cfg::DS . $dbName, 'w+');
+        fclose($file);
+        // connect into database and execute the SQL queries
+        $pdo = (new HTR\System\ModelCRUD())->pdo;
+        $pdo->exec($sqlFile);
+        echo "> Arquivo de Sqlite criado com sucesso." . PHP_EOL;
+        return $pdo;
+    } catch (\Exception $ex) {
+        throw new \Exception(""
+        . "Não foi possível executar o dump.sql" . PHP_EOL
+        . "Log:" . $ex->getMessage()
+        . "" . PHP_EOL);
+    }
+}
+
+function insertDataDefault(\PDO $pdo)
+{
+    try {
+        $time = time();
+        // nsert the first OM
+        $pdo->exec("INSERT INTO om VALUES (1, 'OM PADRAO', 123456, 'OMPADR', {$time}, {$time}, 'AGENTE', 'AGENTE', 'GESTOR', 'GESTOR', 'FIEL', 'FIEL')");
+        // insert the first User
+        $pdo->exec("INSERT INTO users VALUES (1, '', '', 1, 'Administrador', 'admin@om.mb', 'ADMINISTRADOR', 1, '', {$time}, {$time}, {$time}, 1)");
+        echo "> Dados padrão inseridos com sucesso." . PHP_EOL;
+    } catch (\Exception $ex) {
+        throw new \Exception(""
+        . "Não foi possível inserir os primeiros dados no sistema." . PHP_EOL
+        . "Log:" . $ex->getMessage()
+        . "" . PHP_EOL);
+    }
+}
 /**
  * IIFE that run config the system
  */
 (function () {
     try {
+        // init the flow execution
         changeConstants();
         changePathAutoload();
-        changeAdminUser();
+        $pdo = createDataBase();
+        insertDataDefault($pdo);
+        changeAdminUser($pdo);
 
         print ">> Configurações finalizadas." . PHP_EOL;
     } catch (\Exception $ex) {

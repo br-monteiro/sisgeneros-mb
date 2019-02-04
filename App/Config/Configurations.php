@@ -11,7 +11,7 @@ class Configurations extends InternalConfigurations
     const DOMAIN = 'www.ceimbe.mb';
     const ADMIN_CONTACT = 'E-mail: bruno.monteirodg@gmail.com';
     const PATH_CORE = '/path/to/core/';
-    const DIR_DATABASE = self::PATH_CORE . 'App/Database/DbRepository/';
+    const DIR_DATABASE = self::PATH_CORE . 'App/Database/';
     const DEFAULT_URI = '/app/sisgeneros/';
 
     /**
