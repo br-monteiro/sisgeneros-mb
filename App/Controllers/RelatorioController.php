@@ -38,12 +38,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
-        $model->paginatorSolicitacoes($this->getParametro('pagina'),
-                $this->view->userLoggedIn,
-                $this->getParametro('busca'),
-                $this->getParametro('om'),
-                $this->getParametro('dateInit'),
-                $this->getParametro('dateEnd'));
+        $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
@@ -55,12 +50,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
-        $model->paginatorSolicitacoes($this->getParametro('pagina'),
-                $this->view->userLoggedIn,
-                $this->getParametro('busca'),
-                $this->getParametro('om'),
-                $this->getParametro('dateInit'),
-                $this->getParametro('dateEnd'));
+        $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
