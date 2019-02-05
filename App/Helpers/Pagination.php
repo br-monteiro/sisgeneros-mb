@@ -33,7 +33,7 @@ class Pagination
      * &lt;/nav>
      * 
      * @param ControllerAbstract $controller The instance of Controller
-     * @param callback $callback The callback used to customize the address
+     * @param callable $callback The callback used to customize the address
      * @return string The HTML
      */
     public static function make(ControllerAbstract $controller, $callback = null): string
