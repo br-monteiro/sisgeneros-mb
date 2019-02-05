@@ -167,6 +167,7 @@ class SolicitacaoModel extends CRUD
             $value['nota'] = filter_input(INPUT_POST, 'nota', FILTER_VALIDATE_INT) ?: 1;
             $value['licitacao_id'] = $solicitacao['id_licitacao'];
             $value['fornecedor_id'] = $solicitacao['fornecedor_id'];
+            $value['solicitacao_id'] = $solicitacao['id'];
             $value['nao_entregue'] = 0;
 
             $avalicao->novoRegistro($value);
