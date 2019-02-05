@@ -1,82 +1,26 @@
-<!-- Page Content -->
+<?php
+
+use App\Helpers\Pagination;
+
+$pagination = Pagination::make($this, function ($btn, $controllerName) {
+        return [
+            'previous' => "{$controllerName}solicitacao/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}solicitacao/pagina/{$btn['next']}",
+            'current' => "{$controllerName}solicitacao/pagina/" . Pagination::CURRENT_PAGE
+        ];
+    });
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h3>Relatório</h3>
+                <h5>Relatório</h5>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <div class="row">
                     <div class="col-md-3">
-                        <nav>
-                            <ul class="pagination">
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <?php foreach ($this->view->btn['link'] as $value): ?>
-                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
-                                            <?= $value; ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <?= $pagination ?>
                     </div>
-<!--                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <select
-                                class="form-control"
-                                name="om"
-                                id="om">
-                                    <?php foreach ($this->view->oms as $value): ?>
-                                    <option value="<?= $value['id'] ?>">
-                                        <?= $value['nome'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <input type="text"
-                                   name="dateInit"
-                                   id="dateInit"
-                                   data-mask="00-00-0000"
-                                   placeholder="Data de inicial"
-                                   class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <input type="text"
-                                   name="dateEnd"
-                                   id="dateEnd"
-                                   data-mask="00-00-0000"
-                                   placeholder="Data de final"
-                                   class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <input type="text"
-                                   name="busca"
-                                   id="busca"
-                                   class="form-control search-input"
-                                   placeholder="Solicitação e Fornecedor">
-                        </div>
-                    </div>
-                    <div class="col-lg-1">
-                        <button class="btn btn-default btn-apply-search">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>-->
                 </div>
                 <table class="table" id="result_itens">
                     <thead>
@@ -109,48 +53,24 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
-                                    <?= $value; ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <?= $pagination; ?>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
 <script>
     $(document).ready(function () {
         var btnApplySearch = $('.btn-apply-search');
         var matchesPage = window.location.href.match(/\/pagina\/(\d+)/);
         var page = matchesPage && matchesPage[1] || 1;
-        
+
         btnApplySearch.click(function () {
             var selectOm = $('#om').val();
             var dateInit = $('#dateInit').val();
             var dateEnd = $('#dateEnd').val();
             var search = $('#busca').val();
             var url = 'relatorio/solicitacao/';
-            
+
             if (page) {
                 url += 'pagina/' + page + '/';
             }
