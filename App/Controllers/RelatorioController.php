@@ -98,13 +98,11 @@ class RelatorioController extends Controller implements CtrlInterface
     {
         $this->view->title = 'Avaliação de Entrega do Fornecedores';
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
-            $db->setaFiltros()
-                ->orderBy('om.indicativo_naval ASC');
+            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
         });
 
         $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($db) {
-            $db->setaFiltros()
-                ->orderBy('fornecedor.nome ASC');
+            $db->setaFiltros()->orderBy('fornecedor.nome ASC');
         });
 
         $model = (new RelatorioModel())->paginatorDeliveryReport($this);
