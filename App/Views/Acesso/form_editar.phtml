@@ -1,13 +1,10 @@
-<!-- Page Content -->
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
                 <h5 class="page-header"><?= $this->view->title ?></h5>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
 
         <div class="row">
             <div class="col-lg-12">
@@ -15,7 +12,6 @@
                     <div class="panel-heading">
                         <i class="fa fa-table fa-fw"></i> Editando Registro
                     </div>
-                    <!-- /.panel-heading -->
                     <div class="panel-body">
                         <div id="resultado"></div>
                         <form action="<?= $this->view->controller; ?>altera/" method="post" id="form">
@@ -27,7 +23,6 @@
                             <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
-
                                     <div class="form-group">
                                         <label>Login</label>
                                         <input type="text"
@@ -70,7 +65,6 @@
                                             </select>
                                         </div>
                                     <?php endif; ?>
-
                                 </div>
 
                                 <div class="col-lg-6">
@@ -134,17 +128,12 @@
                                         <button class="btn btn-primary"><i class="fa fa-check"></i> Alterar</button>
                                         <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <!-- /.panel-body -->
                 </div>
-                <!-- /.panel -->
             </div>
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>

@@ -1,9 +1,23 @@
-<!-- Page Content -->
+<?php
+
+use App\Helpers\Pagination;
+
+$idLista = $this->view->idLista;
+
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+        return [
+            'previous' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}listar/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+        ];
+    });
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h3>Itens da Licitação</h3>
+                <h5>Itens da Licitação</h5>
                 <div class="alert alert-info" role="alert">
                     Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
                     UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
@@ -15,27 +29,7 @@
                 </a>
                 <div class="row">
                     <div class="col-md-6">
-                        <nav>
-                            <ul class="pagination">
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <?php foreach ($this->view->btn['link'] as $value): ?>
-                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
-                                            <?= $value; ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <?= $pagination; ?>
                     </div>
                 </div>
                 <table class="table table-striped table-hover">
@@ -81,33 +75,8 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $value; ?>">
-                                    <?= $value; ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
+                <?= $pagination; ?>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>

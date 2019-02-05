@@ -1,10 +1,23 @@
-<!-- Page Content -->
+<?php
+
+use App\Helpers\Pagination;
+
+$pagination = Pagination::make($this, function ($btn, $controllerName) {
+        return [
+            'previous' => "{$controllerName}novo/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}novo/pagina/{$btn['next']}",
+            'current' => "{$controllerName}novo/pagina/" . Pagination::CURRENT_PAGE
+        ];
+    });
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h3>Licitações Disponíveis</h3>
-                <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
+                <h5>Licitações Disponíveis</h5>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <?= $pagination; ?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -35,28 +48,8 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>novo/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li><a class="page-link" href="<?= $this->view->controller; ?>novo/pagina/<?= $value; ?>"><?= $value; ?></a></li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>novo/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <?= $pagination; ?>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>

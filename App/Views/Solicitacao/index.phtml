@@ -1,4 +1,7 @@
 <?php
+
+use App\Helpers\Pagination;
+
 $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
 $userNivel = $this->view->userLoggedIn['nivel'];
@@ -27,37 +30,27 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
         . $value['status']
         . '/id/'
         . $value['id'];
-}
+};
+
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($busca) {
+        return [
+            'previous' => "{$controllerName}solicitacao/pagina/{$btn['previous']}" . $busca,
+            'next' => "{$controllerName}solicitacao/pagina/{$btn['next']}" . $busca,
+            'current' => "{$controllerName}solicitacao/pagina/" . Pagination::CURRENT_PAGE . $busca
+        ];
+    });
 
 ?>
-<!-- Page Content -->
+
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h3>Solicitações</h3>
+                <h5>Solicitações</h5>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <div class="row">
                     <div class="col-md-7">
-                        <nav>
-                            <ul class="pagination">
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous'] . $busca; ?>" aria-label="Previous" class="page-link">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <?php foreach ($this->view->btn['link'] as $value): ?>
-                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"  class="page-link"><?= $value; ?></a>
-                                    </li>
-                                <?php endforeach; ?>
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next'] . $busca; ?>" aria-label="Next" class="page-link">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <?= $pagination; ?>
                     </div>
 
                     <div class="col-lg-5">
@@ -188,26 +181,7 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous'] . $busca; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"  class="page-link"><?= $value; ?></a>
-                            </li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next'] . $busca; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <?= $pagination; ?>
             </div>
         </div>
     </div>

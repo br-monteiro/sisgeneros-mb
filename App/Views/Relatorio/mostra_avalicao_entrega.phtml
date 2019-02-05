@@ -1,4 +1,7 @@
 <?php
+
+use App\Helpers\Pagination;
+
 $showMedia = false;
 
 if (isset($this->view->result) && $total = count($this->view->result)) {
@@ -8,6 +11,14 @@ if (isset($this->view->result) && $total = count($this->view->result)) {
     }, 0);
     $media = $sum / $total;
 }
+
+$pagination = Pagination::make($this, function ($btn, $controllerName) {
+        return [
+            'previous' => "{$controllerName}solicitacao/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}solicitacao/pagina/{$btn['next']}",
+            'current' => "{$controllerName}solicitacao/pagina/" . Pagination::CURRENT_PAGE
+        ];
+    });
 
 ?>
 <div id="page-wrapper">
@@ -19,27 +30,7 @@ if (isset($this->view->result) && $total = count($this->view->result)) {
                 <div id="resultado"></div>
                 <div class="row">
                     <div class="col-md-3">
-                        <nav>
-                            <ul class="pagination">
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <?php foreach ($this->view->btn['link'] as $value): ?>
-                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
-                                            <?= $value; ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <?= $pagination; ?>
                     </div>
                 </div>
                 <div class="row">
@@ -150,34 +141,10 @@ if (isset($this->view->result) && $total = count($this->view->result)) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
-                                    <?= $value; ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <?= $pagination; ?>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
 <script>
     function showMessage(message, type) {

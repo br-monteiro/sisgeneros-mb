@@ -1,34 +1,22 @@
-<!-- Page Content -->
+<?php
+
+use App\Helpers\Pagination;
+
+$pagination = Pagination::make($this);
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h3>Usuários Cadastrados</h3>
+                <h5>Usuários Cadastrados</h5>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
                     <i class="fa fa-plus-circle"></i> Novo Registro
                 </a>
                 <div class="row">
                     <div class="col-md-6">
-                        <nav>
-                            <ul class="pagination">
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <?php foreach ($this->view->btn['link'] as $value): ?>
-                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                        <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"  class="page-link"><?= $value; ?></a>
-                                    </li>
-                                <?php endforeach; ?>
-                                <li>
-                                    <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <?= $pagination; ?>
                     </div>
                 </div>
                 <table class="table">
@@ -57,8 +45,8 @@
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a
-                                       onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                       class="btn btn-danger btn-sm">
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -66,32 +54,8 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-
-                <nav>
-                    <ul class="pagination">
-                        <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php foreach ($this->view->btn['link'] as $value): ?>
-                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
-                                <a href="<?= $this->view->controller; ?>ver/pagina/<?= $value . $busca; ?>"  class="page-link"><?= $value; ?></a>
-                            </li>
-                        <?php endforeach; ?>
-                        <li>
-                            <a href="<?= $this->view->controller; ?>ver/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-
+                <?= $pagination; ?>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
 </div>
-<!-- /#page-wrapper -->
