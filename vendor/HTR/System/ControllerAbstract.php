@@ -53,4 +53,9 @@ class ControllerAbstract
     {
         return $this->bootstrap->getParametros($key);
     }
+
+    public function getView()
+    {
+        return $this->view;
+    }
 }

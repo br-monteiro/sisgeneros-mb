@@ -15,10 +15,22 @@ use HTR\System\ModelAbstract;
 class ModelCRUD extends ModelAbstract
 {
 
-    public function findAll()
+    /**
+     * Return all results of entity
+     * @param callable $callback This callback receive three values as parameters.
+     * The first value is an instance of \HTR\Database\Instruction.
+     * The second value is an instance of \HTR\Database\Database.
+     * And the last value is an instance of \HTR\System\ModelCRUD.
+     * @return array
+     */
+    public function findAll($callback = null): array
     {
-        $this->db->instrucao('select')
+        $select = $this->db->instrucao('select')
             ->setaEntidade($this->entidade);
+
+        if (is_callable($callback)) {
+            $callback($select, $this->db, $this);
+        }
 
         return $this->db->executa('select')->fetchAll(\PDO::FETCH_ASSOC);
     }

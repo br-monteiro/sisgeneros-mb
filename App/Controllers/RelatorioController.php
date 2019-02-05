@@ -9,6 +9,8 @@ use App\Models\LicitacaoModel as Licitacao;
 use App\Models\SolicitacaoItemModel as SolItem;
 use App\Models\ItemModel as Item;
 use App\Models\OmModel;
+use App\Models\FornecedorModel;
+use App\Models\RelatorioModel;
 use App\Config\Configurations as cfg;
 
 class RelatorioController extends Controller implements CtrlInterface
@@ -38,12 +40,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
-        $model->paginatorSolicitacoes($this->getParametro('pagina'),
-                $this->view->userLoggedIn,
-                $this->getParametro('busca'),
-                $this->getParametro('om'),
-                $this->getParametro('dateInit'),
-                $this->getParametro('dateEnd'));
+        $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
@@ -55,12 +52,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
-        $model->paginatorSolicitacoes($this->getParametro('pagina'),
-                $this->view->userLoggedIn,
-                $this->getParametro('busca'),
-                $this->getParametro('om'),
-                $this->getParametro('dateInit'),
-                $this->getParametro('dateEnd'));
+        $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
@@ -100,6 +92,24 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->view->btn = $item->getNavePaginator();
         $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
         $this->render('mostra_item_demanda');
+    }
+
+    public function entregaAction()
+    {
+        $this->view->title = 'Avaliação de Entrega dos Fornecedores';
+        $this->view->resultOms = (new OmModel())->findAll(function($db) {
+            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+        });
+
+        $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($db) {
+            $db->setaFiltros()->orderBy('fornecedor.nome ASC');
+        });
+
+        $model = (new RelatorioModel())->paginatorDeliveryReport($this);
+        $this->view->btn = $model->getNavePaginator();
+        $this->view->result = $model->getResultadoPaginator();
+
+        $this->render('mostra_avalicao_entrega');
     }
 
     protected function demanda($itemNumero, $idLicitacao)

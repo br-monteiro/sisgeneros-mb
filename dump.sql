@@ -5,11 +5,12 @@ BEGIN TRANSACTION;
 DROP TABLE IF EXISTS avaliacao_fornecedor;
 
 CREATE TABLE avaliacao_fornecedor (
-    id            INTEGER  PRIMARY KEY AUTOINCREMENT,
-    fornecedor_id INT (15) REFERENCES fornecedor (id),
-    nota          INT (1)  NOT NULL,
-    nao_entregue  INT (5),
-    licitacao_id  INT (15) REFERENCES licitacao (id) 
+    id             INTEGER  PRIMARY KEY AUTOINCREMENT,
+    fornecedor_id  INT (15) REFERENCES fornecedor (id),
+    nota           INT (1)  NOT NULL,
+    nao_entregue   INT (5),
+    licitacao_id   INT (15) REFERENCES licitacao (id),
+    solicitacao_id INTEGER  REFERENCES solicitacao (id) ON DELETE CASCADE
 );
 
 

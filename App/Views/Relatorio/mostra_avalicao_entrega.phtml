@@ -1,0 +1,241 @@
+<?php
+$showMedia = false;
+
+if (isset($this->view->result) && $total = count($this->view->result)) {
+    $showMedia = true;
+    $sum = array_reduce($this->view->result, function ($acc, $item) {
+        return $acc + $item['nota'];
+    }, 0);
+    $media = $sum / $total;
+}
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5>Relatório de Avaliação de Entrega</h5>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <div id="resultado"></div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <nav>
+                            <ul class="pagination">
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <?php foreach ($this->view->btn['link'] as $value): ?>
+                                    <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                        <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
+                                            <?= $value; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                                <li>
+                                    <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <select
+                                class="form-control"
+                                name="fornecedor"
+                                id="fornecedor">
+                                <option value="">Fornecedor</option>
+                                <?php foreach ($this->view->resultFornecedor as $value): ?>
+                                    <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('fornecedor') ? 'selected' : '' ?>>
+                                        <?= $value['cnpj'] ?>
+                                        -
+                                        <?= $value['nome'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <select
+                                class="form-control"
+                                name="om"
+                                id="om">
+                                <option value="">OM</option>
+                                <?php foreach ($this->view->resultOms as $value): ?>
+                                    <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
+                                        <?= $value['indicativo_naval'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateInit"
+                                   id="dateInit"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de inicial"
+                                   value="<?= $this->getParametro('dateInit'); ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateEnd"
+                                   id="dateEnd"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de final"
+                                   value="<?= $this->getParametro('dateEnd'); ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-1">
+                        <button class="btn btn-info btn-apply-search">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php if ($showMedia): ?>
+                    <div class="row alert alert-info">
+                        <div class="col-md-6">
+                            Total de resultados: <?= $total; ?><br>
+                            Média: <?= $media; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <table class="table" id="result_itens">
+                    <thead>
+                        <tr>
+                            <th>Nota</th>
+                            <th>Fornecedor</th>
+                            <th>Solicitacao</th>
+                            <th>Licitacao</th>
+                            <th>OM</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td>
+                                    <?= $value['nota']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['fornecedor_nome']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['solicitacao_numero']; ?>
+                                    -
+                                    <?= $value['solicitacao_status']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['licitacao_numero']; ?>
+                                    <i class="fa fa-info-circle text-info" title="<?= $value['licitacao_uasg_nome']; ?>"></i>
+                                </td>
+                                <td>
+                                    <?= $value['om_indicativo_naval']; ?>
+                                </td>
+                                <td>
+                                    <?= date('d-m-Y', $value['criacao']); ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['previous']; ?>" aria-label="Previous" class="page-link">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php foreach ($this->view->btn['link'] as $value): ?>
+                            <li class="<?= $this->view->btn['current'] == $value ? 'active' : '' ?>">
+                                <a class="page-link" href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $value; ?>">
+                                    <?= $value; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                        <li>
+                            <a href="<?= $this->view->controller; ?>solicitacao/pagina/<?= $this->view->btn['next']; ?>" aria-label="Next" class="page-link">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<script>
+    function showMessage(message, type) {
+        type = type || 'info';
+        if (message) {
+            var messageContainer = $('#resultado');
+            messageContainer.fadeIn(200);
+            messageContainer.html("<div class='alert alert-" + type + "'>" + message + "</div>");
+
+            setTimeout(function () {
+                messageContainer.fadeOut(200);
+            }, 6000);
+        }
+    }
+
+    $(document).ready(function () {
+        var btnApplySearch = $('.btn-apply-search');
+        var matchesPage = window.location.href.match(/\/pagina\/(\d+)/);
+        var page = matchesPage && matchesPage[1] || 1;
+
+        btnApplySearch.click(function btnSearch() {
+            var selectOm = $('#om').val();
+            var dateInit = $('#dateInit').val();
+            var dateEnd = $('#dateEnd').val();
+            var fornecedor = $('#fornecedor').val();
+            var url = 'relatorio/entrega/';
+            var regexDate = /\d{2}-\d{2}-\d{4}/;
+
+            if (!selectOm && !dateInit && !dateEnd && !fornecedor) {
+                return;
+            }
+
+            if (dateInit && !regexDate.test(dateInit)) {
+                showMessage('Data no formato incorreto', 'danger');
+                return;
+            }
+
+            if (dateEnd && !regexDate.test(dateEnd)) {
+                showMessage('Data no formato incorreto', 'danger');
+                return;
+            }
+
+            if (page) {
+                url += 'pagina/' + page + '/';
+            }
+            if (selectOm) {
+                url += 'om/' + selectOm + '/';
+            }
+            if (dateInit) {
+                url += 'dateInit/' + dateInit + '/';
+            }
+            if (dateEnd) {
+                url += 'dateEnd/' + dateEnd + '/';
+            }
+            if (fornecedor) {
+                url += 'fornecedor/' + fornecedor;
+            }
+            window.location = url;
+        });
+    });
+</script>

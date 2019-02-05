@@ -9,6 +9,7 @@ use App\Models\SolicitacaoItemModel as Itens;
 use Respect\Validation\Validator as v;
 use App\Models\AvaliacaoFornecedorModel;
 use App\Config\Configurations as cfg;
+use HTR\System\ControllerAbstract;
 
 class SolicitacaoModel extends CRUD
 {
@@ -166,6 +167,7 @@ class SolicitacaoModel extends CRUD
             $value['nota'] = filter_input(INPUT_POST, 'nota', FILTER_VALIDATE_INT) ?: 1;
             $value['licitacao_id'] = $solicitacao['id_licitacao'];
             $value['fornecedor_id'] = $solicitacao['fornecedor_id'];
+            $value['solicitacao_id'] = $solicitacao['id'];
             $value['nao_entregue'] = 0;
 
             $avalicao->novoRegistro($value);
@@ -282,8 +284,15 @@ class SolicitacaoModel extends CRUD
         $this->navPaginator = $paginator->getNaveBtn();
     }
 
-    public function paginatorSolicitacoes($pagina, $user, $busca = null, $omId = null, $dtInicio = null, $dtFim = null)
+    public function paginatorSolicitacoes(ControllerAbstract $controller)
     {
+        $pagina = $controller->getParametro('pagina');
+        $user = $controller->getView()->userLoggedIn;
+        $busca = $controller->getParametro('busca');
+        $omId = $controller->getParametro('om');
+        $dtInicio = $controller->getParametro('dateInit');
+        $dtFim = $controller->getParametro('dateEnd');
+
         $innerJoin = ""
             . " as sol INNER JOIN om ON om.id = sol.om_id ";
 

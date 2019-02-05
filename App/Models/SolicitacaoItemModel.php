@@ -177,10 +177,15 @@ class SolicitacaoItemModel extends CRUD
 
     public function quantidadeDemanda($itemNumero, $idLicitacao)
     {
-        $stmt = $this->pdo->prepare("SELECT SUM(`solicitacao_item`.`item_quantidade_atendida`) as quantidade "
-            . "FROM `solicitacao_item` "
-            . "INNER JOIN `solicitacao` ON `solicitacao_item`.`id_lista` = `solicitacao`.`id_lista` "
-            . "WHERE `solicitacao`.`status` = 3 AND `solicitacao_item`.`item_numero` = ? AND `solicitacao`.`id_licitacao` = ?;");
+        $stmt = $this->pdo->prepare(""
+            . " SELECT SUM(`solicitacao_item`.`item_quantidade_atendida`) as quantidade "
+            . " FROM `solicitacao_item` "
+            . " INNER JOIN `solicitacao` "
+            . "     ON `solicitacao_item`.`id_lista` = `solicitacao`.`id_lista` "
+            . " WHERE "
+            . "     `solicitacao`.`status` IN ('RECEBIDO', 'FN-ENTREGUE', 'FN-FINANCAS', 'FN-PAGA') "
+            . "     AND `solicitacao_item`.`item_numero` = ? "
+            . "     AND `solicitacao`.`id_licitacao` = ?;");
         $stmt->execute([$itemNumero, $idLicitacao]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? $result['quantidade'] : false;
