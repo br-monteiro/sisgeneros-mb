@@ -18,7 +18,7 @@ abstract class Instruction
     protected $entidade;
     protected $bind;
 
-    final public function setaEntidade($entidade)
+    final public function setaEntidade($entidade): self
     {
         if (is_string($entidade)) {
             $this->entidade = $entidade;
@@ -28,13 +28,13 @@ abstract class Instruction
         }
     }
 
-    final public function setaBind($valores)
+    final public function setaBind($valores): self
     {
         $this->bind = $valores;
         return $this;
     }
 
-    final public function retornaBind()
+    final public function retornaBind(): array
     {
         if (!empty($this->filtros)) {
             if (empty($this->bind)) {
@@ -43,12 +43,13 @@ abstract class Instruction
                 $this->bind = array_merge($this->bind, $this->filtros->retornaBind());
             }
         }
-        if (!is_array($this->bind))
+        if (!is_array($this->bind)) {
             $this->bind = [];
+        }
         return $this->bind;
     }
 
-    final public function setaFiltros()
+    final public function setaFiltros(): Filters
     {
         $this->filtros = new Filters();
         return $this->filtros;

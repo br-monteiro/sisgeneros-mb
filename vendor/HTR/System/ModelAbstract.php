@@ -34,8 +34,13 @@ abstract class ModelAbstract
             $this->pdo = $this->db->conecta();
         } else {
             throw new \Exception(''
-                . 'Arquivo de configuração do banco de dados não encontrado '
-                . 'em App\Config\DatabaseConfig');
+            . 'Arquivo de configuração do banco de dados não encontrado '
+            . 'em App\Config\DatabaseConfig');
         }
+    }
+
+    public function getDb(): HTR\Database\Database
+    {
+        return $this->db;
     }
 }
