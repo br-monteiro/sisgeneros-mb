@@ -96,7 +96,7 @@ class RelatorioController extends Controller implements CtrlInterface
 
     public function entregaAction()
     {
-        $this->view->title = 'Avaliação de Entrega do Fornecedores';
+        $this->view->title = 'Avaliação de Entrega dos Fornecedores';
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
             $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
         });
