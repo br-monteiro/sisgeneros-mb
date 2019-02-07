@@ -24,13 +24,12 @@ class IndexController extends Controller implements CtrlInterface
     public function indexAction()
     {
         $solicitacao = new Solicitacao();
-        $fornecedor = new FornecedorModel();
         $avaliacao = new Avaliacao();
         $this->view->melhoresAvaliacoes = $avaliacao->findBestBadSuppliers();
         $this->view->pioresAvaliacoes = $avaliacao->findBestBadSuppliers("ASC");
         $this->view->pendAprov = $solicitacao->findQtdSolicitByStatus($this->view->userLoggedIn, 'ABERTO');
         $this->view->solicitacoesMensal = $solicitacao->findSolitacoesMensal($this->view->userLoggedIn);
-        $this->view->fornecedor = $fornecedor->findAll();
+        $this->view->fornecedor = (new FornecedorModel())->findAll();
         $this->view->resultAvisos = (new AvisosModel())->fetchAllAvisosByOmId($this->view->userLoggedIn['om_id']);
         $this->view->chart = $solicitacao->chart($this->view->userLoggedIn);
         $this->render('index');
