@@ -32,23 +32,22 @@ $pagination = Pagination::make($this);
                                 <td><?= $value['uasg']; ?></td>
                                 <td><?= $value['nome_uasg']; ?></td>
                                 <td>
-                                    <span class="label label-default">    
+                                    <span class="badge badge-danger">    
                                         <?= date('d-m-Y', $value['validade']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="item/novo/idlista/<?= $value['id_lista']; ?>" class="btn btn-info">
+                                    <a href="item/novo/idlista/<?= $value['id_lista']; ?>" class="btn btn-info btn-sm">
                                         <i class="fa fa-plus-circle"></i> Add
                                     </a>
-                                    <a href="item/listar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary">
+                                    <a href="item/listar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Itens
                                     </a>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success">
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a
-                                       onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                       class="btn btn-danger">
+                                    <a onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                       class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>

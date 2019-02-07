@@ -123,12 +123,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                                 <td><?= $value['item_nome']; ?></td>
                                 <td>
                                     <?php if ($this->view->userLoggedIn['nivel'] != 'CONTROLADOR' && $this->view->resultSolicitacao['status'] == 'ABERTO') : ?>
-                                        <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success">
+                                        <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                         <a
                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminaritem/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
-                                           class="btn btn-danger">
+                                           class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php endif; ?>
