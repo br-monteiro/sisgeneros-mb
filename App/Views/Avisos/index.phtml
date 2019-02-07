@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $formatDate = function(string $value) {
     $explodedDate = explode('-', $value);
@@ -41,15 +42,15 @@ $pagination = Pagination::make($this);
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td><?= $value['usuario_criador_nome'] ?? ''; ?></td>
-                                <td><?= strlen($value['titulo']) > 35 ? (substr($value['titulo'], 0, 35) . ' ...') : $value['titulo']; ?></td>
-                                <td><?= strlen($value['corpo']) > 35 ? (substr($value['corpo'], 0, 35) . ' ...') : $value['corpo']; ?></td>
+                                <td><?= View::limitString($value['titulo'], 35); ?></td>
+                                <td><?= View::limitString($value['corpo'], 35); ?></td>
                                 <td><?= $formatDate($value['created_at']); ?></td>
                                 <td>
-                                    <strong>
+                                    <strong class="badge badge-success">
                                         <?= $formatDate($value['data_inicio']); ?>
                                     </strong>
                                     à 
-                                    <strong>
+                                    <strong class="badge badge-danger">
                                         <?= $formatDate($value['data_fim']); ?>
                                     </strong>
                                 </td>

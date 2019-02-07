@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
@@ -61,7 +62,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                             <div class="input-group search-input-box">
                                 <input type="text" class="form-control search-input" placeholder="Nº Solicitação, Status ou Data (DD-MM-YYYY)">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default search-button" type="button">
+                                    <button class="btn btn-secondary search-button" type="button">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </span>
@@ -87,9 +88,9 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><small><?= $value['numero']; ?></small></td>
-                                <td><small><?= $value['indicativo_naval']; ?></small></td>
-                                <td><small><?= count($value['fornecedor_nome']) > 17 ? substr($value['fornecedor_nome'], 0, 17) . '..' : $value['fornecedor_nome']; ?></small></td>
+                                <td><?= $value['numero']; ?></td>
+                                <td><?= $value['indicativo_naval']; ?></td>
+                                <td><?= View::limitString($value['fornecedor_nome'], 17); ?></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
                                 <td>
                                     <?php if ($value['nao_licitado'] === '0') : ?>
@@ -102,12 +103,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                     <?= $value['status'] ?>
                                 </td>
                                 <td>
-                                    <span class="label label-default">
+                                    <span class="badge badge-danger">
                                         <?= date('d-m-Y', $value['updated_at']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="label label-info">
+                                    <span class="badge badge-danger">
                                         <?= $value['data_entrega']; ?>
                                     </span>
                                 </td>
@@ -160,7 +161,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                         </a>
                                     <?php endif; ?>
                                     <?php if (in_array($value['status'], ['SOLICITADO', 'RECEBIDO', 'NF-ENTREGUE', 'NF-FINANCAS', 'NF-PAGA'])): ?>
-                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-default btn-sm">
+                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-secondary btn-sm">
                                             <i class="fa fa-file-pdf-o"></i> PDF
                                         </a>
                                     <?php endif; ?>
@@ -175,7 +176,6 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                         </a>
                                     <?php endif; ?>
                                     <!-- END BUTTOS -->
-
                                 </td>
                             </tr>
                         <?php endforeach; ?>

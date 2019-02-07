@@ -37,15 +37,15 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><small><?= $value['numero']; ?></small></td>
-                                <td><small><?= $value['indicativo_naval']; ?></small></td>
+                                <td><?= $value['numero']; ?></td>
+                                <td><?= $value['indicativo_naval']; ?></td>
                                 <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
                                 <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
                                 <td>
                                     <?= $value['status'] ?>
                                 </td>
                                 <td>
-                                    <span class="label label-info">
+                                    <span class="badge badge-danger">
                                         <?= $value['data_entrega']; ?>
                                     </span>
                                 </td>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $idLista = $this->view->idLista;
 
@@ -59,7 +60,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                                 </td>
                                 <td style='font-size: 11px'><?= $value['nome']; ?></td>
                                 <td style='font-size: 11px'>
-                                    <?= strlen($value['fornecedor']) > 25 ? substr($value['fornecedor'], 0, 25) . '...' : $value['fornecedor']; ?>
+                                    <?= View::limitString($value['fornecedor'], 25); ?>
                                 </td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success btn-sm">
