@@ -22,6 +22,50 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                         <?= $pagination ?>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="form-group">
+                            <select
+                                class="form-control"
+                                name="om"
+                                id="om">
+                                <option value="">OM</option>
+                                <?php foreach ($this->view->resultOms as $value): ?>
+                                    <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
+                                        <?= $value['indicativo_naval'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateInit"
+                                   id="dateInit"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de inicial"
+                                   value="<?= $this->getParametro('dateInit'); ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <input type="text"
+                                   name="dateEnd"
+                                   id="dateEnd"
+                                   data-mask="00-00-0000"
+                                   placeholder="Data de final"
+                                   value="<?= $this->getParametro('dateEnd'); ?>"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-1">
+                        <button class="btn btn-info btn-apply-search">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
                 <table class="table" id="result_itens">
                     <thead>
                         <tr>
@@ -37,12 +81,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['numero']; ?></td>
+                                <td><?= $value['solicitacao_numero']; ?></td>
                                 <td><?= $value['indicativo_naval']; ?></td>
-                                <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
+                                <td><?= $value['nota_fiscal'] ?: ''; ?></td>
                                 <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
                                 <td>
-                                    <?= $value['status'] ?>
+                                    <?= $value['solicitacao_status'] ?>
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">

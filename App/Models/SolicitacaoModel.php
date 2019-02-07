@@ -286,71 +286,56 @@ class SolicitacaoModel extends CRUD
 
     public function paginatorSolicitacoes(ControllerAbstract $controller)
     {
-        $pagina = $controller->getParametro('pagina');
-        $user = $controller->getView()->userLoggedIn;
-        $busca = $controller->getParametro('busca');
-        $omId = $controller->getParametro('om');
-        $dtInicio = $controller->getParametro('dateInit');
-        $dtFim = $controller->getParametro('dateEnd');
-
+        $select = ""
+            . " sol.numero AS solicitacao_numero, "
+            . " om.indicativo_naval, sol.numero_nota_fiscal AS nota_fiscal, "
+            . " sol.nao_licitado, sol.data_entrega, "
+            . " sol.status AS solicitacao_status ";
         $innerJoin = ""
-            . " as sol INNER JOIN om ON om.id = sol.om_id ";
-
+            . " AS sol "
+            . " INNER JOIN om ON om.id = sol.om_id ";
         $dados = [
-            'select' => 'sol.*, om.indicativo_naval',
             'entidade' => $this->entidade . $innerJoin,
-            'pagina' => $pagina,
-            'maxResult' => 100,
-            'orderBy' => 'sol.updated_at DESC'
+            'select' => $select,
+            'pagina' => $controller->getParametro('pagina'),
+            'maxResult' => 500,
+            'orderBy' => 'sol.created_at ASC',
+            'bindValue' => []
         ];
-
-        if ($user['nivel'] === 'CONTROLADOR') {
-            $dados['where'] = 'status != :status ';
-            $dados['bindValue'] = [':status' => 'ABERTO'];
+        $params = $controller->getParametro();
+        // search by Om
+        if (isset($params['om']) && intval($params['om']) !== 0) {
+            $dados['where'] = ' om.id = :omId ';
+            $dados['bindValue'][':omId'] = $params['om'];
         }
-
-        if ($busca || $dtInicio || $dtFim) {
-
-            if (preg_match('/\d{2}-\d{2}-\d{4}/', $dtInicio)) {
-                $exDate = explode('-', $dtInicio);
-                $exDate = array_reverse($exDate);
-                $exDate = implode('-', $exDate);
-                $exDate .= 'T00:00:00+00:00';
-
-                $date = new \DateTime($exDate);
-                $dateInit = $date->getTimestamp();
+        // search by Date Init
+        if (isset($params['dateInit']) && preg_match('/\d{2}-\d{2}-\d{4}/', $params['dateInit'])) {
+            $exDate = explode('-', $params['dateInit']);
+            $exDate = array_reverse($exDate);
+            $exDate = implode('-', $exDate);
+            $exDate .= 'T00:00:00+00:00';
+            $date = new \DateTime($exDate);
+            if (isset($dados['where'])) {
+                $dados['where'] .= ' AND sol.created_at >= :dateInit ';
+            } else {
+                $dados['where'] = ' sol.created_at >= :dateInit ';
             }
-
-            if (preg_match('/\d{2}-\d{2}-\d{4}/', $dtFim)) {
-                $exDate = explode('-', $dtFim);
-                $exDate = array_reverse($exDate);
-                $exDate = implode('-', $exDate);
-                $exDate .= 'T00:00:00+00:00';
-
-                $date = new \DateTime($exDate);
-                $dateEnd = $date->getTimestamp();
-            }
-
-            $andExists = isset($dados['where']) ? 'AND' : '';
-            $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
-                . 'sol.numero LIKE :search '
-                . 'OR sol.created_at BETWEEN :dInit AND :dEnd '
-                . 'OR sol.updated_at BETWEEN :dInit AND :dEnd '
-                . 'OR sol.status LIKE :search '
-                . 'OR sol.om_id LIKE :omId '
-                . ') ';
-
-            $bindValue = [
-                ':search' => '%' . $busca . '%',
-                ':dInit' => $dateInit,
-                ':dEnd' => $dateEnd,
-                ':omId' => $omId
-            ];
-
-            $dados['bindValue'] = $dados['bindValue'] ?? [];
-            $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
+            $dados['bindValue'][':dateInit'] = $date->getTimestamp();
         }
-
+        // search by Date End
+        if (isset($params['dateEnd']) && preg_match('/\d{2}-\d{2}-\d{4}/', $params['dateEnd'])) {
+            $exDate = explode('-', $params['dateEnd']);
+            $exDate = array_reverse($exDate);
+            $exDate = implode('-', $exDate);
+            $exDate .= 'T23:59:00+00:00';
+            $date = new \DateTime($exDate);
+            if (isset($dados['where'])) {
+                $dados['where'] .= ' AND sol.created_at <= :dateEnd ';
+            } else {
+                $dados['where'] = ' sol.created_at <= :dateEnd ';
+            }
+            $dados['bindValue'][':dateEnd'] = $date->getTimestamp();
+        }
         $paginator = new Paginator($dados);
         $this->resultadoPaginator = $paginator->getResultado();
         $this->navPaginator = $paginator->getNaveBtn();

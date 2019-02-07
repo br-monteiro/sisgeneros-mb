@@ -40,6 +40,9 @@ class RelatorioController extends Controller implements CtrlInterface
         $modelOms = new OmModel();
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
+        $this->view->resultOms = (new OmModel())->findAll(function($db) {
+            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+        });
         $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
