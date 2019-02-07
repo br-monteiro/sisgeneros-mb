@@ -77,13 +77,14 @@ class AvaliacaoFornecedorModel extends CRUD
     {
         $query = ""
             . "SELECT "
-            . "F.nome, sum(aval.nota) nota "
-            . "FROM {$this->entidade} AS aval "
-            . "INNER JOIN "
-            . "fornecedor AS f ON f.id = aval.fornecedor_id "
-            . "ORDER BY nota " . $orderBy;
+            . " F.nome, nota "
+            . " FROM {$this->entidade} AS aval "
+            . " INNER JOIN "
+            . " fornecedor AS f ON f.id = aval.fornecedor_id "
+            . " ORDER BY nota " . $orderBy
+            . " LIMIT 5";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
