@@ -111,25 +111,24 @@ $cfg = App\Config\Configurations::htrFileConfigs();
             </div>
         </div>
         <div class="row">
-            <!--div class="col-lg-6 mb-4">
-
+            <div class="col-lg-6 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
                     </div>
                     <div class="card-body">
-                        <?php foreach ($this->view->melhoresAvaliacoes as $value): ?>
+                        <?php foreach ($this->view->melhoresAvaliacoes ?? [] as $value): ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
                         </h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar bg-danger"
+                            <div class="progress-bar bg-success"
                                  role="progressbar"
-                                 style="width: <?= $value['nota'] ?>%"
+                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
                                  aria-valuenow="<?= $value['nota'] ?>"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100"></div>
+                                 aria-valuemin="1"
+                                 aria-valuemax="5"></div>
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -142,7 +141,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
                     </div>
                     <div class="card-body">
-                        <?php foreach ($this->view->pioresAvaliacoes as $value): ?>
+                        <?php foreach ($this->view->pioresAvaliacoes ?? [] as $value): ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
@@ -150,14 +149,14 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <div class="progress mb-4">
                             <div class="progress-bar bg-danger"
                                  role="progressbar"
-                                 style="width: <?= $value['nota'] ?>%"
+                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
                                  aria-valuenow="<?= $value['nota'] ?>"
                                  aria-valuemin="0"
-                                 aria-valuemax="100"></div>
+                                 aria-valuemax="5"></div>
                         </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-            </div-->
+            </div>
         </div>
     </div>
