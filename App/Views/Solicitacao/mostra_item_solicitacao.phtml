@@ -85,6 +85,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
+                <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right"><i class="fa fa-arrow-left"></i> Voltar</a>
                 <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->resultSolicitacao['status'] == 'ABERTO'): ?>
                     <div class="row">
                         <div class="col-md-6">
