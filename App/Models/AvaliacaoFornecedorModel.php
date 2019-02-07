@@ -76,8 +76,8 @@ class AvaliacaoFornecedorModel extends CRUD
     public function findBestBadSuppliers($orderBy = "DESC")
     {
         $query = ""
-            . "SELECT "
-            . " F.nome, nota "
+            . " SELECT "
+            . " f.nome, nota "
             . " FROM {$this->entidade} AS aval "
             . " INNER JOIN "
             . " fornecedor AS f ON f.id = aval.fornecedor_id "
