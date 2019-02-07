@@ -19,7 +19,8 @@ function changeConstants()
         $fileRawContent = file_get_contents($pathToConfig);
         $newSaltKey = makeSaltKey();
         // init all replaces
-        $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1\${$newSaltKey}h$3", $fileRawContent);
+        $newSaltKey = 'H' . preg_quote($newSaltKey); // the letter H is just to fix the RegEx group
+        $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1{$newSaltKey}$3", $fileRawContent);
         $fileNewContent = preg_replace("/(const PATH_CORE = ')(.+)(';)/", '$1' . getcwd() . '/$3', $fileNewContent);
         // init the write changes
         $file = fopen($pathToConfig, 'w+');
