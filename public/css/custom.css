@@ -1,0 +1,35 @@
+
+.search-input-box {
+    margin-top: 10px;
+}
+
+table.table {
+    margin-top: 10px;
+}
+
+table.table td, .badge {
+    font-size: 12px;
+}
+
+table.table th {
+    font-size: 14px;
+}
+
+.label {
+    font-size: 12px;
+}
+
+.btn-group-sm>.btn, .btn-sm {
+    padding: .25rem .5rem;
+    font-size: .7rem;
+    line-height: 1.5;
+    border-radius: .2rem;
+}
+.container, .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.topbar {
+    height: 3.375rem;
+}
