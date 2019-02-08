@@ -25,6 +25,7 @@ table.table th {
     line-height: 1.5;
     border-radius: .2rem;
 }
+
 .container, .container-fluid {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
@@ -32,4 +33,20 @@ table.table th {
 
 .topbar {
     height: 3.375rem;
+}
+
+.billboard-container {
+    margin-bottom: 10px;
+}
+
+.billboard-container .billboard-content {
+    color: #080808 !important;
+}
+
+.billboard-container .billboard-title {
+    font-weight: bold;
+}
+
+.billboard-container .billboard-body {
+    font-size: 14px;
 }
