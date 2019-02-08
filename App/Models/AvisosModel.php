@@ -27,12 +27,10 @@ class AvisosModel extends CRUD
             . " AS qa "
             . " INNER JOIN users AS us"
             . "     ON us.id = qa.usuario_criador "
-            . " INNER JOIN quadro_avisos_lista_oms AS qalo "
-            . "     ON qalo.quadro_avisos_id = qa.id "
             . " GROUP BY qa.id";
         $dados = [
             'entidade' => $this->entidade . $innerJoin,
-            'select' => 'qa.*, us.name AS usuario_criador_nome, COUNT(*) AS om_quantidade ',
+            'select' => 'qa.*, us.name AS usuario_criador_nome',
             'pagina' => $pagina,
             'maxResult' => 100,
             'orderBy' => 'created_at ASC'
@@ -61,7 +59,7 @@ class AvisosModel extends CRUD
             'titulo' => $this->getTitulo(),
             'corpo' => $this->getCorpo(),
             'usuario_criador' => $user['id'],
-            'created_at' => date('d-m-Y'),
+            'created_at' => date('Y-m-d'),
             'data_inicio' => $this->getDataInicio(),
             'data_fim' => $this->getDataFim()
         ];
@@ -182,13 +180,15 @@ class AvisosModel extends CRUD
         $date = date('Y-m-d');
         $query = ""
             . " SELECT "
-            . " qa.* "
+            . " DISTINCT qa.* "
             . " FROM quadro_avisos AS qa "
             . " INNER JOIN quadro_avisos_lista_oms AS qalo "
-            . "     ON qalo.om_id = {$omId} "
+            . "     ON qalo.quadro_avisos_id = qa.id "
             . " WHERE "
             . "     qa.data_inicio <= DATE('{$date}') "
             . "     AND qa.data_fim >= DATE('{$date}') "
+            . "     AND qalo.om_id = {$omId} "
+            . " GROUP BY qa.titulo, qa.corpo "
             . " ORDER BY DATE(qa.created_at) ";
 
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
@@ -197,6 +197,7 @@ class AvisosModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
+            $this->pdo->exec("DELETE FROM quadro_avisos_lista_oms WHERE quadro_avisos_lista_oms.quadro_avisos_id = {$id};");
             header('Location: ' . cfg::DEFAULT_URI . 'avisos/ver/');
         }
     }
