@@ -1,9 +1,13 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <div class="login-panel panel panel-default">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <div class="login-panel panel login-container">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-lock"></i> <?= $this->view->title ?></h3>
+                    <h3 class="panel-title">
+                        <i class="fa fa-lock"></i>
+                        <?= $this->view->title ?>
+                    </h3>
                 </div>
                 <div class="panel-body">
                     <div id="resultado"></div>
@@ -43,9 +47,24 @@
 <style>
 body {
     background-color: #333;
+    background-image: url('images/background.png');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 .btn-entrar {
-    background-color: #008000;
+    background-color: #1c294e;
     color: #fff;
+}
+.btn-entrar:hover {
+    color: #b7b9cc;
+}
+
+.login-container {
+    background-image: url('images/marinha-logotipo.png');
+    background-position-x: 200px;
+    background-repeat: no-repeat;
+    padding: 20px;
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3); 
 }
 </style>
