@@ -55,3 +55,10 @@ table.table th {
 .billboard-container .billboard-body {
     font-size: 14px;
 }
+
+.bg-gradient-primary {
+    background-color: #4e73df;
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#2e4792),to(#081331));
+    background-image: linear-gradient(180deg,#2e4792 10%,#081331 100%);
+    background-size: cover;
+}
