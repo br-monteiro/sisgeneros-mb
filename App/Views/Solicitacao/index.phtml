@@ -188,10 +188,13 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
 </div>
 <script>
     $('.search-button').click(function btnSearch() {
-        var searchValue = $('.search-input').val();
+        var searchInput = $('.search-input');
+        var searchValue = searchInput.val();
         var formAction = $('.search-form').attr('action');
         if (searchValue && formAction) {
             window.location = formAction + '/busca/' + searchValue;
+        } else {
+            searchInput.focus();
         }
     });
 </script>
