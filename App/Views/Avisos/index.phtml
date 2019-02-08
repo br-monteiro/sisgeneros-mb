@@ -16,7 +16,7 @@ $pagination = Pagination::make($this);
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h5>Fornecedores</h5>
+                <h5>Quadro de Avisos</h5>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?>
                 <div class="row">
                     <div class="col-md-12">
@@ -34,7 +34,6 @@ $pagination = Pagination::make($this);
                             <th>Mensagem</th>
                             <th>Criação</th>
                             <th>Validade</th>
-                            <th>Disponível para</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -53,10 +52,6 @@ $pagination = Pagination::make($this);
                                     <strong class="badge badge-danger">
                                         <?= $formatDate($value['data_fim']); ?>
                                     </strong>
-                                </td>
-                                <td>
-                                    <?= $value['om_quantidade']; ?>
-                                    <?= $value['om_quantidade'] > 1 ? 'OMs' : 'OM'; ?>
                                 </td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">

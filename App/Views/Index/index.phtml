@@ -1,5 +1,6 @@
 <?php
 $cfg = App\Config\Configurations::htrFileConfigs();
+
 ?>
 <script src="attach/Chart.js-master/Chart.min.js"></script>
 <script>
@@ -29,12 +30,28 @@ $cfg = App\Config\Configurations::htrFileConfigs();
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <h1 class="h3 mb-0 text-gray-800">Home</h1>
         </div>
+
+        <?php foreach ($this->view->resultAvisos ?? [] as $value): ?>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card bg-warning shadow billboard-container">
+                        <div class="card-body billboard-content">
+                            <div class="billboard-title">
+                                <i class="fa fa-bullhorn fa-fw"></i> <?= $value['titulo'] ?? ''; ?>
+                            </div>
+                            <div class="billboard-body">
+                                <?= $value['corpo'] ?? ''; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
 
         <!-- Content Row -->
         <div class="row">
-
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
@@ -82,42 +99,23 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                     </div>
                 </div>
             </div>
-
         </div>
+    </div>
 
+    <div class="row">
+        <div class="col-lg-12">
+            <h5>Gráfico de Solicitações em <?= date("Y"); ?></h5>
+            <canvas id="canvas" height="90"></canvas>
         </div>
-
-        <?php foreach ($this->view->resultAvisos ?? [] as $value): ?>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <i class="fa fa-bullhorn fa-fw"></i> <?= $value['titulo'] ?? ''; ?>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row well-sm">
-                                <?= $value['corpo'] ?? ''; ?>
-                            </div>
-                        </div>
-                    </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
                 </div>
-            </div>
-        <?php endforeach; ?>
-
-        <div class="row">
-            <div class="col-lg-12">
-                <h5>Gráfico de Solicitações em <?= date("Y"); ?></h5>
-                <canvas id="canvas" height="90"></canvas>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
-                    </div>
-                    <div class="card-body">
-                        <?php foreach ($this->view->melhoresAvaliacoes ?? [] as $value): ?>
+                <div class="card-body">
+                    <?php foreach ($this->view->melhoresAvaliacoes ?? [] as $value): ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
@@ -130,18 +128,18 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                                  aria-valuemin="1"
                                  aria-valuemax="5"></div>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
+        </div>
 
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
-                    </div>
-                    <div class="card-body">
-                        <?php foreach ($this->view->pioresAvaliacoes ?? [] as $value): ?>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
+                </div>
+                <div class="card-body">
+                    <?php foreach ($this->view->pioresAvaliacoes ?? [] as $value): ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
@@ -154,9 +152,9 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                                  aria-valuemin="0"
                                  aria-valuemax="5"></div>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </div>
+</div>
