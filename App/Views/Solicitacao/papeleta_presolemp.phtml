@@ -1,0 +1,236 @@
+<?php
+
+use App\Config\Configurations as cfg;
+
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+date_default_timezone_set('America/Belem');
+
+if (in_array($this->view->resultSolicitacao['status'] ?? false, ['ABERTO', 'APROVADO', false])) {
+    exit;
+}
+
+$total = 0;
+
+?>
+<style>
+    body {
+        font-size: 12px !important;
+        background-color: #fff !important;
+    }
+    .table-striped > tbody > tr:nth-of-type(2n+1) {
+        background-color: #ccc !important;
+    }
+    .table-print {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .table-condensed > tfoot > tr > td {
+        padding: 2px !important;
+    }
+    .right {
+        text-align: right !important;
+    }
+    .left {
+        text-align: left !important;
+    }
+    .brasao {
+        width: 90px;
+    }
+    .cabecalho {
+        font-weight: bold;
+    }
+    .data-impressao {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    .informacoes span {
+        font-weight: bold;
+    }
+    .width-5-percent {
+        width: 5%;
+    }
+    .width-8-percent {
+        width: 8%;
+    }
+    .width-10-percent {
+        width: 10%;
+    }
+</style>
+<table class="table-print">
+    <tr>
+        <td>
+            <img src="images/brasao.png" class="brasao">
+        </td>
+    </tr>
+    <tr>
+        <td class="cabecalho text-uppercase">
+            MARINHA DO BRASIL
+            <br>
+            <?= cfg::htrFileConfigs()->application->om ?? ''; ?>
+            <br>
+            <br>
+            PRÉ-SOLICITAÇÃO DE EMPENHO
+        </td>
+    </tr>
+    <tr>
+        <td class="data-impressao right">
+            <?= cfg::htrFileConfigs()->papeleta->cidade ?? '' ?>, <?= strftime('%d de %B de %Y', strtotime('today')); ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>Fornecedor:</span>
+            <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>CNPJ:</span>
+            <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
+        </td>
+    </tr>
+    <?php if (isset($this->view->resultLicitacao['numero'])): ?>
+        <tr>
+            <td class="informacoes left">
+                <span>Licitação:</span>
+                <?= $this->view->resultLicitacao['numero']; ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="informacoes left text-uppercase">
+                <span>Órgão:</span>
+                <?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?>
+            </td>
+        </tr>
+    <?php else: ?>
+        <tr>
+            <td class="informacoes left text-uppercase">
+                <span>Licitação: NÃO LICITADO</span>
+            </td>
+        </tr>
+    <?php endif; ?>
+    <tr>
+        <td class="informacoes left text-uppercase">
+            <span>Data Entrega:</span>
+            <?= $this->view->resultSolicitacao['data_entrega']; ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="left">
+            <span>Pré-SOLEMP gerada por:</span>
+            <span class="usuario"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="tabela-informacoes">
+            <table class="table table-striped table-hover table-condensed" border="1">
+                <thead>
+                    <tr>
+                        <th class="text-center width-5-percent">
+                            UG
+                        </th>
+                        <th class="text-center width-8-percent">
+                            PTRES
+                        </th>
+                        <th class="text-center width-10-percent">
+                            AI
+                        </th>
+                        <th class="text-center width-5-percent">
+                            DO
+                        </th>
+                        <th class="text-center width-5-percent">
+                            BI
+                        </th>
+                        <th class="text-center">
+                            FR
+                        </th>
+                        <th class="text-center width-10-percent">
+                            ND
+                        </th>
+                        <th class="text-center width-10-percent">
+                            CONT.
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="ug text-uppercase"></td>
+                        <td class="ptres text-uppercase"></td>
+                        <td class="ai text-uppercase"></td>
+                        <td class="do text-uppercase"></td>
+                        <td class="bi text-uppercase"></td>
+                        <td class="fr text-uppercase"></td>
+                        <td class="nd text-uppercase"></td>
+                        <td class="plano_contas text-uppercase"></td>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="tabela-itens">
+            <table class="table table-striped table-hover table-condensed" border="1">
+                <thead>
+                    <tr>
+                        <th class="width-8-percent">Item</th>
+                        <th>Descrição</th>
+                        <th class="width-8-percent">UF</th>
+                        <th class="width-8-percent">Qtd</th>
+                        <th class="width-10-percent">Valor (R$)</th>
+                        <th class="width-10-percent">Total (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->view->result as $value): ?>
+                        <?php
+                        $totaItem = $value['item_quantidade'] * $value['item_valor'];
+                        $total += $totaItem;
+
+                        ?>
+                        <tr>
+                            <td><?= $value['item_numero'] ?: ''; ?></td>
+                            <td class="left"><?= $value['item_nome']; ?></td>
+                            <td><?= $value['item_uf']; ?></td>
+                            <td><?= $value['item_quantidade']; ?></td>
+                            <td><?= number_format($value['item_valor'], 2, ',', '.'); ?></td>
+                            <td><?= number_format($totaItem, 2, ',', '.'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"class="right">Total (R$)</td>
+                        <td><?= number_format($total, 2, ',', '.'); ?></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class="finalidade left">
+            <b>
+                Finalidade:
+            </b>
+            <span></span>
+        </td>
+    </tr>
+</table>
+<script>
+    var data = (function () {
+        try {
+            return JSON.parse(window.sessionStorage.getItem('presolemp_<?= $this->getParametro('idlista'); ?>'));
+        } catch (_) {
+            return {};
+        }
+    })();
+    $('.ug').text(data.ug);
+    $('.ptres').text(data.ptres);
+    $('.ai').text(data.ai);
+    $('.do').text(data.do_);
+    $('.bi').text(data.bi);
+    $('.fr').text(data.fr);
+    $('.nd').text(data.nd);
+    $('.plano_contas').text(data.plano_contas);
+    $('.finalidade span').text(data.finalidade);
+    $('.usuario').text(data.usuario);
+</script>
