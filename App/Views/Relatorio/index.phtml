@@ -10,6 +10,17 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
         ];
     });
 
+$statusPatterns = [
+    'ABERTO',
+    'APROVADO',
+    'PROCESSADO',
+    'EMPENHADO',
+    'RECEBIDO',
+    'NF-ENTREGUE',
+    'NF-FINANCAS',
+    'NF-PAGA'
+];
+
 ?>
 <div id="page-wrapper">
     <div class="container-fluid">
@@ -23,7 +34,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-5">
+                    <div class="col-lg-3">
                         <div class="form-group">
                             <select
                                 class="form-control"
@@ -34,6 +45,19 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
                                         <?= $value['indicativo_naval'] ?>
                                     </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <select
+                                class="form-control"
+                                name="status"
+                                id="status">
+                                <option value="">Status</option>
+                                <?php foreach ($statusPatterns as $value): ?>
+                                    <option value="<?= $value ?>" <?= $value == $this->getParametro('status') ? 'selected' : '' ?>><?= $value ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -110,6 +134,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
 
         btnApplySearch.click(function () {
             var selectOm = $('#om').val();
+            var status = $('#status').val();
             var dateInit = $('#dateInit').val();
             var dateEnd = $('#dateEnd').val();
             var search = $('#busca').val();
@@ -120,6 +145,9 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
             }
             if (selectOm) {
                 url += 'om/' + selectOm + '/';
+            }
+            if (status) {
+                url += 'status/' + status + '/';
             }
             if (dateInit) {
                 url += 'dateInit/' + dateInit + '/';
