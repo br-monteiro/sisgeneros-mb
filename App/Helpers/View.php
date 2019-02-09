@@ -11,7 +11,7 @@ class View
      * @param string $suffix The suffix concatened on sliced string
      * @return string The sliced string
      */
-    public static function limitString(string $str, int $length = 30, string $suffix = '...'): string
+    public static function limitString($str, int $length = 30, string $suffix = '...')
     {
         if (strlen($str) > $length) {
             return substr($str, 0, $length) . $suffix;
