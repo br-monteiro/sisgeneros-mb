@@ -107,6 +107,18 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $this->render('form_alteracao_data');
     }
 
+    public function itensLicitadosAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
+        $licitacao = new Licitacao();
+        $this->view->title = 'Forncedores e itens encontrados';
+        $this->view->result = $licitacao->listaItemFornecedor($this->getParametro('busca'));
+        $this->render('mostra_item_buscado');
+    }
+
     public function eliminarAction()
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
