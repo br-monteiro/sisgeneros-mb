@@ -198,7 +198,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                 <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
                     <i class="fa fa-arrow-left"></i> Voltar
                 </a>
-                <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO']) && !in_array($this->view->resultSolicitacao['status'], ['ABERTO', 'APROVADO'])): ?>
+                <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($this->view->resultSolicitacao['status'], ['ABERTO', 'APROVADO'])): ?>
                     <button type="button" class="btn btn-primary pull-right btn-pre-solemp" data-toggle="modal" data-target="#exampleModal">
                         <i class="fa fa-file-text"></i> Gerar Pré-SOLEMP
                     </button>
@@ -302,7 +302,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
 
             window.localStorage.clear();
             window.localStorage.setItem('presolemp_' + idLista, JSON.stringify(valuesPresolemp));
-            window.location = '<?= $this->view->controller; ?>presolemp/idlista/<?= $idLista; ?>';
+            window.open('<?= $this->view->controller; ?>presolemp/idlista/<?= $idLista; ?>', '_blank');
         });
     });
 </script>
