@@ -301,4 +301,30 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         (new SolicitacaoModel())->processNotBiddings($id);
     }
+
+    public function presolempAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+
+        $idLista = $this->getParametro('idlista');
+        $pdf = new Pdf();
+        $pdf->number = $idLista;
+        $pdf->url = $this->view->controller . 'papeletapresolemp/idlista/' . $idLista;
+        $pdf->gerar();
+    }
+
+    public function papeletapresolempAction()
+    {
+        $model = new SolicitacaoModel();
+        $licitacao = new Licitacao();
+        $solicitacaoItem = new SolicitacaoItem();
+        $this->view->resultSolicitacao = $model->findByIdLista($this->view->idLista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
+        $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $this->view->result = $solicitacaoItem->getResultadoPaginator();
+        $this->view->btn = $solicitacaoItem->getNavePaginator();
+        $this->render('papeleta_presolemp', true, 'blank');
+    }
 }
