@@ -19,6 +19,16 @@ foreach ($this->view->resultOms as $index => $value) {
                 <h5 class="page-header"><?= $this->view->title ?></h5>
             </div>
         </div>
+        <div class="row" style="margin: 10px;">
+            <div class="col-md-12">
+                <button class="btn btn-success check-all">
+                    <i class="fa fa-check-square"></i> Marcar todos
+                </button>
+                <button class="btn btn-danger uncheck-all">
+                    <i class="fa fa-square"></i> Desmarcar todos
+                </button>
+            </div>
+        </div>
         <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
             <div class="row">
                 <div class="col-lg-12">
@@ -37,7 +47,7 @@ foreach ($this->view->resultOms as $index => $value) {
                                                    value="<?= $value['id']; ?>"
                                                    class="oms"
                                                    checked="">
-                                            <?= $value['indicativo_naval']; ?>
+                                                   <?= $value['indicativo_naval']; ?>
                                             -
                                             <?= $value['nome']; ?>
                                         </label>
@@ -51,7 +61,7 @@ foreach ($this->view->resultOms as $index => $value) {
                                                    value="<?= $value['id']; ?>"
                                                    class="oms"
                                                    checked="">
-                                            <?= $value['indicativo_naval']; ?>
+                                                   <?= $value['indicativo_naval']; ?>
                                             -
                                             <?= $value['nome']; ?>
                                         </label>
@@ -136,3 +146,15 @@ foreach ($this->view->resultOms as $index => $value) {
         </form>
     </div>
 </div>
+<script>
+    $('.check-all').click(function () {
+        $('input[type=checkbox]').each(function (i, v) {
+            $(v).prop('checked', true);
+        });
+    });
+    $('.uncheck-all').click(function () {
+        $('input[type=checkbox]').each(function (i, v) {
+            $(v).prop('checked', false);
+        });
+    });
+</script>

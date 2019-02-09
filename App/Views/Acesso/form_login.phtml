@@ -1,6 +1,20 @@
+<?php
+
+use App\Config\Configurations as cfg;
+
+?>
 <div class="container">
     <div class="row">
-        <div class="col-md-8"></div>
+        <div class="col-md-8">
+            <div class="login-panel text-application">
+                <h1>MARINHA DO BRASIL</h1>
+                <h3><?= cfg::htrFileConfigs()->application->om ?></h3>
+                <h4>
+                    <?= cfg::htrFileConfigs()->application->name ?>
+                    <?= cfg::htrFileConfigs()->application->version ?>
+                </h4>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="login-panel panel login-container">
                 <div class="panel-heading">
@@ -45,26 +59,32 @@
     </div>
 </div>
 <style>
-body {
-    background-color: #333;
-    background-image: url('images/background.png');
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-.btn-entrar {
-    background-color: #1c294e;
-    color: #fff;
-}
-.btn-entrar:hover {
-    color: #b7b9cc;
-}
+    body {
+        background-color: #333;
+        background-image: url('images/background.png');
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+    .btn-entrar {
+        background-color: #1c294e;
+        color: #fff;
+    }
+    .btn-entrar:hover {
+        color: #b7b9cc;
+    }
 
-.login-container {
-    background-image: url('images/marinha-logotipo.png');
-    background-position-x: 200px;
-    background-repeat: no-repeat;
-    padding: 20px;
-    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3); 
-}
+    .login-container {
+        background-image: url('images/marinha-logotipo.png');
+        background-position-x: 200px;
+        background-repeat: no-repeat;
+        padding: 20px;
+        box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3); 
+    }
+    .text-application {
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+    }
 </style>
