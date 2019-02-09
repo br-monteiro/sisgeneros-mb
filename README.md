@@ -39,6 +39,8 @@ $ sudo chmod 775 -R ~/sisgeneros-mb-master/App/Database/
 ```
 A constante `DOMAIN` deve ser alterada para o domínio da sua OM. Quanto a constante `ADMIN_CONTACT`, deve ser alterada para o e-mail do Administrador do sistema.
 
+Também será necessário alterar as informações contidas no arquivo `~/sisgeneros-mb-master/htr.json`. Abra o arquivo `htr.json` e altere os valores de acordo com sua necessidade.
+
 4. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
 ```bash
 $ php setup.php
