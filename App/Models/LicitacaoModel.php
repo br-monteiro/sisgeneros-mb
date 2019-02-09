@@ -62,7 +62,7 @@ class LicitacaoModel extends CRUD
     public function listaPorFornecedor($idLita)
     {
         $stmt = $this->pdo->prepare("
-            SELECT 
+            SELECT
                 DISTINCT licitacao.numero AS numero,
                     licitacao.id_lista,
                     licitacao.uasg,
@@ -77,6 +77,28 @@ class LicitacaoModel extends CRUD
             WHERE licitacao.id_lista = ?
             ORDER BY fornecedor.nome");
         $stmt->execute([$idLita]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function listaItemFornecedor($search)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                DISTINCT licitacao.numero AS numero,
+                    licitacao.id_lista,
+                    licitacao.uasg,
+                    licitacao.nome_uasg,
+                    item.nome produtoNome,
+                    fornecedor.nome AS nome,
+                    fornecedor.id as fornecedor_id
+            FROM licitacao
+            INNER JOIN licitacao_item AS item
+                ON item.id_lista = licitacao.id_lista AND item.active = 1
+            INNER JOIN fornecedor
+                ON fornecedor.id = item.id_fornecedor
+            WHERE item.nome LIKE :search AND licitacao.validade >= strftime('%s','now')
+            ORDER BY item.nome");
+        $stmt->execute([':search' => "%{$search}%"]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
