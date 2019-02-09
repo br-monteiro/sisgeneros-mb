@@ -62,8 +62,8 @@ class Pagination
                 $active = $view->btn['current'] == $pageNumber ? 'active' : '';
                 $current = '';
 
-                if (isset($dataPagination['previous'])) {
-                    $current = str_replace(self::CURRENT_PAGE, $pageNumber, $dataPagination['previous']);
+                if (isset($dataPagination['current'])) {
+                    $current = str_replace(self::CURRENT_PAGE, $pageNumber, $dataPagination['current']);
                 }
 
                 $template .= ''
