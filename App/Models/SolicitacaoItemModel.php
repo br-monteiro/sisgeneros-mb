@@ -183,7 +183,7 @@ class SolicitacaoItemModel extends CRUD
             . " INNER JOIN `solicitacao` "
             . "     ON `solicitacao_item`.`id_lista` = `solicitacao`.`id_lista` "
             . " WHERE "
-            . "     `solicitacao`.`status` IN ('RECEBIDO', 'FN-ENTREGUE', 'FN-FINANCAS', 'FN-PAGA') "
+            . "     `solicitacao`.`status` IN ('RECEBIDO', 'NF-ENTREGUE', 'NF-FINANCAS', 'NF-PAGA') "
             . "     AND `solicitacao_item`.`item_numero` = ? "
             . "     AND `solicitacao`.`id_licitacao` = ?;");
         $stmt->execute([$itemNumero, $idLicitacao]);
