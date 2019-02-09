@@ -308,6 +308,15 @@ class SolicitacaoModel extends CRUD
             $dados['where'] = ' om.id = :omId ';
             $dados['bindValue'][':omId'] = $params['om'];
         }
+        // search by status
+        if(isset($params['status'])) {
+            if (isset($dados['where'])) {
+                $dados['where'] .= ' AND sol.status = :status ';
+            } else {
+                $dados['where'] = ' sol.status = :status ';
+            }
+            $dados['bindValue'][':status'] = $params['status'];
+        }
         // search by Date Init
         if (isset($params['dateInit']) && preg_match('/\d{2}-\d{2}-\d{4}/', $params['dateInit'])) {
             $exDate = explode('-', $params['dateInit']);
