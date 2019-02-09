@@ -96,9 +96,9 @@ class LicitacaoModel extends CRUD
                 ON item.id_lista = licitacao.id_lista AND item.active = 1
             INNER JOIN fornecedor
                 ON fornecedor.id = item.id_fornecedor
-            WHERE item.nome LIKE '%{$search}%' AND licitacao.validade >= strftime('%s','now')
+            WHERE item.nome LIKE :search AND licitacao.validade >= strftime('%s','now')
             ORDER BY item.nome");
-        $stmt->execute();
+        $stmt->execute([':search' => "%{$search}%"]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
