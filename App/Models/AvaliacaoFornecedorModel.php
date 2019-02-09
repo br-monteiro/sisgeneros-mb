@@ -58,7 +58,8 @@ class AvaliacaoFornecedorModel extends CRUD
             'fornecedor_id' => $this->getFornecedorId(),
             'licitacao_id' => $this->getLicitacaoId(),
             'nota' => $this->getNota(),
-            'nao_entregue' => $this->getNaoEntregue()
+            'nao_entregue' => $this->getNaoEntregue(),
+            'solicitacao_id' => $value['solicitacao_id']
         ];
 
         parent::novo($dados);
