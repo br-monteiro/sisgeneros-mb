@@ -13,6 +13,7 @@ class Configurations extends InternalConfigurations
     const PATH_CORE = '/path/to/core/';
     const DIR_DATABASE = self::PATH_CORE . 'App/Database/';
     const DEFAULT_URI = '/app/sisgeneros/';
+    const TIMEZONE = 'America/Belem';
 
     /**
      * Returns the configurations of htr.json files

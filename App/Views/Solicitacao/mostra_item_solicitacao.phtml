@@ -13,6 +13,88 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
     });
 
 ?>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Informações da Pré-SOLEMP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ug" class="col-form-label">UG:</label>
+                            <input type="text" class="form-control" id="ug">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ptres" class="col-form-label">PTRES:</label>
+                            <input type="text" class="form-control" id="ptres">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="ai" class="col-form-label">AI:</label>
+                            <input type="text" class="form-control" id="ai">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="do" class="col-form-label">DO:</label>
+                            <input type="text" class="form-control" id="do">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bi" class="col-form-label">BI:</label>
+                            <input type="text" class="form-control" id="bi">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="fr" class="col-form-label">FR:</label>
+                            <input type="text" class="form-control" id="fr">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="nd" class="col-form-label">ND:</label>
+                            <input type="text" class="form-control" id="nd">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="plano_contas" class="col-form-label">Plano de Contas:</label>
+                            <input type="text" class="form-control" id="plano_contas">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="finalidade" class="col-form-label">Finalidade:</label>
+                            <textarea class="form-control" id="finalidade"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success btn-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -85,7 +167,14 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
-                <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right"><i class="fa fa-arrow-left"></i> Voltar</a>
+                <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
+                    <i class="fa fa-arrow-left"></i> Voltar
+                </a>
+                <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO']) && !in_array($this->view->resultSolicitacao['status'], ['ABERTO', 'APROVADO'])): ?>
+                    <button type="button" class="btn btn-primary pull-right btn-pre-solemp" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fa fa-file-text"></i> Gerar Pré-SOLEMP
+                    </button>
+                <?php endif; ?>
                 <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->resultSolicitacao['status'] == 'ABERTO'): ?>
                     <div class="row">
                         <div class="col-md-6">
@@ -128,8 +217,8 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                                             <i class="fa fa-edit"></i>
                                         </a>
                                         <a
-                                           onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminaritem/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
-                                           class="btn btn-danger btn-sm">
+                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminaritem/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                            class="btn btn-danger btn-sm">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php endif; ?>
@@ -143,3 +232,40 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
         </div>
     </div>
 </div>
+<style>
+    .btn-pre-solemp {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.btn-confirm').click(function () {
+            var ug = $('#ug').val();
+            var ptres = $('#ptres').val();
+            var ai = $('#ai').val();
+            var do_ = $('#do').val();
+            var bi = $('#bi').val();
+            var fr = $('#fr').val();
+            var nd = $('#nd').val();
+            var plano_contas = $('#plano_contas').val();
+            var finalidade = $('#finalidade').val();
+            var idLista = <?= $idLista; ?>;
+            var valuesPresolemp = {
+                ug: ug,
+                ptres: ptres,
+                ai: ai,
+                do_: do_,
+                bi: bi,
+                fr: fr,
+                nd: nd,
+                plano_contas: plano_contas,
+                finalidade: finalidade,
+                usuario: '<?= "{$this->view->userLoggedIn['name']} - {$this->view->userLoggedIn['email']}"; ?>'
+            };
+            debugger;
+            window.sessionStorage.setItem('presolemp_' + idLista, JSON.stringify(valuesPresolemp));
+            window.location = '<?= $this->view->controller; ?>presolemp/idlista/<?= $idLista; ?>';
+        });
+    });
+</script>

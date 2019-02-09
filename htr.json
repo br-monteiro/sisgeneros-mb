@@ -2,6 +2,10 @@
     "application": {
         "name": "SisGêneros",
         "version": "1.8",
-        "om": "Centro de Intendência da Marinha em Belém (CeIMBe)"
+        "om": "Centro de Intendência da Marinha em Belém"
+    },
+    "papeleta": {
+        "cidade": "Belém do Pará",
+        "estado": "Pará"
     }
 }
