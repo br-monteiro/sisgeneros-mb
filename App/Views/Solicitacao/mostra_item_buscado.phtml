@@ -42,7 +42,7 @@ $busca = $this->getParametro('busca');
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= View::highlight($value['produtoNome'], strtoupper($busca)) ?> - <?= $value['nome']; ?></td>
+                                <td><?= View::highlight(strtoupper($value['produtoNome']), strtoupper($busca)) ?> - <?= $value['nome']; ?></td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>item/fornecedor/<?= $value['fornecedor_id']; ?>/idlista/<?= $value['id_lista']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i> Registrar Solicitação
