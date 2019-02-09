@@ -32,13 +32,6 @@ class ItemModel extends CRUD
 
     public function paginator($pagina, $idLista)
     {
-        /*
-         * SELECT `licitacao_item`.*, `fornecedor`.`nome` AS fornecedor 
-         * FROM `licitacao_item` 
-         * INNER JOIN `fornecedor` ON `licitacao_item`.`id_fornecedor` = `fornecedor`.`id` 
-         * WHERE `licitacao_item`.`id_lista` = ? 
-         * ORDER BY `licitacao_item`.`numero` ASC ;
-         */
         $dados = [
             'entidade' => 'licitacao_item INNER JOIN `fornecedor` ON `licitacao_item`.`id_fornecedor` = `fornecedor`.`id`',
             'pagina' => $pagina,

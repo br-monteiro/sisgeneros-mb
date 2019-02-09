@@ -80,6 +80,34 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tipo_empenho" class="col-form-label">Tipo de Empenho:</label>
+                            <input type="text" class="form-control" id="tipo_empenho">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="modalidade" class="col-form-label">Modalidade:</label>
+                            <input type="text" class="form-control" id="modalidade">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="classificacao_item" class="col-form-label">Classificação itens:</label>
+                            <input type="text" class="form-control" id="classificacao_item">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="centro_custo" class="col-form-label">Centro de Custo:</label>
+                            <input type="text" class="form-control" id="centro_custo">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="finalidade" class="col-form-label">Finalidade:</label>
@@ -249,6 +277,10 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             var fr = $('#fr').val();
             var nd = $('#nd').val();
             var plano_contas = $('#plano_contas').val();
+            var tipo_empenho = $('#tipo_empenho').val();
+            var classificacao_item = $('#classificacao_item').val();
+            var centro_custo = $('#centro_custo').val();
+            var modalidade = $('#modalidade').val();
             var finalidade = $('#finalidade').val();
             var idLista = <?= $idLista; ?>;
             var valuesPresolemp = {
@@ -260,11 +292,16 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                 fr: fr,
                 nd: nd,
                 plano_contas: plano_contas,
+                tipo_empenho: tipo_empenho,
+                modalidade: modalidade,
                 finalidade: finalidade,
+                classificacao_item: classificacao_item,
+                centro_custo: centro_custo,
                 usuario: '<?= "{$this->view->userLoggedIn['name']} - {$this->view->userLoggedIn['email']}"; ?>'
             };
-            debugger;
-            window.sessionStorage.setItem('presolemp_' + idLista, JSON.stringify(valuesPresolemp));
+
+            window.localStorage.clear();
+            window.localStorage.setItem('presolemp_' + idLista, JSON.stringify(valuesPresolemp));
             window.location = '<?= $this->view->controller; ?>presolemp/idlista/<?= $idLista; ?>';
         });
     });

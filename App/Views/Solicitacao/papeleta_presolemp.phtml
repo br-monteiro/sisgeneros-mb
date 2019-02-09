@@ -57,6 +57,10 @@ $total = 0;
     .width-10-percent {
         width: 10%;
     }
+    .text-normal {
+        text-transform: none !important;
+        font-weight: normal !important;
+    }
 </style>
 <table class="table-print">
     <tr>
@@ -71,7 +75,8 @@ $total = 0;
             <?= cfg::htrFileConfigs()->application->om ?? ''; ?>
             <br>
             <br>
-            PRÉ-SOLICITAÇÃO DE EMPENHO
+            PRÉ-SOLICITAÇÃO DE EMPENHO -
+            Nº <?= $this->view->resultSolicitacao['numero']; ?>
         </td>
     </tr>
     <tr>
@@ -91,16 +96,40 @@ $total = 0;
             <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
         </td>
     </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>Tipo de Empenho:</span>
+            <span class="tipo_empenho text-normal"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>Modalidade:</span>
+            <span class="modalidade text-normal"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>Classificação Itens:</span>
+            <span class="classificacao_item text-normal"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="informacoes left">
+            <span>Centro de Custo:</span>
+            <span class="centro_custo text-normal"></span>
+        </td>
+    </tr>
     <?php if (isset($this->view->resultLicitacao['numero'])): ?>
         <tr>
             <td class="informacoes left">
-                <span>Licitação:</span>
+                <span>NR Processo:</span>
                 <?= $this->view->resultLicitacao['numero']; ?>
             </td>
         </tr>
         <tr>
             <td class="informacoes left text-uppercase">
-                <span>Órgão:</span>
+                <span>UASG Licitação:</span>
                 <?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?>
             </td>
         </tr>
@@ -218,7 +247,7 @@ $total = 0;
 <script>
     var data = (function () {
         try {
-            return JSON.parse(window.sessionStorage.getItem('presolemp_<?= $this->getParametro('idlista'); ?>'));
+            return JSON.parse(window.localStorage.getItem('presolemp_<?= $this->getParametro('idlista'); ?>'));
         } catch (_) {
             return {};
         }
@@ -231,6 +260,10 @@ $total = 0;
     $('.fr').text(data.fr);
     $('.nd').text(data.nd);
     $('.plano_contas').text(data.plano_contas);
+    $('.tipo_empenho').text(data.tipo_empenho);
+    $('.modalidade').text(data.modalidade);
+    $('.classificacao_item').text(data.classificacao_item);
+    $('.centro_custo').text(data.centro_custo);
     $('.finalidade span').text(data.finalidade);
     $('.usuario').text(data.usuario);
 </script>
