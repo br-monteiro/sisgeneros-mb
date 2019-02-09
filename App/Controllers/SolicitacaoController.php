@@ -320,15 +320,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->clearAccessList()
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
 
-        $idLista = $this->getParametro('idlista');
-        $pdf = new Pdf();
-        $pdf->number = $idLista;
-        $pdf->url = $this->view->controller . 'papeletapresolemp/idlista/' . $idLista;
-        $pdf->gerar();
-    }
-
-    public function papeletapresolempAction()
-    {
         $model = new SolicitacaoModel();
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
