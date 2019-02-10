@@ -803,7 +803,7 @@ class SolicitacaoModel extends CRUD
             . " INNER JOIN om ON om.id = sol.om_id "
             . " {$where} "
             . " ORDER BY "
-            . "     sol.updated_at ASC "
+            . "     sol.updated_at DESC "
             . " LIMIT 10";
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
