@@ -63,7 +63,7 @@ function changeAdminUser(\PDO $pdo)
 {
     try {
         $username = 'administrador';
-        $password = (new \HTR\Helpers\Criptografia\Criptografia())->passHash($username);
+        $password = (new \HTR\Helpers\Criptografia\Criptografia())->passHash($username . cfg::STR_SALT);
         $pdo->exec("UPDATE users SET username='{$username}', password='{$password}', trocar_senha='1' WHERE id = 1;");
         echo "> Usuário Administrador alterado com sucesso" . PHP_EOL;
     } catch (\Exception $ex) {
@@ -90,9 +90,11 @@ function createDataBase(): \PDO
         // load SQL query
         $sqlFile = file_get_contents('dump.sql');
         $dbName = (new DatabaseConfig())->db['sqlite'];
+        $dbFullName = cfg::DIR_DATABASE . cfg::DS . $dbName;
         // create the database file
-        $file = fopen(cfg::DIR_DATABASE . cfg::DS . $dbName, 'w+');
+        $file = fopen($dbFullName, 'w+');
         fclose($file);
+        chmod($dbFullName, 0666);
         // connect into database and execute the SQL queries
         $pdo = (new HTR\System\ModelCRUD())->pdo;
         $pdo->exec($sqlFile);

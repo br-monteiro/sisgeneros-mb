@@ -254,7 +254,7 @@ class AcessoModel extends CRUD
             }
 
             // verifica a autenticidade da senha
-            if ($cripto->passVerify($password, $result['password'])) {
+            if ($cripto->passVerify($password . cfg::STR_SALT, $result['password'])) {
                 // Caso seja um usuário autêntico, inicia a sessão
                 $this->registerSession($result);
                 return; // just stop execution
@@ -356,7 +356,7 @@ class AcessoModel extends CRUD
                 . '<script>focusOn("password");</script>', 'danger');
         }
 
-        $this->criptoVar('password', $this->getPassword(), true);
+        $this->criptoVar('password', $this->getPassword() . cfg::STR_SALT, true);
 
         return $this;
     }
