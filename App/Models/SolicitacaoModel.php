@@ -480,41 +480,6 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function chart($user)
-    {
-        $sql = !in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) ? " AND om_id = '{$user['om_id']}'" : null;
-        $result = [];
-        foreach ($this->arrayDate() as $key) {
-            $stmt = $this->pdo->prepare(""
-                . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE (status != 'ABERTO' OR status != 'APROVADO') AND created_at > ? AND created_at < ? " . $sql);
-            $stmt->bindValue(1, $key['inicio']);
-            $stmt->bindValue(2, $key['fim']);
-            $stmt->execute();
-            $result[] = count($stmt->fetchAll(\PDO::FETCH_ASSOC));
-        }
-        return implode(",", $result);
-    }
-
-    private function arrayDate()
-    {
-        $ano = date("Y");
-        return [
-            ['inicio' => strtotime("01-01-" . $ano), 'fim' => strtotime("31-01-" . $ano)],
-            ['inicio' => strtotime("01-02-" . $ano), 'fim' => strtotime("28-02-" . $ano)],
-            ['inicio' => strtotime("01-03-" . $ano), 'fim' => strtotime("31-03-" . $ano)],
-            ['inicio' => strtotime("01-04-" . $ano), 'fim' => strtotime("30-04-" . $ano)],
-            ['inicio' => strtotime("01-05-" . $ano), 'fim' => strtotime("31-05-" . $ano)],
-            ['inicio' => strtotime("01-06-" . $ano), 'fim' => strtotime("30-06-" . $ano)],
-            ['inicio' => strtotime("01-07-" . $ano), 'fim' => strtotime("31-07-" . $ano)],
-            ['inicio' => strtotime("01-08-" . $ano), 'fim' => strtotime("31-08-" . $ano)],
-            ['inicio' => strtotime("01-09-" . $ano), 'fim' => strtotime("30-09-" . $ano)],
-            ['inicio' => strtotime("01-10-" . $ano), 'fim' => strtotime("31-10-" . $ano)],
-            ['inicio' => strtotime("01-11-" . $ano), 'fim' => strtotime("30-11-" . $ano)],
-            ['inicio' => strtotime("01-12-" . $ano), 'fim' => strtotime("31-12-" . $ano)]
-        ];
-    }
-
     /**
      * Generate the number of Solicitação
      * @return int The solictação number
