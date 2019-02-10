@@ -2,29 +2,6 @@
 $cfg = App\Config\Configurations::htrFileConfigs();
 
 ?>
-<script src="attach/Chart.js-master/Chart.min.js"></script>
-<script>
-    var barChartData = {
-        labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-        datasets: [
-            {
-                fillColor: "rgba(151,187,205,0.5)",
-                strokeColor: "rgba(151,187,205,0.8)",
-                highlightFill: "rgba(151,187,205,0.75)",
-                highlightStroke: "rgba(151,187,205,1)",
-                data: [<?= $this->view->chart; ?>]
-            }
-        ]
-
-    };
-    window.onload = function () {
-        var ctx = document.getElementById("canvas").getContext("2d");
-        window.myBar = new Chart(ctx).Bar(barChartData, {
-            responsive: true
-        });
-    };
-
-</script>
 <div id="page-wrapper">
     <div class="container-fluid">
 
@@ -103,19 +80,19 @@ $cfg = App\Config\Configurations::htrFileConfigs();
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
-            <h5>Gráfico de Solicitações em <?= date("Y"); ?></h5>
-            <canvas id="canvas" height="90"></canvas>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-lg-6 mb-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
                 </div>
                 <div class="card-body">
-                    <?php foreach ($this->view->melhoresAvaliacoes ?? [] as $value): ?>
+                    <?php foreach ($this->view->melhoresAvaliacoes as $index => $value): ?>
+                        <?php
+                        if ($index > 4) {
+                            break;
+                        }
+
+                        ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
@@ -139,7 +116,13 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                     <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
                 </div>
                 <div class="card-body">
-                    <?php foreach ($this->view->pioresAvaliacoes ?? [] as $value): ?>
+                    <?php foreach ($this->view->pioresAvaliacoes as $index => $value): ?>
+                        <?php
+                        if ($index > 4) {
+                            break;
+                        }
+
+                        ?>
                         <h4 class="small font-weight-bold">
                             <?= $value['nome'] ?>
                             <span class="float-right"><?= $value['nota'] ?></span>
