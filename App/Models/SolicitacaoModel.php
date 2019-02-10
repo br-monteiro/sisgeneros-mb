@@ -309,7 +309,7 @@ class SolicitacaoModel extends CRUD
             $dados['bindValue'][':omId'] = $params['om'];
         }
         // search by status
-        if(isset($params['status'])) {
+        if (isset($params['status'])) {
             if (isset($dados['where'])) {
                 $dados['where'] .= ' AND sol.status = :status ';
             } else {
@@ -815,6 +815,32 @@ class SolicitacaoModel extends CRUD
             ];
         }
         return $result;
+    }
+
+    /**
+     * Fetch the last updated solicitation
+     * @param array $user The user logged in
+     * @return array
+     */
+    public function lastUpdated(array $user): array
+    {
+        $where = '';
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " WHERE sol.om_id = " . $user['om_id'];
+        }
+        $query = ""
+            . " SELECT "
+            . "     sol.numero, "
+            . "     sol.status, "
+            . "     sol.updated_at, "
+            . "     om.indicativo_naval"
+            . " FROM {$this->entidade} AS sol "
+            . " INNER JOIN om ON om.id = sol.om_id "
+            . " {$where} "
+            . " ORDER BY "
+            . "     sol.updated_at ASC "
+            . " LIMIT 10";
+        return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function validaAll($om)
