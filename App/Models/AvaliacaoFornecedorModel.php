@@ -74,16 +74,18 @@ class AvaliacaoFornecedorModel extends CRUD
             ->setNaoEntregue($value['nao_entregue']);
     }
 
-    public function findBestBadSuppliers($orderBy = "DESC")
+    public function findBestBadSuppliers()
     {
         $query = ""
             . " SELECT "
-            . " f.nome, nota "
-            . " FROM {$this->entidade} AS aval "
+            . "     AVG(af.nota) AS nota,"
+            . "     forn.nome "
+            . " FROM {$this->entidade} AS af "
             . " INNER JOIN "
-            . " fornecedor AS f ON f.id = aval.fornecedor_id "
-            . " ORDER BY nota " . $orderBy
-            . " LIMIT 5";
+            . "     fornecedor AS forn "
+            . "     ON forn.id = af.fornecedor_id "
+            . " GROUP BY fornecedor_id"
+            . " ORDER BY nota DESC";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
