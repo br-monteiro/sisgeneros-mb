@@ -309,7 +309,7 @@ class SolicitacaoModel extends CRUD
             $dados['bindValue'][':omId'] = $params['om'];
         }
         // search by status
-        if(isset($params['status'])) {
+        if (isset($params['status'])) {
             if (isset($dados['where'])) {
                 $dados['where'] .= ' AND sol.status = :status ';
             } else {
@@ -478,41 +478,6 @@ class SolicitacaoModel extends CRUD
                 return true;
             }
         }
-    }
-
-    public function chart($user)
-    {
-        $sql = !in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) ? " AND om_id = '{$user['om_id']}'" : null;
-        $result = [];
-        foreach ($this->arrayDate() as $key) {
-            $stmt = $this->pdo->prepare(""
-                . "SELECT id FROM {$this->getEntidade()} "
-                . "WHERE (status != 'ABERTO' OR status != 'APROVADO') AND created_at > ? AND created_at < ? " . $sql);
-            $stmt->bindValue(1, $key['inicio']);
-            $stmt->bindValue(2, $key['fim']);
-            $stmt->execute();
-            $result[] = count($stmt->fetchAll(\PDO::FETCH_ASSOC));
-        }
-        return implode(",", $result);
-    }
-
-    private function arrayDate()
-    {
-        $ano = date("Y");
-        return [
-            ['inicio' => strtotime("01-01-" . $ano), 'fim' => strtotime("31-01-" . $ano)],
-            ['inicio' => strtotime("01-02-" . $ano), 'fim' => strtotime("28-02-" . $ano)],
-            ['inicio' => strtotime("01-03-" . $ano), 'fim' => strtotime("31-03-" . $ano)],
-            ['inicio' => strtotime("01-04-" . $ano), 'fim' => strtotime("30-04-" . $ano)],
-            ['inicio' => strtotime("01-05-" . $ano), 'fim' => strtotime("31-05-" . $ano)],
-            ['inicio' => strtotime("01-06-" . $ano), 'fim' => strtotime("30-06-" . $ano)],
-            ['inicio' => strtotime("01-07-" . $ano), 'fim' => strtotime("31-07-" . $ano)],
-            ['inicio' => strtotime("01-08-" . $ano), 'fim' => strtotime("31-08-" . $ano)],
-            ['inicio' => strtotime("01-09-" . $ano), 'fim' => strtotime("30-09-" . $ano)],
-            ['inicio' => strtotime("01-10-" . $ano), 'fim' => strtotime("31-10-" . $ano)],
-            ['inicio' => strtotime("01-11-" . $ano), 'fim' => strtotime("30-11-" . $ano)],
-            ['inicio' => strtotime("01-12-" . $ano), 'fim' => strtotime("31-12-" . $ano)]
-        ];
     }
 
     /**
@@ -815,6 +780,32 @@ class SolicitacaoModel extends CRUD
             ];
         }
         return $result;
+    }
+
+    /**
+     * Fetch the last updated solicitation
+     * @param array $user The user logged in
+     * @return array
+     */
+    public function lastUpdated(array $user): array
+    {
+        $where = '';
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " WHERE sol.om_id = " . $user['om_id'];
+        }
+        $query = ""
+            . " SELECT "
+            . "     sol.numero, "
+            . "     sol.status, "
+            . "     sol.updated_at, "
+            . "     om.indicativo_naval"
+            . " FROM {$this->entidade} AS sol "
+            . " INNER JOIN om ON om.id = sol.om_id "
+            . " {$where} "
+            . " ORDER BY "
+            . "     sol.updated_at ASC "
+            . " LIMIT 10";
+        return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function validaAll($om)
