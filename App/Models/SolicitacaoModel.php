@@ -523,6 +523,7 @@ class SolicitacaoModel extends CRUD
             'APROVADO' => 'PROCESSADO',
             'PROCESSADO' => 'EMPENHADO',
             'EMPENHADO' => 'SOLICITADO',
+            'SOLICITADO' => 'RECEBIDO',
             'RECEBIDO' => 'NF-ENTREGUE',
             'NF-ENTREGUE' => 'NF-FINANCAS',
             'NF-FINANCAS' => 'NF-PAGA'
@@ -560,7 +561,9 @@ class SolicitacaoModel extends CRUD
                 ];
             }
 
-            parent::editar($dados, $id);
+            if (count($dados) > 0) {
+                parent::editar($dados, $id);
+            }
         }
     }
 
