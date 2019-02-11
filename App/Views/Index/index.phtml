@@ -4,12 +4,6 @@ $cfg = App\Config\Configurations::htrFileConfigs();
 ?>
 <div id="page-wrapper">
     <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Home</h1>
-        </div>
-
         <?php foreach ($this->view->resultAvisos ?? [] as $value): ?>
             <div class="row">
                 <div class="col-lg-12">
@@ -80,11 +74,75 @@ $cfg = App\Config\Configurations::htrFileConfigs();
     </div>
 
     <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-1">
+                    <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
+                </div>
+                <div class="card-body">
+                    <?php foreach ($this->view->melhoresAvaliacoes as $index => $value): ?>
+                        <?php
+                        if ($index > 4) {
+                            break;
+                        }
+                        $value['nota'] = round($value['nota'], 2);
+
+                        ?>
+                        <h4 class="small font-weight-bold">
+                            <?= $value['nome'] ?>
+                            <span class="float-right"><?= $value['nota'] ?></span>
+                        </h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-success"
+                                 role="progressbar"
+                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 aria-valuemin="1"
+                                 aria-valuemax="5"></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-1">
+                    <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
+                </div>
+                <div class="card-body">
+                    <?php foreach ($this->view->pioresAvaliacoes as $index => $value): ?>
+                        <?php
+                        if ($index > 4) {
+                            break;
+                        }
+                        $value['nota'] = round($value['nota'], 2);
+
+                        ?>
+                        <h4 class="small font-weight-bold">
+                            <?= $value['nome'] ?>
+                            <span class="float-right"><?= $value['nota'] ?></span>
+                        </h4>
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-danger"
+                                 role="progressbar"
+                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 aria-valuemin="0"
+                                 aria-valuemax="5"></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        Ultimas solicitações atualizadas
+                        Últimas solicitações atualizadas
                     </h6>
                 </div>
                 <div class="card-body">
@@ -122,70 +180,6 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Melhores empresas avaliadas</h6>
-                </div>
-                <div class="card-body">
-                    <?php foreach ($this->view->melhoresAvaliacoes as $index => $value): ?>
-                        <?php
-                        if ($index > 4) {
-                            break;
-                        }
-                        $value['nota'] = round($value['nota'], 2);
-
-                        ?>
-                        <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
-                        </h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-success"
-                                 role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
-                                 aria-valuemin="1"
-                                 aria-valuemax="5"></div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Piores empresas avaliadas</h6>
-                </div>
-                <div class="card-body">
-                    <?php foreach ($this->view->pioresAvaliacoes as $index => $value): ?>
-                        <?php
-                        if ($index > 4) {
-                            break;
-                        }
-                        $value['nota'] = round($value['nota'], 2);
-
-                        ?>
-                        <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
-                        </h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-danger"
-                                 role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
-                                 aria-valuemin="0"
-                                 aria-valuemax="5"></div>
-                        </div>
-                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
