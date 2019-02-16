@@ -281,6 +281,13 @@ class SolicitacaoController extends Controller implements CtrlInterface
         (new SolicitacaoModel())->processStatus($id, $status, $action);
 
         header('location: ' . $this->view->controller);
+
+        if($status == 'APROVADO' && $action == 'PROXIMO') {
+            $solicitacao = (new SolicitacaoModel())->findById($id);
+            header('location: '
+                . $this->view->controller
+                . 'detalhar/idlista/'.$solicitacao['id_lista']);
+        }
     }
 
     public function processarnaolicitadoAction()
