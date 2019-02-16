@@ -604,6 +604,26 @@ class SolicitacaoModel extends CRUD
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
+    {
+        $hoje = date("d-m-Y", time());
+
+        $query = ""
+            . "SELECT "
+            . "COUNT(*) quantidade "
+            . "FROM {$this->entidade} "
+            . "WHERE status LIKE :status AND data_entrega > :hoje";
+
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND om_id = {$user['om_id']} ";
+            $query . $where;
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':status' => $status, ':hoje' => $hoje]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function findSolitacoesMensal($user)
     {
         $mesPassado = date(strtotime("- 1 month", time()));
