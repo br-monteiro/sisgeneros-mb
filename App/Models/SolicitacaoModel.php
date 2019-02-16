@@ -606,13 +606,12 @@ class SolicitacaoModel extends CRUD
 
     public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
     {
-        $hoje = date("Y-m-d", time());
 
         $query = ""
             . "SELECT "
             . "COUNT(*) quantidade "
             . "FROM {$this->entidade} "
-            . "WHERE status LIKE :status AND data_entrega > :hoje";
+            . "WHERE status LIKE :status AND data_entrega < date('now')";
 
         if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $where = " AND om_id = {$user['om_id']} ";
@@ -620,7 +619,7 @@ class SolicitacaoModel extends CRUD
         }
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':status' => $status, ':hoje' => $hoje]);
+        $stmt->execute([':status' => $status]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
