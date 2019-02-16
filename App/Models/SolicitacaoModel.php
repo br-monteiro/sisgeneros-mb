@@ -606,7 +606,7 @@ class SolicitacaoModel extends CRUD
 
     public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
     {
-        $hoje = date("d-m-Y", time());
+        $hoje = date("Y-m-d", time());
 
         $query = ""
             . "SELECT "
@@ -975,6 +975,17 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
+    private function abstractDateValidate(string $value, string $fieldName, string $labelName)
+    {
+        $date = explode('-', $value);
+        $date = $date[2] . '-' . $date[1] . '-' . $date[0];
+        if (!v::date()->validate($date)) {
+            msg::showMsg('O campo ' . $labelName . ' deve ser preenchido corretamente.'
+                . '<script>focusOn("' . $fieldName . '");</script>', 'danger');
+        }
+        return $date;
+    }
+
     private function validaNome($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
@@ -997,11 +1008,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaDataEntrega($value)
     {
-        $validate = v::date('d-m-Y')->length(10, 10)->validate($value);
-        if (!$validate) {
-            msg::showMsg('O campo <b>Data estipulada para entrega</b> deve ser preenchido com uma data válida.'
-                . '<script>focusOn("data_entrega");</script>', 'danger');
-        }
+        $this->setDataEntrega($this->abstractDateValidate($value, 'data_entrega', 'Data estipulada para entrega'));
         return $this;
     }
 }
