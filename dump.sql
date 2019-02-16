@@ -114,7 +114,7 @@ CREATE TABLE solicitacao (
     nao_licitado         INT (1)      NOT NULL
                                       DEFAULT (0),
     numero_nota_fiscal   VARCHAR (20),
-    data_entrega         VARCHAR (10),
+    data_entrega         DATE,
     observacao           TEXT,
     lista_desmembramento TEXT         DEFAULT (''),
     FOREIGN KEY (
@@ -135,7 +135,7 @@ CREATE TABLE solicitacao_item (
     item_uf                  VARCHAR (5),
     item_quantidade          REAL (9, 2),
     item_quantidade_atendida REAL (9, 2)  DEFAULT (0),
-    item_valor               REAL (9, 2)  DEFAULT (0) 
+    item_valor               REAL (9, 2)  DEFAULT (0)
 );
 
 
