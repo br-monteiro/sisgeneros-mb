@@ -4,6 +4,12 @@ use App\Helpers\Pagination;
 
 $idLista = $this->view->idLista;
 
+$formatDate = function(string $value) {
+    $explodedDate = explode('-', $value);
+    $explodedDate = array_reverse($explodedDate);
+    return implode('-', $explodedDate);
+};
+
 $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
         return [
             'previous' => "{$controllerName}detalhar/idlista/{$idLista}/pagina/{$btn['previous']}",
@@ -144,7 +150,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['data_entrega']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];
