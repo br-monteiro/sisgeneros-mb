@@ -7,6 +7,12 @@ $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
 $userNivel = $this->view->userLoggedIn['nivel'];
 
+$formatDate = function(string $value) {
+    $explodedDate = explode('-', $value);
+    $explodedDate = array_reverse($explodedDate);
+    return implode('-', $explodedDate);
+};
+
 /**
  * This function build the string used in src attribute of action buttons
  * @param array $value The current solicitation
@@ -109,7 +115,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= $value['data_entrega']; ?>
+                                        <?= $formatDate($value['data_entrega']); ?>
                                     </span>
                                 </td>
                                 <td>

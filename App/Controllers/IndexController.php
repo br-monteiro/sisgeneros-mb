@@ -30,7 +30,7 @@ class IndexController extends Controller implements CtrlInterface
         $this->view->pioresAvaliacoes = array_reverse($arrEvaluation);
         $this->view->pendAprov = $solicitacao->findQtdSolicitByStatus($this->view->userLoggedIn, 'ABERTO');
         $this->view->solicitacoesMensal = $solicitacao->findSolitacoesMensal($this->view->userLoggedIn);
-        $this->view->fornecedor = (new FornecedorModel())->findAll();
+        $this->view->solicitacoesAtrasadas = $solicitacao->findQtdSolicitAtrasadas($this->view->userLoggedIn);
         $this->view->resultAvisos = (new AvisosModel())->fetchAllAvisosByOmId($this->view->userLoggedIn['om_id']);
         $this->view->lastUpdated = $solicitacao->lastUpdated($this->view->userLoggedIn);
         $this->render('index');

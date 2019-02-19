@@ -604,6 +604,25 @@ class SolicitacaoModel extends CRUD
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
+    {
+
+        $query = ""
+            . "SELECT "
+            . "COUNT(*) quantidade "
+            . "FROM {$this->entidade} "
+            . "WHERE status LIKE :status AND data_entrega < date('now')";
+
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND om_id = {$user['om_id']} ";
+            $query . $where;
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':status' => $status]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function findSolitacoesMensal($user)
     {
         $mesPassado = date(strtotime("- 1 month", time()));
@@ -955,6 +974,17 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
+    private function abstractDateValidate(string $value, string $fieldName, string $labelName)
+    {
+        $date = explode('-', $value);
+        $date = $date[2] . '-' . $date[1] . '-' . $date[0];
+        if (!v::date()->validate($date)) {
+            msg::showMsg('O campo ' . $labelName . ' deve ser preenchido corretamente.'
+                . '<script>focusOn("' . $fieldName . '");</script>', 'danger');
+        }
+        return $date;
+    }
+
     private function validaNome($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
@@ -977,11 +1007,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaDataEntrega($value)
     {
-        $validate = v::date('d-m-Y')->length(10, 10)->validate($value);
-        if (!$validate) {
-            msg::showMsg('O campo <b>Data estipulada para entrega</b> deve ser preenchido com uma data válida.'
-                . '<script>focusOn("data_entrega");</script>', 'danger');
-        }
+        $this->setDataEntrega($this->abstractDateValidate($value, 'data_entrega', 'Data estipulada para entrega'));
         return $this;
     }
 }
