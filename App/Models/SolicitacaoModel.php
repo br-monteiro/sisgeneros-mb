@@ -360,15 +360,16 @@ class SolicitacaoModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novoNaoLicitado($om)
+    public function novoNaoLicitado($om, $directoryReference)
     {
         $this->validaAll($om);
         $this->validaDataEntrega($this->getDataEntrega());
+        $this->validaArquivos();
         $dados = [
             'id_licitacao' => $this->getIdLicitacao(),
             'id_lista' => $this->getIdLista(),
             'om_id' => $this->getOmId(),
-            'fornecedor_id' => 0,
+            'fornecedor_id' => $this->getFornecedorId(),
             'numero' => $this->getNumero(),
             'status' => 'ABERTO',
             'ano' => date('Y'),
@@ -377,6 +378,8 @@ class SolicitacaoModel extends CRUD
             'nao_licitado' => 1,
             'data_entrega' => $this->getDataEntrega()
         ];
+        d($dados);
+        return null;
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             (new Itens())->novoNaoLicitado($dados);
@@ -834,6 +837,7 @@ class SolicitacaoModel extends CRUD
     {
         $value = filter_input_array(INPUT_POST);
         $this->setNaoLicitado(filter_var($value['nao_licitado'], FILTER_VALIDATE_INT))
+            ->setFornecedorId(filter_var($value['fornecedor_id'], FILTER_VALIDATE_INT))
             ->setNumeroNotaFiscal(filter_var($value['numero_nota_fiscal'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setDataEntrega(filter_var($value['data_entrega'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setObservacao(filter_var($value['observacao'], FILTER_SANITIZE_SPECIAL_CHARS))
@@ -844,12 +848,12 @@ class SolicitacaoModel extends CRUD
             ->setNumero($this->numberGenerator());
 
         $this->validaNumeroNotaFiscal($this->getNumeroNotaFiscal());
+        $this->validaFornecedor();
 
         for ($i = 0; $i < count($value['quantidade']); $i++) {
             $id = filter_var($value['id'][$i], FILTER_VALIDATE_INT);
             $quantidade = str_replace(",", ".", $value['quantidade'][$i]);
             $quantidade = filter_var($quantidade, FILTER_VALIDATE_FLOAT);
-            $this->setFornecedorId(filter_var($value['fornecedor'][0] ?? null, FILTER_VALIDATE_INT));
 
             if ($id AND $quantidade) {
                 $this->listaItens[$id] = $quantidade;
@@ -867,10 +871,7 @@ class SolicitacaoModel extends CRUD
         for ($i = 0; $i < count($value['quantidade']); $i++) {
             $quantidade = $this->validaQuantidade($value['quantidade'][$i]);
             $uf = $this->validaUf($value['uf'][$i]);
-            $valor = 0;
-            if (!$this->getNaoLicitado()) {
-                $valor = $this->validaValor($value['valor'][$i]);
-            }
+            $valor = $this->validaValor($value['valor'][$i]);
             $nome = $this->validaNome($value['nome'][$i]);
             $this->listaItens[] = [
                 'id_lista' => $this->getIdLista(),
@@ -906,6 +907,15 @@ class SolicitacaoModel extends CRUD
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
         return $input ?? $this;
+    }
+
+    private function validaFornecedor($input = null)
+    {
+        $value = v::intVal()->validate($this->getFornecedorId());
+        if (!$value) {
+            msg::showMsg('É necessário informar um fornecedor', 'danger');
+        }
+        return $this;
     }
 
     private function validaIdLicitacao()
@@ -1009,5 +1019,27 @@ class SolicitacaoModel extends CRUD
     {
         $this->setDataEntrega($this->abstractDateValidate($value, 'data_entrega', 'Data estipulada para entrega'));
         return $this;
+    }
+
+    private function validaArquivos()
+    {
+        $files = $_FILES['arquivos'] ?? false;
+        if ($files) {
+            foreach ($files['type'] as $type) {
+                if ($type != 'application/pdf') {
+                    msg::showMsg('Só é permitido o envio de arquivos no formato PDF.', 'danger');
+                }
+            }
+        } else {
+            msg::showMsg('Deve ser feito o Upload de pelo menos um arquivo.', 'danger');
+        }
+    }
+
+    private function saveFiles(string $directoryReference, int $solicitationNumber)
+    {
+        $files = $_FILES['arquivos'] ?? false;
+        if ($files) {
+            move_uploaded_file($directoryReference, $destination);
+        }
     }
 }
