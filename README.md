@@ -51,9 +51,10 @@ $ php setup.php
 > Chave SALT alterada com sucesso
 > Path do Core alterado com sucesso
 > Path do autoload alterado com sucesso
-> Arquivo de Sqlite criado com sucesso.
-> Dados padrão inseridos com sucesso.
+> Arquivo de Sqlite criado com sucesso
+> Dados padrão inseridos com sucesso
 > Usuário Administrador alterado com sucesso
+> Permissões de acesso no diretório de upload setadas com sucesso
 >> Configurações finalizadas.
 ```
 5. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
