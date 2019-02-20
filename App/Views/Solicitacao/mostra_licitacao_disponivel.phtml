@@ -53,7 +53,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     </thead>
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
-                            <tr>
+                            <tr class="table-licitacao" data-idLista="<?= $value['id_lista']; ?>">
                                 <td><?= $value['numero']; ?></td>
                                 <td><?= $value['descricao']; ?></td>
                                 <td><?= $value['uasg']; ?></td>
@@ -62,11 +62,6 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <span class="label label-danger">
                                         <?= date('d-m-Y', $value['validade']); ?>
                                     </span>
-                                </td>
-                                <td>
-                                    <a href="<?= $this->view->controller; ?>fornecedor/idlista/<?= $value['id_lista']; ?>" class="btn btn-success btn-sm">
-                                        <i class="fa fa-edit"></i> Registrar Solicitação
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -88,4 +83,14 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
             searchInput.focus();
         }
     });
+    $('.table-licitacao').click(function link() {
+        var idLista = $(this).attr('data-idLista');
+        window.location = "<?= $this->view->controller; ?>fornecedor/idlista/"+idLista;
+    });
 </script>
+<style>
+    .table-licitacao:hover {
+        cursor: pointer;
+        background-color: #ccc;
+    }
+</style>
