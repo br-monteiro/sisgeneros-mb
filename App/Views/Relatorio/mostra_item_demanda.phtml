@@ -22,6 +22,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                 <div class="alert alert-info" role="alert">
                     Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
                     Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong> | 
+                    Descrição: <strong><?= $this->view->resultLicitacao['descricao']; ?></strong> | 
                     UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?>
