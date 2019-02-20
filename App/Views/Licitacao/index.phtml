@@ -19,6 +19,7 @@ $pagination = Pagination::make($this);
                     <thead>
                         <tr>
                             <th>Numero</th>
+                            <th>Descrição</th>
                             <th>UASG</th>
                             <th>UASG Nome</th>
                             <th>Validade</th>
@@ -29,10 +30,17 @@ $pagination = Pagination::make($this);
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td><?= $value['numero']; ?></td>
-                                <td><?= $value['uasg']; ?></td>
-                                <td><?= $value['nome_uasg']; ?></td>
                                 <td>
-                                    <span class="badge badge-danger">    
+                                    <?= $value['descricao']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['uasg']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['nome_uasg']; ?>
+                                </td>
+                                <td>
+                                    <span class="badge badge-danger">
                                         <?= date('d-m-Y', $value['validade']); ?>
                                     </span>
                                 </td>

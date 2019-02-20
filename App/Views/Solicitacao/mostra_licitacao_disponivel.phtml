@@ -44,6 +44,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     <thead>
                         <tr>
                             <th>Numero</th>
+                            <th>Descrição</th>
                             <th>UASG</th>
                             <th>Órgão</th>
                             <th>Validade</th>
@@ -54,6 +55,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td><?= $value['numero']; ?></td>
+                                <td><?= $value['descricao']; ?></td>
                                 <td><?= $value['uasg']; ?></td>
                                 <td><?= $value['nome_uasg']; ?></td>
                                 <td>
