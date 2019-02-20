@@ -1,0 +1,57 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 search-container">
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        Use essas dicas para melhorar seu resultado de busca:<br>
+                        <ul class="text-info">
+                            <li>Procure sempre usar termos simples. Por exemplo: arroz, leite.</li>
+                            <li>Sempre que possível, evite caracteres especiais</li>
+                            <li>Nunca use o caractere <b>/ (barra)</b> em suas buscas</li>
+                            <li>Esta ferramenta buscará apenas nos <b>nomes</b> de itens cadastrados, e só exibirá itens de Licitações vigentes</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <form
+                            action="<?= $this->view->controller; ?>itensLicitados"
+                            class="search-form"
+                            onsubmit="return false">
+                            <div class="input-group search-input-box">
+                                <input type="text" class="form-control search-input" placeholder="Buscar itens licitados...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-secondary search-button" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.search-button').click(function btnSearch() {
+        var searchInput = $('.search-input');
+        var searchValue = searchInput.val();
+        var formAction = $('.search-form').attr('action');
+        if (searchValue && formAction) {
+            window.location = formAction + '/busca/' + searchValue;
+        } else {
+            searchInput.focus();
+        }
+    });
+</script>
+<style>
+    .search-container {
+        margin-top: 100px;
+    }
+</style>
