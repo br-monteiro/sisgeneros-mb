@@ -294,17 +294,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
         }
     }
 
-    public function registrarfornecedornaolicitadoAction()
-    {
-        $this->access->setRedirect('solicitacao/')
-            ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-
-        $id = (int) $this->getParametro('id');
-
-        (new SolicitacaoModel())->processNotBiddings($id);
-    }
-
     public function presolempAction()
     {
         $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
