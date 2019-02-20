@@ -1,4 +1,5 @@
 /nbproject
 /public/app
+/public/arquivos
 *.php~
 *.db
