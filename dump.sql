@@ -32,6 +32,7 @@ CREATE TABLE licitacao (
     id        INTEGER      PRIMARY KEY AUTOINCREMENT,
     numero    VARCHAR (10),
     uasg      INT (6),
+    descricao VARCHAR (30),
     nome_uasg VARCHAR (50),
     validade  TIMESTAMP,
     id_lista  INT,
