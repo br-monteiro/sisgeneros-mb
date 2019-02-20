@@ -259,7 +259,7 @@ class LicitacaoModel extends CRUD
 
     private function validaDescricao()
     {
-        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getDescricao());
+        $value = v::stringType()->notEmpty()->length(1, 30)->validate($this->getDescricao());
         if (!$value) {
             msg::showMsg('O campo Descrição da licitação deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("descricao");</script>', 'danger');
