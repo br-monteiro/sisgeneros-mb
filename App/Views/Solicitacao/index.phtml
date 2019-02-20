@@ -166,7 +166,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                             <i class="fa fa-check-circle"></i> Receber
                                         </a>
                                     <?php endif; ?>
-                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO', 'DESMEMBRADO'])): ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($value['status'], ['ABERTO'])): ?>
                                         <a href="<?= $buildUrlBtnAction($value, 'anterior') ?>" class="btn btn-warning btn-sm">
                                             <i class="fa fa-rotate-left"></i>
                                         </a>
