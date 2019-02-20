@@ -20,16 +20,6 @@ $formatDate = function(string $value) {
  * @return string The build string
  */
 $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string {
-    if (
-        isset($value['status'], $value['nao_licitado']) &&
-        $value['status'] === 'APROVADO' &&
-        $value['nao_licitado'] === '1' &&
-        $action !== 'anterior'
-    ) {
-        return $this->view->controller
-            . 'processarnaolicitado/id/' . $value['id'];
-    }
-
     return $this->view->controller
         . 'processar/acao/'
         . $action

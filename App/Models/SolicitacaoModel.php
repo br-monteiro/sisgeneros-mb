@@ -378,11 +378,13 @@ class SolicitacaoModel extends CRUD
             'nao_licitado' => 1,
             'data_entrega' => $this->getDataEntrega()
         ];
-        d($dados);
-        return null;
+
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             (new Itens())->novoNaoLicitado($dados);
+
+            $this->saveFiles($directoryReference, $dados['numero']);
+
             msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                 . "<strong>Solicitação Nº {$this->getNumero()} <br>"
                 . "Status: ABERTO.</strong><br>"
@@ -1035,11 +1037,52 @@ class SolicitacaoModel extends CRUD
         }
     }
 
+    /**
+     * Save the files uploaded
+     * @param string $directoryReference
+     * @param int $solicitationNumber
+     */
     private function saveFiles(string $directoryReference, int $solicitationNumber)
     {
         $files = $_FILES['arquivos'] ?? false;
-        if ($files) {
-            move_uploaded_file($directoryReference, $destination);
+        $fullPath = $directoryReference . cfg::DS . 'arquivos' . cfg::DS . $solicitationNumber . cfg::DS;
+
+        if ($files && $this->createDirectory($fullPath)) {
+            foreach ($files["tmp_name"] as $index => $file) {
+                $fileDestination = $fullPath . $solicitationNumber . '_' . $index . '.pdf';
+                move_uploaded_file($file, $fileDestination);
+            }
+        } else {
+            msg::showMsg('Não foi possível salvar os arquivos informados', 'danger');
+        }
+    }
+
+    /**
+     * Create a new directory
+     * @param string $fullPath The full path of directory
+     * @return bool
+     */
+    private function createDirectory(string $fullPath): bool
+    {
+        if (file_exists($fullPath)) {
+            return true;
+        }
+
+        return mkdir($fullPath, 0777, true);
+    }
+
+    public function saveOneFile(string $directoryReference, int $solicitationNumber)
+    {
+        $file = $_FILES['arquivo'] ?? false;
+        $fullPath = $directoryReference . cfg::DS . 'arquivos' . cfg::DS . $solicitationNumber . cfg::DS;
+
+        if ($file && $file['type'] === 'application/pdf' && $this->createDirectory($fullPath)) {
+            $fileDestination = $fullPath . $solicitationNumber . '_' . date('Y-m-d-h-m-i-s') . '.pdf';
+            move_uploaded_file($file['tmp_name'], $fileDestination);
+            msg::showMsg('Arquivo salvo com sucesso.'
+                . '<script>resetForm(); </script>', 'success');
+        } else {
+            msg::showMsg('Não foi possível salvar o arquivo informado', 'danger');
         }
     }
 }

@@ -109,6 +109,7 @@ class SolicitacaoItemModel extends CRUD
     {
         foreach ($dados['lista_itens'] as $value) {
             $value['item_uf'] = strtoupper($value['item_uf']);
+            $value['item_valor'] = strtoupper($value['item_valor']);
             $value['item_nome'] = strtoupper($value['item_nome']);
             parent::novo($value);
         }

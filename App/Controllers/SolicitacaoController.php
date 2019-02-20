@@ -51,6 +51,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $this->view->title = "Adicionar itens";
+        $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($e) {
+            return $e->setaCampos(['id', 'nome', 'cnpj'])
+                    ->setaFiltros()
+                    ->orderBy('fornecedor.nome ASC');
+        });
         $this->render('mostra_item_nao_licitado');
     }
 
@@ -187,8 +192,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->clearAccessList()
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        $model = new SolicitacaoModel();
-        $model->novoNaoLicitado($this->view->userLoggedIn['om_id']);
+        (new SolicitacaoModel())->novoNaoLicitado($this->view->userLoggedIn['om_id'], getcwd());
     }
 
     public function alteraAction()
@@ -290,26 +294,6 @@ class SolicitacaoController extends Controller implements CtrlInterface
         }
     }
 
-    public function processarnaolicitadoAction()
-    {
-        $id = $this->getParametro('id');
-        $solicitacao = (new SolicitacaoModel())->findById($id);
-
-        if (isset($solicitacao['id'])) {
-            $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
-                ->clearAccessList()
-                ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-
-            $this->view->resultSolicitacao = $solicitacao;
-            $this->view->resultSolicitacaoItens = (new SolicitacaoItem())->findAllById_lista($solicitacao['id_lista']);
-            $this->view->resultFornecedor = (new FornecedorModel())->findAll();
-
-            $this->render('processar_nao_licitado');
-        } else {
-            header('location: ' . $this->view->controller);
-        }
-    }
-
     public function registrarfornecedornaolicitadoAction()
     {
         $this->access->setRedirect('solicitacao/')
@@ -336,5 +320,45 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
         $this->view->btn = $solicitacaoItem->getNavePaginator();
         $this->render('papeleta_presolemp', true, 'blank');
+    }
+
+    public function eliminararquivoAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
+
+        $file = $this->getParametro('file');
+        $solicitacao = (new SolicitacaoModel())->findByIdLista($this->view->idLista);
+        $numero = $solicitacao['numero'] ?? 'error';
+        $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $numero . cfg::DS . $file;
+        if (file_exists($fullPath)) {
+            @unlink($fullPath);
+        }
+        header("Location: {$this->view->controller}detalhar/idlista/{$this->view->idLista}");
+    }
+
+    public function adicionararquivoAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
+
+        $this->view->title = 'Adicionar novo arquivo';
+        $this->render('form_adicionar_arquivo');
+    }
+
+    public function salvararquivoAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
+
+        $solicitacaoModel = new SolicitacaoModel();
+        $solicitacao = $solicitacaoModel->findByIdLista($this->view->idLista);
+        $numero = $solicitacao['numero'] ?? 'error';
+        if ($numero !== 'error') {
+            $solicitacaoModel->saveOneFile(getcwd(), $numero);
+        }
     }
 }
