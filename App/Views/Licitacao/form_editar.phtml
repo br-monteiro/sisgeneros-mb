@@ -41,6 +41,18 @@
                                                value="<?= date("d/m/Y", $this->view->result['validade']); ?>"
                                                required>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>Descrição</label>
+                                        <input type="text"
+                                               name="descricao"
+                                               id="descricao"
+                                               placeholder="Descrição da Licitação"
+                                               class="form-control"
+                                               maxlength="30"
+                                               value="<?= $this->view->result['descricao']; ?>"
+                                               required>
+                                    </div>
                                 </div>
 
                                 <div class="col-lg-6">
