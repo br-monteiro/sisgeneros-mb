@@ -14,6 +14,7 @@
                 <div id="resultado"></div>
                 <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
                     <input type="hidden" name="id_licitacao" value="<?= $this->view->resultLicitacao['id'] ?>">
+                    <input type="hidden" name="fornecedor_id" value="<?= $this->view->result[0]['id_fornecedor'] ?>">
                     <input type="hidden" name="nao_licitado" value="0">
                     <input type="hidden" name="numero_nota_fiscal" value="S/N">
                     <input type="hidden" name="observacao" value="">

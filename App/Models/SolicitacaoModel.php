@@ -579,13 +579,16 @@ class SolicitacaoModel extends CRUD
      */
     public function findByIdLista($idLista)
     {
-        $subQueryName = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_nome ';
-        $subQueryCnpj = ' (SELECT cnpj FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_cnpj ';
         $query = ""
-            . "SELECT "
-            . "sol.*, {$subQueryName}, {$subQueryCnpj} "
-            . "FROM {$this->entidade} AS sol "
-            . "WHERE sol.id_lista = :idLista";
+            . " SELECT "
+            . " sol.*, "
+            . " forn.nome AS fornecedor_nome, "
+            . " forn.cnpj AS fornecedor_cnpj, "
+            . " forn.dados AS fornecedor_dados "
+            . " FROM {$this->entidade} AS sol "
+            . " INNER JOIN fornecedor AS forn "
+            . "     ON forn.id = sol.fornecedor_id "
+            . " WHERE sol.id_lista = :idLista ";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':idLista' => $idLista]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
