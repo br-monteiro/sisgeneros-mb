@@ -117,7 +117,6 @@ CREATE TABLE solicitacao (
     numero_nota_fiscal   VARCHAR (20),
     data_entrega         DATE,
     observacao           TEXT,
-    lista_desmembramento TEXT         DEFAULT (''),
     FOREIGN KEY (
         om_id
     )

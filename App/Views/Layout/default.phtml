@@ -38,13 +38,12 @@ $cfg = cfg::htrFileConfigs();
                 }
             }
         </style>
-        <!-- jQuery -->
-        <script src="attach/jquery/dist/jquery.min.js"></script>
     </head>
 
     <body id="page-top">
         <!-- jQuery -->
         <script src="attach/jquery/dist/jquery.min.js"></script>
+        <script src="attach/jqueryForm/jquery.form.min"></script>
         <div id="wrapper">
 
             <?php include_once cfg::PATH_CORE . '/App/Views/Layout/menu_vertical.phtml'; ?>
@@ -128,13 +127,12 @@ $cfg = cfg::htrFileConfigs();
                 $('#data_entrega').mask('00-00-0000', {reverse: true});
                 $('#validade').mask('00/00/0000', {reverse: true});
                 $('#numero').mask('00000/0000', {reverse: true});
-                $('#valor').mask('000.000.000.000.000,00', {reverse: true});
-                $('#form').submit(function () {
-                    var dados = $(this).serialize();
-                    $.ajax({
-                        type: "POST", // Tipo de metodo
-                        url: $(this).attr("action"), //Recebe o valor da action do form
-                        data: dados,
+                $('#valor, .valor').mask('000.000.000.000.000,00', {reverse: true});
+                $('#form').submit(function submitForm() {
+                    $(this).ajaxSubmit({
+                        type: "POST",
+                        url: $(this).attr("action"),
+                        data: $(this).serialize(),
                         success: function (data) {
                             $("#resultado").html(data);
                         }

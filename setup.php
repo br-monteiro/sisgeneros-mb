@@ -98,7 +98,7 @@ function createDataBase(): \PDO
         // connect into database and execute the SQL queries
         $pdo = (new HTR\System\ModelCRUD())->pdo;
         $pdo->exec($sqlFile);
-        echo "> Arquivo de Sqlite criado com sucesso." . PHP_EOL;
+        echo "> Arquivo de Sqlite criado com sucesso" . PHP_EOL;
         return $pdo;
     } catch (\Exception $ex) {
         throw new \Exception(""
@@ -116,11 +116,25 @@ function insertDataDefault(\PDO $pdo)
         $pdo->exec("INSERT INTO om VALUES (1, 'OM PADRAO', 123456, 'OMPADR', {$time}, {$time}, 'AGENTE', 'AGENTE', 'GESTOR', 'GESTOR', 'FIEL', 'FIEL')");
         // insert the first User
         $pdo->exec("INSERT INTO users VALUES (1, '', '', 1, 'Administrador', 'admin@om.mb', 'ADMINISTRADOR', 1, '', {$time}, {$time}, {$time}, 1)");
-        echo "> Dados padrão inseridos com sucesso." . PHP_EOL;
+        echo "> Dados padrão inseridos com sucesso" . PHP_EOL;
     } catch (\Exception $ex) {
         throw new \Exception(""
         . "Não foi possível inserir os primeiros dados no sistema." . PHP_EOL
         . "Log:" . $ex->getMessage()
+        . "" . PHP_EOL);
+    }
+}
+
+function changeAccessModeOfDirectoryUpload()
+{
+    $fullPath = cfg::PATH_CORE . 'public' . cfg::DS . 'arquivos';
+
+    if (file_exists($fullPath) && chmod($fullPath, 0777)) {
+        echo "> Permissões de acesso no diretório de upload setadas com sucesso" . PHP_EOL;
+    } else {
+        throw new \Exception(""
+        . "Não foi possível configurar as permissões de acesso do diretório de upload de arquivos." . PHP_EOL
+        . "Path:" . $fullPath
         . "" . PHP_EOL);
     }
 }
@@ -135,6 +149,7 @@ function insertDataDefault(\PDO $pdo)
         $pdo = createDataBase();
         insertDataDefault($pdo);
         changeAdminUser($pdo);
+        changeAccessModeOfDirectoryUpload();
 
         print ">> Configurações finalizadas." . PHP_EOL;
     } catch (\Exception $ex) {
