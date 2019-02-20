@@ -31,4 +31,23 @@ class View
         $wrapTag = "<span class='{$customClass}'>{$search}</span>";
         return str_replace($search, $wrapTag, $fullText);
     }
+
+    /**
+     * List the PDF files from upload directory
+     * @param string $directoryReference
+     * @return array
+     */
+    public static function listFilesPdf(string $directoryReference): array
+    {
+        $result = [];
+
+        if (file_exists($directoryReference)) {
+            $result = scandir($directoryReference);
+            $result = array_filter($result, function ($file) {
+                return (bool) preg_match('/.+\.pdf$/', $file);
+            });
+        }
+
+        return $result;
+    }
 }
