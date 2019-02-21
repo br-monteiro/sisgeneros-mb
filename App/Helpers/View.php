@@ -31,4 +31,35 @@ class View
         $wrapTag = "<span class='{$customClass}'>{$search}</span>";
         return str_replace($search, $wrapTag, $fullText);
     }
+
+    /**
+     * List the PDF files from upload directory
+     * @param string $directoryReference
+     * @return array
+     */
+    public static function listFilesPdf(string $directoryReference): array
+    {
+        $result = [];
+
+        if (file_exists($directoryReference)) {
+            $result = scandir($directoryReference);
+            $result = array_filter($result, function ($file) {
+                return (bool) preg_match('/.+\.pdf$/', $file);
+            });
+        }
+
+        return $result;
+    }
+    
+    /**
+     * Build the date in format DD-MM-YYYY from YYYY-MM-DD
+     * @param string $date The raw date
+     * @param string $delimiter The separate number. By default is '-'
+     * @return string
+     */
+    public static function showDate(string $date, string $delimiter = '-'): string
+    {
+        $dateEmplode = explode($delimiter, $date);
+        return implode($delimiter, array_reverse($dateEmplode));
+    }
 }

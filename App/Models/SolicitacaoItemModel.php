@@ -109,6 +109,7 @@ class SolicitacaoItemModel extends CRUD
     {
         foreach ($dados['lista_itens'] as $value) {
             $value['item_uf'] = strtoupper($value['item_uf']);
+            $value['item_valor'] = strtoupper($value['item_valor']);
             $value['item_nome'] = strtoupper($value['item_nome']);
             parent::novo($value);
         }
@@ -189,35 +190,6 @@ class SolicitacaoItemModel extends CRUD
         $stmt->execute([$itemNumero, $idLicitacao]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $result ? $result['quantidade'] : false;
-    }
-
-    public function atualizaValor(array $itens)
-    {
-        foreach ($itens as $id => $valor) {
-            $dados = ['item_valor' => $valor];
-            parent::editar($dados, $id);
-        }
-    }
-
-    /**
-     * Create a new register based on item
-     * @param array $item The item to be based
-     * @param int $idLista Id of list
-     */
-    public function novoDesmembrado(array $item, int $idLista)
-    {
-        $oldItem = $this->findById($item['id']);
-        if ($oldItem) {
-            $dados = [
-                'id_lista' => $idLista,
-                'item_numero' => 0,
-                'item_nome' => $oldItem['item_nome'],
-                'item_uf' => $oldItem['item_uf'],
-                'item_quantidade' => $oldItem['item_quantidade'],
-                'item_valor' => $item['valor']
-            ];
-            parent::novo($dados);
-        }
     }
 
     private function setAll($dados)

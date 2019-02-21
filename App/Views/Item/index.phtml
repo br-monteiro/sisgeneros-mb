@@ -21,8 +21,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                 <h5>Itens da Licitação</h5>
                 <div class="alert alert-info" role="alert">
                     Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
-                    UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
-                    Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong>
+                    Órgão:
+                    <strong>
+                        <?= $this->view->resultLicitacao['uasg']; ?>
+                        -
+                        <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                    </strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
                 <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idLista; ?>" class="btn btn-info">
@@ -40,7 +44,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             <th>Qtd(Inicial)</th>
                             <th>Valor</th>
                             <th>UF</th>
-                            <th>Habil.</th>
+                            <th>Habilitado</th>
                             <th>Nome</th>
                             <th>Fornecedor</th>
                             <th></th>
@@ -67,8 +71,8 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a
-                                       onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
-                                       class="btn btn-danger btn-sm">
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                        class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>

@@ -68,3 +68,6 @@ table.table th {
 .pagination {
     margin-top: 10px;
 }
+.hide {
+    display: none;
+}

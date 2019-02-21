@@ -68,19 +68,18 @@ class SolicitacaoModel extends CRUD
             if ($sol['om_id'] != $user['om_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
                 header("location:" . cfg::DEFAULT_URI . "solicitacao/");
+                return; // just stop the execution
             }
         }
 
         $this->setId()
             ->setDataEntrega(filter_input(INPUT_POST, 'data_entrega', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        $dataEntrega = $this->getDataEntrega();
         $id = $this->getId();
 
-        $this->validaDataEntrega($dataEntrega);
+        $this->validaDataEntrega($this->getDataEntrega());
 
         $dados = [
-            'data_entrega' => $dataEntrega
+            'data_entrega' => $this->getDataEntrega()
         ];
 
         if (parent::editar($dados, $id)) {
@@ -360,15 +359,16 @@ class SolicitacaoModel extends CRUD
         return $this->navPaginator;
     }
 
-    public function novoNaoLicitado($om)
+    public function novoNaoLicitado($om, $directoryReference)
     {
         $this->validaAll($om);
         $this->validaDataEntrega($this->getDataEntrega());
+        $this->validaArquivos();
         $dados = [
             'id_licitacao' => $this->getIdLicitacao(),
             'id_lista' => $this->getIdLista(),
             'om_id' => $this->getOmId(),
-            'fornecedor_id' => 0,
+            'fornecedor_id' => $this->getFornecedorId(),
             'numero' => $this->getNumero(),
             'status' => 'ABERTO',
             'ano' => date('Y'),
@@ -377,9 +377,13 @@ class SolicitacaoModel extends CRUD
             'nao_licitado' => 1,
             'data_entrega' => $this->getDataEntrega()
         ];
+
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             (new Itens())->novoNaoLicitado($dados);
+
+            $this->saveFiles($directoryReference, $dados['numero']);
+
             msg::showMsg('Solicitação Registrada com Sucesso!<br>'
                 . "<strong>Solicitação Nº {$this->getNumero()} <br>"
                 . "Status: ABERTO.</strong><br>"
@@ -473,7 +477,7 @@ class SolicitacaoModel extends CRUD
             return true;
             // verifica se o usuário é da mensa OM da solicitação
         } elseif ($user['nivel'] !== 'ADMINISTRADOR') {
-            if ($user['om'] != $solicitacao['om']) {
+            if ($user['om_id'] != $solicitacao['om_id']) {
                 header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
                 return true;
             }
@@ -574,13 +578,16 @@ class SolicitacaoModel extends CRUD
      */
     public function findByIdLista($idLista)
     {
-        $subQueryName = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_nome ';
-        $subQueryCnpj = ' (SELECT cnpj FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_cnpj ';
         $query = ""
-            . "SELECT "
-            . "sol.*, {$subQueryName}, {$subQueryCnpj} "
-            . "FROM {$this->entidade} AS sol "
-            . "WHERE sol.id_lista = :idLista";
+            . " SELECT "
+            . " sol.*, "
+            . " forn.nome AS fornecedor_nome, "
+            . " forn.cnpj AS fornecedor_cnpj, "
+            . " forn.dados AS fornecedor_dados "
+            . " FROM {$this->entidade} AS sol "
+            . " INNER JOIN fornecedor AS forn "
+            . "     ON forn.id = sol.fornecedor_id "
+            . " WHERE sol.id_lista = :idLista ";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':idLista' => $idLista]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -593,6 +600,25 @@ class SolicitacaoModel extends CRUD
             . "COUNT(*) quantidade "
             . "FROM {$this->entidade} "
             . "WHERE status LIKE :status";
+
+        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND om_id = {$user['om_id']} ";
+            $query . $where;
+        }
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':status' => $status]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
+    {
+
+        $query = ""
+            . "SELECT "
+            . "COUNT(*) quantidade "
+            . "FROM {$this->entidade} "
+            . "WHERE status LIKE :status AND data_entrega < date('now')";
 
         if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $where = " AND om_id = {$user['om_id']} ";
@@ -626,166 +652,6 @@ class SolicitacaoModel extends CRUD
     }
 
     /**
-     * Process the solicitations of not biddings
-     * @param int $id The solicitacao ID
-     */
-    public function processNotBiddings(int $id)
-    {
-        $solicitacao = $this->findById($id);
-        // only for status APROVADO
-        if (isset($solicitacao['id'], $solicitacao['status']) && $solicitacao['status'] === 'APROVADO') {
-            if ($this->isDesmembrado()) {
-                $fornecedores = $this->validaFornecedores();
-                $idLista = time();
-                $newSolicitations = [];
-                foreach ($fornecedores as $itens) {
-                    $idLista = $idLista + 1; // just create a new list
-                    $numero = $this->numberGenerator();
-                    $newSolicitations[] = $numero; // save temporary the number
-                    $dados = [
-                        'id_licitacao' => 0,
-                        'id_lista' => $idLista,
-                        'om_id' => $solicitacao['om_id'],
-                        'fornecedor_id' => $itens[0]['fornecedor_id'],
-                        'numero' => $numero,
-                        'status' => 'PROCESSADO',
-                        'ano' => date('Y'),
-                        'created_at' => time(),
-                        'updated_at' => time(),
-                        'nao_licitado' => 1,
-                        'data_entrega' => $solicitacao['data_entrega']
-                    ];
-                    // create a new solicitation
-                    parent::novo($dados);
-                    // added new item into solicitation
-                    foreach ($itens as $item) {
-                        (new Itens())->novoDesmembrado($item, $idLista);
-                    }
-                }
-
-                if (count($fornecedores)) {
-                    $dados = [
-                        'updated_at' => time(),
-                        'status' => 'DESMEMBRADO',
-                        'lista_desmembramento' => implode(' - ', $newSolicitations)
-                    ];
-                    parent::editar($dados, $id);
-
-                    msg::showMsg('A solicitação foi desmembrada com sucesso.<br>'
-                        . 'As novas solicitações originadas foram: <strong>' . $dados['lista_desmembramento']
-                        . '</strong><br>Você será redirecionado para a página de Histórico de Solicitações em 5 segundos.'
-                        . '<meta http-equiv="refresh" content="5;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
-                        . '<script>'
-                        . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 5000);'
-                        . 'freezeForm();'
-                        . '</script>', 'success');
-                }
-                // for solicitations without 'desmembramento'
-            } else {
-                $dados = [
-                    'updated_at' => time(),
-                    'status' => 'PROCESSADO',
-                    'fornecedor_id' => $this->validaFornecedorId()
-                ];
-                parent::editar($dados, $id);
-                (new Itens())->atualizaValor($this->buildItens());
-
-                msg::showMsg('A solicitação foi processada com sucesso.<br>'
-                    . '<br>Você será redirecionado para a página de Histórico de Solicitações em 5 segundos.'
-                    . '<meta http-equiv="refresh" content="5;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
-                    . '<script>'
-                    . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 5000);'
-                    . 'freezeForm();'
-                    . '</script>', 'success');
-            }
-        } else {
-            /**
-             * This script is necessary to redirect the user using Ajax
-             */
-            echo ''
-            . '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . 'solicitacao/ver" />'
-            . '<script>'
-            . 'setTimeout(function(){ window.location = "' . cfg::DEFAULT_URI . 'solicitacao/ver"; }, 1);'
-            . '</script>';
-        }
-    }
-
-    /**
-     * Check if the solicitation is 'desmembrado'
-     * @return bool
-     */
-    private function isDesmembrado(): bool
-    {
-        return filter_input(INPUT_POST, 'isDesmembrado', FILTER_VALIDATE_INT) === 1;
-    }
-
-    /**
-     * Check if the fornecedor ID is an integer
-     * @param mixed $value The fornecedor ID
-     * @return int
-     */
-    private function validaFornecedorId($value = null): int
-    {
-        $value = $value ?? filter_input(INPUT_POST, 'fornecedor');
-        if (!v::intVal()->validate($value)) {
-            msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
-        }
-        return $value;
-    }
-
-    /**
-     * Check if the item ID is an integer
-     * @param mixed $value
-     * @return int
-     */
-    private function validaItensId($value): int
-    {
-        if (!v::intVal()->validate($value)) {
-            msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
-        }
-        return $value;
-    }
-
-    /**
-     * Build the values (R$) according item id
-     * @return array
-     */
-    private function buildItens(): array
-    {
-        $result = [];
-        $requestPost = filter_input_array(INPUT_POST);
-        $itens = is_array($requestPost['id'] ?? null) ? $requestPost['id'] : [];
-
-        foreach ($itens as $index => $value) {
-            $id = $this->validaItensId($value);
-            $valor = $this->validaValor($requestPost['valor'][$index] ?? null);
-            $result[$id] = $valor;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Build the itens values according fornecedor ID
-     * @return array
-     */
-    private function validaFornecedores(): array
-    {
-        $result = [];
-        $requestPost = filter_input_array(INPUT_POST);
-        $fornecedores = is_array($requestPost['arrFornecedor'] ?? null) ? $requestPost['arrFornecedor'] : [];
-
-        foreach ($fornecedores as $index => $value) {
-            $result[$value][] = [
-                'fornecedor_id' => $this->validaFornecedorId($value),
-                'valor' => $this->validaValor($requestPost['valor'][$index] ?? ''),
-                'id' => $this->validaId($requestPost['id'][$index] ?? '')
-            ];
-        }
-        return $result;
-    }
-
-    /**
      * Fetch the last updated solicitation
      * @param array $user The user logged in
      * @return array
@@ -815,6 +681,7 @@ class SolicitacaoModel extends CRUD
     {
         $value = filter_input_array(INPUT_POST);
         $this->setNaoLicitado(filter_var($value['nao_licitado'], FILTER_VALIDATE_INT))
+            ->setFornecedorId(filter_var($value['fornecedor_id'], FILTER_VALIDATE_INT))
             ->setNumeroNotaFiscal(filter_var($value['numero_nota_fiscal'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setDataEntrega(filter_var($value['data_entrega'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setObservacao(filter_var($value['observacao'], FILTER_SANITIZE_SPECIAL_CHARS))
@@ -825,12 +692,12 @@ class SolicitacaoModel extends CRUD
             ->setNumero($this->numberGenerator());
 
         $this->validaNumeroNotaFiscal($this->getNumeroNotaFiscal());
+        $this->validaFornecedor();
 
         for ($i = 0; $i < count($value['quantidade']); $i++) {
             $id = filter_var($value['id'][$i], FILTER_VALIDATE_INT);
             $quantidade = str_replace(",", ".", $value['quantidade'][$i]);
             $quantidade = filter_var($quantidade, FILTER_VALIDATE_FLOAT);
-            $this->setFornecedorId(filter_var($value['fornecedor'][0] ?? null, FILTER_VALIDATE_INT));
 
             if ($id AND $quantidade) {
                 $this->listaItens[$id] = $quantidade;
@@ -848,10 +715,7 @@ class SolicitacaoModel extends CRUD
         for ($i = 0; $i < count($value['quantidade']); $i++) {
             $quantidade = $this->validaQuantidade($value['quantidade'][$i]);
             $uf = $this->validaUf($value['uf'][$i]);
-            $valor = 0;
-            if (!$this->getNaoLicitado()) {
-                $valor = $this->validaValor($value['valor'][$i]);
-            }
+            $valor = $this->validaValor($value['valor'][$i]);
             $nome = $this->validaNome($value['nome'][$i]);
             $this->listaItens[] = [
                 'id_lista' => $this->getIdLista(),
@@ -887,6 +751,15 @@ class SolicitacaoModel extends CRUD
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
         }
         return $input ?? $this;
+    }
+
+    private function validaFornecedor($input = null)
+    {
+        $value = v::intVal()->validate($this->getFornecedorId());
+        if (!$value) {
+            msg::showMsg('É necessário informar um fornecedor', 'danger');
+        }
+        return $this;
     }
 
     private function validaIdLicitacao()
@@ -955,6 +828,17 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
+    private function abstractDateValidate(string $value, string $fieldName, string $labelName)
+    {
+        $date = explode('-', $value);
+        $date = $date[2] . '-' . $date[1] . '-' . $date[0];
+        if (!v::date()->validate($date)) {
+            msg::showMsg('O campo ' . $labelName . ' deve ser preenchido corretamente.'
+                . '<script>focusOn("' . $fieldName . '");</script>', 'danger');
+        }
+        return $date;
+    }
+
     private function validaNome($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
@@ -977,11 +861,70 @@ class SolicitacaoModel extends CRUD
 
     private function validaDataEntrega($value)
     {
-        $validate = v::date('d-m-Y')->length(10, 10)->validate($value);
-        if (!$validate) {
-            msg::showMsg('O campo <b>Data estipulada para entrega</b> deve ser preenchido com uma data válida.'
-                . '<script>focusOn("data_entrega");</script>', 'danger');
-        }
+        $this->setDataEntrega($this->abstractDateValidate($value, 'data_entrega', 'Data estipulada para entrega'));
         return $this;
+    }
+
+    private function validaArquivos()
+    {
+        $files = $_FILES['arquivos'] ?? false;
+        if ($files) {
+            foreach ($files['type'] as $type) {
+                if ($type != 'application/pdf') {
+                    msg::showMsg('Só é permitido o envio de arquivos no formato PDF.', 'danger');
+                }
+            }
+        } else {
+            msg::showMsg('Deve ser feito o Upload de pelo menos um arquivo.', 'danger');
+        }
+    }
+
+    /**
+     * Save the files uploaded
+     * @param string $directoryReference
+     * @param int $solicitationNumber
+     */
+    private function saveFiles(string $directoryReference, int $solicitationNumber)
+    {
+        $files = $_FILES['arquivos'] ?? false;
+        $fullPath = $directoryReference . cfg::DS . 'arquivos' . cfg::DS . $solicitationNumber . cfg::DS;
+
+        if ($files && $this->createDirectory($fullPath)) {
+            foreach ($files["tmp_name"] as $index => $file) {
+                $fileDestination = $fullPath . $solicitationNumber . '_' . $index . '.pdf';
+                move_uploaded_file($file, $fileDestination);
+            }
+        } else {
+            msg::showMsg('Não foi possível salvar os arquivos informados', 'danger');
+        }
+    }
+
+    /**
+     * Create a new directory
+     * @param string $fullPath The full path of directory
+     * @return bool
+     */
+    private function createDirectory(string $fullPath): bool
+    {
+        if (file_exists($fullPath)) {
+            return true;
+        }
+
+        return mkdir($fullPath, 0777, true);
+    }
+
+    public function saveOneFile(string $directoryReference, int $solicitationNumber)
+    {
+        $file = $_FILES['arquivo'] ?? false;
+        $fullPath = $directoryReference . cfg::DS . 'arquivos' . cfg::DS . $solicitationNumber . cfg::DS;
+
+        if ($file && $file['type'] === 'application/pdf' && $this->createDirectory($fullPath)) {
+            $fileDestination = $fullPath . $solicitationNumber . '_' . date('Y-m-d-h-m-i-s') . '.pdf';
+            move_uploaded_file($file['tmp_name'], $fileDestination);
+            msg::showMsg('Arquivo salvo com sucesso.'
+                . '<script>resetForm(); </script>', 'success');
+        } else {
+            msg::showMsg('Não foi possível salvar o arquivo informado', 'danger');
+        }
     }
 }

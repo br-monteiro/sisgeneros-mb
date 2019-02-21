@@ -5,6 +5,7 @@
                 <h3></h3>
                 <div class="alert alert-info" role="alert">
                     Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                    Descrição: <strong><?= $this->view->resultLicitacao['descricao']; ?></strong><br>
                     UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
                     Órgão: <strong><?= $this->view->resultLicitacao['nome_uasg']; ?></strong><br>
                     Fornecedor: <strong class="label label-success"><?= $this->view->result[0]['fornecedor']; ?></strong><br>
@@ -13,6 +14,7 @@
                 <div id="resultado"></div>
                 <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
                     <input type="hidden" name="id_licitacao" value="<?= $this->view->resultLicitacao['id'] ?>">
+                    <input type="hidden" name="fornecedor_id" value="<?= $this->view->result[0]['id_fornecedor'] ?>">
                     <input type="hidden" name="nao_licitado" value="0">
                     <input type="hidden" name="numero_nota_fiscal" value="S/N">
                     <input type="hidden" name="observacao" value="">

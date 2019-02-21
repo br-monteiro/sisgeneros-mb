@@ -1,6 +1,7 @@
 <?php
 
 use App\Config\Configurations as cfg;
+use App\Helpers\View;
 
 setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 date_default_timezone_set(cfg::TIMEZONE);
@@ -143,7 +144,7 @@ $total = 0;
     <tr>
         <td class="informacoes left text-uppercase">
             <span>Data Entrega:</span>
-            <?= $this->view->resultSolicitacao['data_entrega']; ?>
+            <?= View::showDate($this->view->resultSolicitacao['data_entrega']); ?>
         </td>
     </tr>
     <tr>

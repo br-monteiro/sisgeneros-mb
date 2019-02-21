@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) {
         return [
@@ -115,7 +116,7 @@ $statusPatterns = [
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= $value['data_entrega']; ?>
+                                        <?= View::showDate($value['data_entrega']); ?>
                                     </span>
                                 </td>
                             </tr>

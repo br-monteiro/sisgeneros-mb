@@ -22,49 +22,29 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     <div class="col-md-7">
                         <?= $pagination; ?>
                     </div>
-
-                    <div class="col-lg-5">
-                        <form
-                            action="<?= $this->view->controller; ?>itensLicitados"
-                            class="search-form"
-                            onsubmit="return false">
-                            <div class="input-group search-input-box">
-                                <input type="text" class="form-control search-input" placeholder="Buscar produtos licitados...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-secondary search-button" type="button">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </form>
-                    </div>
                 </div>
 
-                <table class="table">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th>Numero</th>
+                            <th>Descrição</th>
                             <th>UASG</th>
                             <th>Órgão</th>
                             <th>Validade</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
-                            <tr>
+                            <tr class="table-licitacao" data-id-lista="<?= $value['id_lista']; ?>">
                                 <td><?= $value['numero']; ?></td>
+                                <td><?= $value['descricao']; ?></td>
                                 <td><?= $value['uasg']; ?></td>
                                 <td><?= $value['nome_uasg']; ?></td>
                                 <td>
                                     <span class="label label-danger">
                                         <?= date('d-m-Y', $value['validade']); ?>
                                     </span>
-                                </td>
-                                <td>
-                                    <a href="<?= $this->view->controller; ?>fornecedor/idlista/<?= $value['id_lista']; ?>" class="btn btn-success btn-sm">
-                                        <i class="fa fa-edit"></i> Registrar Solicitação
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -76,14 +56,15 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
     </div>
 </div>
 <script>
-    $('.search-button').click(function btnSearch() {
-        var searchInput = $('.search-input');
-        var searchValue = searchInput.val();
-        var formAction = $('.search-form').attr('action');
-        if (searchValue && formAction) {
-            window.location = formAction + '/busca/' + searchValue;
-        } else {
-            searchInput.focus();
+    $('.table-licitacao').click(function link() {
+        var idLista = this.dataset.idLista;
+        if (idLista) {
+            window.location = '<?= $this->view->controller; ?>fornecedor/idlista/' + idLista;
         }
     });
 </script>
+<style>
+    .table-licitacao:hover {
+        cursor: pointer;
+    }
+</style>

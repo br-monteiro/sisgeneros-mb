@@ -66,6 +66,7 @@ class LicitacaoModel extends CRUD
                 DISTINCT licitacao.numero AS numero,
                     licitacao.id_lista,
                     licitacao.uasg,
+                    licitacao.descricao,
                     licitacao.nome_uasg,
                     fornecedor.nome AS nome,
                     fornecedor.id as fornecedor_id
@@ -112,6 +113,7 @@ class LicitacaoModel extends CRUD
         $dados = [
             'numero' => $this->getNumero(),
             'uasg' => $this->getUasg(),
+            'descricao' => $this->getDescricao(),
             'nome_uasg' => $this->getNomeUasg(),
             'validade' => $this->getValidade(),
             'id_lista' => $this->getIdLista(),
@@ -136,6 +138,7 @@ class LicitacaoModel extends CRUD
         $dados = [
             'numero' => $this->getNumero(),
             'uasg' => $this->getUasg(),
+            'descricao' => $this->getDescricao(),
             'nome_uasg' => $this->getNomeUasg(),
             'validade' => $this->getValidade()
         ];
@@ -173,6 +176,7 @@ class LicitacaoModel extends CRUD
         $this->setId()
             ->setNumero(filter_input(INPUT_POST, 'numero', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
+            ->setDescricao(filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setNomeUasg(filter_input(INPUT_POST, 'nome_uasg', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setValidade(filter_input(INPUT_POST, 'validade', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setIdLista();
@@ -181,6 +185,7 @@ class LicitacaoModel extends CRUD
         $this->validaId()
             ->validaNumero()
             ->validaUasg()
+            ->validaDescricao()
             ->validaNomeUasg()
             ->validaValidade()
             ->validaIdLista();
@@ -248,6 +253,16 @@ class LicitacaoModel extends CRUD
         if (!$value) {
             msg::showMsg('O campo Nome da Uasg deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("nome_uasg");</script>', 'danger');
+        }
+        return $this;
+    }
+
+    private function validaDescricao()
+    {
+        $value = v::stringType()->notEmpty()->length(1, 30)->validate($this->getDescricao());
+        if (!$value) {
+            msg::showMsg('O campo Descrição da licitação deve ser deve ser preenchido corretamente.'
+                . '<script>focusOn("descricao");</script>', 'danger');
         }
         return $this;
     }

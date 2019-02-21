@@ -1,8 +1,18 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
+use App\Config\Configurations as cfg;
 
 $idLista = $this->view->idLista;
+$relativePathUploadFiles = 'arquivos' . cfg::DS . $this->view->resultSolicitacao['numero'] . cfg::DS;
+$fullPathUploadFiles = getcwd() . cfg::DS . $relativePathUploadFiles;
+
+$formatDate = function(string $value) {
+    $explodedDate = explode('-', $value);
+    $explodedDate = array_reverse($explodedDate);
+    return implode('-', $explodedDate);
+};
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
         return [
@@ -118,7 +128,39 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success btn-confirm">Confirmar</button>
+                <button type="button" class="btn btn-success btn-confirm" data-dismiss="modal">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalSuppliersDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Informações do Fornecedor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <strong>
+                    Nome:
+                </strong>
+                <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
+                <br>
+                <strong>
+                    CNPJ:
+                </strong>
+                <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
+                <br>
+                <strong>
+                    Dados:
+                </strong>
+                <br>
+                <?= $this->view->resultSolicitacao['fornecedor_dados']; ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
@@ -137,6 +179,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
                             - <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
                         </strong>
+                        (<a href="#"
+                            class="text-danger"
+                            data-toggle="modal"
+                            data-target="#modalSuppliersDetails">
+                            mais detalhes
+                        </a>)
                         <br>
                         Solicitação:
                         <strong>
@@ -144,7 +192,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['data_entrega']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];
@@ -166,6 +214,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             <?= $this->view->resultSolicitacao['fornecedor_cnpj']; ?>
                             - <?= $this->view->resultSolicitacao['fornecedor_nome']; ?>
                         </strong>
+                        (<a href="#"
+                            class="text-danger"
+                            data-toggle="modal"
+                            data-target="#modalSuppliersDetails">
+                            mais detalhes
+                        </a>)
                         <br>
                         Solicitação:
                         <strong>
@@ -173,14 +227,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        <?php if ($this->view->resultSolicitacao['lista_desmembramento']) : ?>
-                            Desmembrado nas solicitações:
-                            <strong>
-                                <?= $this->view->resultSolicitacao['lista_desmembramento']; ?>
-                            </strong>
-                            <br>
-                        <?php endif; ?>
-                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['data_entrega']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];
@@ -198,6 +245,11 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                 <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
                     <i class="fa fa-arrow-left"></i> Voltar
                 </a>
+                <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'ENCARREGADO', 'NORMAL']) && $this->view->resultSolicitacao['status'] == 'ABERTO' && !isset($this->view->resultLicitacao['numero'])): ?>
+                    <a href="<?= $this->view->controller; ?>adicionararquivo/idlista/<?= $this->view->idLista; ?>" class="btn btn-info pull-right" style="margin-right: 10px;">
+                        <i class="fa fa-file"></i> Adicionar arquivo
+                    </a>
+                <?php endif; ?>
                 <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) && !in_array($this->view->resultSolicitacao['status'], ['ABERTO', 'APROVADO'])): ?>
                     <button type="button" class="btn btn-primary pull-right btn-pre-solemp" data-toggle="modal" data-target="#exampleModal">
                         <i class="fa fa-file-text"></i> Gerar Pré-SOLEMP
@@ -211,6 +263,37 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             </a>
                         </div>
                     </div>
+                <?php endif; ?>
+                <?php if (!isset($this->view->resultLicitacao['numero'])): ?>
+                    <table class="table table-hover table-bordered" style="margin-top: 10px;">
+                        <thead>
+                            <tr>
+                                <th colspan="2">
+                                    Arquivos
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach (View::listFilesPdf($fullPathUploadFiles) as $file): ?>
+                                <tr>
+                                    <td>
+                                        <a href="<?= $relativePathUploadFiles . $file ?>" target="_blank">
+                                            Arquivo <?= $file; ?>
+                                        </a>
+                                    </td>
+                                    <td width="8%">
+                                        <?php if ($this->view->resultSolicitacao['status'] == 'ABERTO'): ?>
+                                            <a
+                                                onclick="confirmar('Deseja REMOVER este arquivo?', '<?= $this->view->controller; ?>eliminararquivo/file/<?= $file; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 <?php endif; ?>
                 <div class="row" style="margin-bottom: 10px; margin-top: 10px;">
                     <div class="col-md-12">
@@ -303,6 +386,6 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             window.localStorage.clear();
             window.localStorage.setItem('presolemp_' + idLista, JSON.stringify(valuesPresolemp));
             window.open('<?= $this->view->controller; ?>presolemp/idlista/<?= $idLista; ?>', '_blank');
-        });
-    });
+                    });
+                });
 </script>
