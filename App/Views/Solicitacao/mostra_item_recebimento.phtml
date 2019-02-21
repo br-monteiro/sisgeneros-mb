@@ -6,6 +6,7 @@
                 <div id="resultado"></div>
                 <?php if (isset($this->view->result[0])): ?>
                     <form action="<?= $this->view->controller; ?>registrarrecebimento/id/<?= $this->view->result[0]['solicitacao_id']; ?>" method="post" id="form">
+                        <input type="hidden" name="fornecedor_id" value="<?= $this->view->result[0]['fornecedor_id'] ?>">
                         <input type="hidden" name="id_licitacao" value="<?= $this->view->result[0]['id_licitacao'] ?>">
                         <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
                         <input type="hidden" name="data_entrega" value="<?= date("d-m-Y", time()); ?>">

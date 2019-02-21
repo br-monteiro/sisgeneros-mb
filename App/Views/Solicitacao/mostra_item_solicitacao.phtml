@@ -128,7 +128,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success btn-confirm">Confirmar</button>
+                <button type="button" class="btn btn-success btn-confirm" data-dismiss="modal">Confirmar</button>
             </div>
         </div>
     </div>
@@ -227,7 +227,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        Data para entrega: <strong><?= $this->view->resultSolicitacao['data_entrega']; ?></strong>
+                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['data_entrega']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];

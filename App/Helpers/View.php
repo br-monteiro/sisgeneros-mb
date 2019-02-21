@@ -50,4 +50,16 @@ class View
 
         return $result;
     }
+    
+    /**
+     * Build the date in format DD-MM-YYYY from YYYY-MM-DD
+     * @param string $date The raw date
+     * @param string $delimiter The separate number. By default is '-'
+     * @return string
+     */
+    public static function showDate(string $date, string $delimiter = '-'): string
+    {
+        $dateEmplode = explode($delimiter, $date);
+        return implode($delimiter, array_reverse($dateEmplode));
+    }
 }

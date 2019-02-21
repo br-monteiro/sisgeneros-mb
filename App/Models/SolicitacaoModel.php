@@ -68,19 +68,18 @@ class SolicitacaoModel extends CRUD
             if ($sol['om_id'] != $user['om_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
                 header("location:" . cfg::DEFAULT_URI . "solicitacao/");
+                return; // just stop the execution
             }
         }
 
         $this->setId()
             ->setDataEntrega(filter_input(INPUT_POST, 'data_entrega', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        $dataEntrega = $this->getDataEntrega();
         $id = $this->getId();
 
-        $this->validaDataEntrega($dataEntrega);
+        $this->validaDataEntrega($this->getDataEntrega());
 
         $dados = [
-            'data_entrega' => $dataEntrega
+            'data_entrega' => $this->getDataEntrega()
         ];
 
         if (parent::editar($dados, $id)) {
