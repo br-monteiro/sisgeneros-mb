@@ -477,7 +477,7 @@ class SolicitacaoModel extends CRUD
             return true;
             // verifica se o usuário é da mensa OM da solicitação
         } elseif ($user['nivel'] !== 'ADMINISTRADOR') {
-            if ($user['om'] != $solicitacao['om']) {
+            if ($user['om_id'] != $solicitacao['om_id']) {
                 header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
                 return true;
             }

@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\View;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -26,7 +31,7 @@
                                                placeholder="dd-mm-aaaa"
                                                class="form-control"
                                                maxlength="10"
-                                               value="<?= $this->view->result['data_entrega']; ?>"
+                                               value="<?= View::showDate($this->view->result['data_entrega']); ?>"
                                                required>
                                     </div>
 

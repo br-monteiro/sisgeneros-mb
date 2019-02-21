@@ -238,6 +238,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $licitacao = new Licitacao;
 
         $this->view->result = $licitacao->listaPorFornecedor($this->view->idLista);
+
+        if (!$this->view->result) {
+            header('Location: ' . $this->view->controller);
+        }
+
         $this->view->title = 'Lista de fornecedor';
         $this->render('mostra_fornecedor');
     }
