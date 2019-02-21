@@ -51,7 +51,10 @@
                     <i class="fa fa-history"></i> Histórico
                 </a>
                 <a class="collapse-item" href="solicitacao/licitacao/">
-                    <i class="fa fa-group"></i> Licitado
+                    <i class="fa fa-group"></i> Licitado - PE/Empresa
+                </a>
+                <a class="collapse-item" href="solicitacao/licitacaobusca/">
+                    <i class="fa fa-group"></i> Licitado - Item
                 </a>
                 <a class="collapse-item" href="solicitacao/formnaolicitado/">
                     <i class="fa fa-shopping-cart"></i> Não Licitado
@@ -59,6 +62,30 @@
             </div>
         </div>
     </li>
+
+    <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) === false) : ?>
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#menuFornecedor"
+               aria-expanded="true"
+               aria-controls="menuFornecedor">
+                <i class="fa fa-suitcase fa-fw"></i> Fornecedor
+                <span class="fa arrow"></span>
+            </a>
+            <div id="menuFornecedor"
+                 class="collapse"
+                 aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="fornecedor/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
+    <?php endif; ?>
 
     <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
         <li class="nav-item">

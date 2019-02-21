@@ -114,14 +114,20 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
     public function itensLicitadosAction()
     {
-        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
-            ->clearAccessList()
-            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $this->view->busca = $this->getParametro('busca');
 
-        $licitacao = new Licitacao();
-        $this->view->title = 'Forncedores e itens encontrados';
-        $this->view->result = $licitacao->listaItemFornecedor($this->getParametro('busca'));
-        $this->render('mostra_item_buscado');
+        if ($this->view->busca) {
+            $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+                ->clearAccessList()
+                ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
+            $licitacao = new Licitacao();
+            $this->view->title = 'Forncedores e itens encontrados';
+            $this->view->result = $licitacao->listaItemFornecedor($this->getParametro('busca'));
+            $this->render('mostra_item_buscado');
+        } else {
+            $this->licitacaobuscaAction();
+        }
     }
 
     public function eliminarAction()
@@ -349,5 +355,15 @@ class SolicitacaoController extends Controller implements CtrlInterface
         if ($numero !== 'error') {
             $solicitacaoModel->saveOneFile(getcwd(), $numero);
         }
+    }
+
+    public function licitacaobuscaAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('solicitacao/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
+
+        $this->view->title = 'Busca de itens licitados';
+        $this->render('mostra_busca_fornecedor');
     }
 }
