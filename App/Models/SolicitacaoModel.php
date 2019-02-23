@@ -643,7 +643,7 @@ class SolicitacaoModel extends CRUD
 
         if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $where = " AND om_id = {$user['om_id']} ";
-            $query . $where;
+            $query .= $where;
         }
 
         $stmt = $this->pdo->prepare($query);
