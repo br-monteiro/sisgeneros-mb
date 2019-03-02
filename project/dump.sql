@@ -106,6 +106,19 @@ COMMENT = 'Licitações do sistema';
 
 
 -- -----------------------------------------------------
+-- Table `sisgeneros`.`ingredients`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`ingredients` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`ingredients` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+COMMENT = 'Igredientes usados na confecção de receitas';
+
+
+-- -----------------------------------------------------
 -- Table `sisgeneros`.`biddings_items`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `sisgeneros`.`biddings_items` ;
@@ -114,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`biddings_items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `biddings_id` INT NOT NULL,
   `suppliers_id` INT NOT NULL,
+  `ingredients_id` INT NOT NULL,
   `number` INT(5) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `uf` VARCHAR(4) NOT NULL,
@@ -123,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`biddings_items` (
   PRIMARY KEY (`id`),
   INDEX `fk_biddings_items_biddings1_idx` (`biddings_id` ASC),
   INDEX `fk_biddings_items_suppliers1_idx` (`suppliers_id` ASC),
+  INDEX `fk_biddings_items_ingredients1_idx` (`ingredients_id` ASC),
   CONSTRAINT `fk_biddings_items_biddings1`
     FOREIGN KEY (`biddings_id`)
     REFERENCES `sisgeneros`.`biddings` (`id`)
@@ -131,6 +146,11 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`biddings_items` (
   CONSTRAINT `fk_biddings_items_suppliers1`
     FOREIGN KEY (`suppliers_id`)
     REFERENCES `sisgeneros`.`suppliers` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_biddings_items_ingredients1`
+    FOREIGN KEY (`ingredients_id`)
+    REFERENCES `sisgeneros`.`ingredients` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -186,9 +206,9 @@ DROP TABLE IF EXISTS `sisgeneros`.`requests` ;
 
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`requests` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `biddings_id` INT NULL,
   `oms_id` INT NOT NULL,
   `suppliers_id` INT NOT NULL,
+  `biddings_id` INT NULL,
   `number` INT(8) NOT NULL,
   `status` VARCHAR(20) NOT NULL DEFAULT 'ABERTO',
   `invoice` VARCHAR(20) NOT NULL DEFAULT 'S/N',
@@ -203,12 +223,12 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`requests` (
   CONSTRAINT `fk_requests_oms1`
     FOREIGN KEY (`oms_id`)
     REFERENCES `sisgeneros`.`oms` (`id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_requests_suppliers1`
     FOREIGN KEY (`suppliers_id`)
     REFERENCES `sisgeneros`.`suppliers` (`id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'Solicitações de itens Licitados e Não Licitados';
@@ -246,8 +266,8 @@ DROP TABLE IF EXISTS `sisgeneros`.`suppliers_evaluations` ;
 
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`suppliers_evaluations` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `evaluation` INT(1) NOT NULL DEFAULT 3,
   `requests_id` INT NOT NULL,
+  `evaluation` INT(1) NOT NULL DEFAULT 3,
   PRIMARY KEY (`id`),
   INDEX `fk_suppliers_evaluations_requests1_idx` (`requests_id` ASC),
   CONSTRAINT `fk_suppliers_evaluations_requests1`
@@ -257,6 +277,158 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`suppliers_evaluations` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'Avaliação de entrega dos fornecedores';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`recipes_patterns`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`recipes_patterns` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes_patterns` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+COMMENT = 'Receitas padrões registradas no sistema';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`recipes_patterns_items`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`recipes_patterns_items` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes_patterns_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `ingredients_id` INT NOT NULL,
+  `recipes_patterns_id` INT NOT NULL,
+  `quantity` FLOAT(5,3) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_recipes_patterns_items_recipes_patterns1_idx` (`recipes_patterns_id` ASC),
+  INDEX `fk_recipes_patterns_items_ingredients1_idx` (`ingredients_id` ASC),
+  CONSTRAINT `fk_recipes_patterns_items_recipes_patterns1`
+    FOREIGN KEY (`recipes_patterns_id`)
+    REFERENCES `sisgeneros`.`recipes_patterns` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_recipes_patterns_items_ingredients1`
+    FOREIGN KEY (`ingredients_id`)
+    REFERENCES `sisgeneros`.`ingredients` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Itens das receitas';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`menus`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`menus` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `oms_id` INT NOT NULL,
+  `beginning_date` DATE NOT NULL,
+  `ending_date` DATE NOT NULL,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'ABERTO',
+  PRIMARY KEY (`id`),
+  INDEX `fk_menus_oms1_idx` (`oms_id` ASC),
+  CONSTRAINT `fk_menus_oms1`
+    FOREIGN KEY (`oms_id`)
+    REFERENCES `sisgeneros`.`oms` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Cardápios registrados pela Organizações Militares';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`menus_days`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`menus_days` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus_days` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `menus_id` INT NOT NULL,
+  `date` DATE NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_menu_days_menus1_idx` (`menus_id` ASC),
+  CONSTRAINT `fk_menu_days_menus1`
+    FOREIGN KEY (`menus_id`)
+    REFERENCES `sisgeneros`.`menus` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Dias de um cardápito';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`meals`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`meals` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`meals` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `order` INT(1) NOT NULL DEFAULT 1,
+  `name` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+COMMENT = 'Refeições diárias';
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`recipes`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`recipes` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `meals_id` INT NOT NULL,
+  `menu_days_id` INT NOT NULL,
+  `recipes_patterns_id` INT NOT NULL COMMENT 'Receita padrão usada como base',
+  `name` VARCHAR(50) NOT NULL,
+  `quantity_people` INT(5) NOT NULL COMMENT 'Quantidade de pessoas a serem atendidas',
+  PRIMARY KEY (`id`),
+  INDEX `fk_recipes_menu_days1_idx` (`menu_days_id` ASC),
+  INDEX `fk_recipes_recipes_patterns1_idx` (`recipes_patterns_id` ASC),
+  INDEX `fk_recipes_meals1_idx` (`meals_id` ASC),
+  CONSTRAINT `fk_recipes_menu_days1`
+    FOREIGN KEY (`menu_days_id`)
+    REFERENCES `sisgeneros`.`menus_days` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_recipes_recipes_patterns1`
+    FOREIGN KEY (`recipes_patterns_id`)
+    REFERENCES `sisgeneros`.`recipes_patterns` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_recipes_meals1`
+    FOREIGN KEY (`meals_id`)
+    REFERENCES `sisgeneros`.`meals` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `sisgeneros`.`recipes_items`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `sisgeneros`.`recipes_items` ;
+
+CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes_items` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `recipes_id` INT NOT NULL,
+  `biddings_items_id` INT NULL COMMENT 'Item da licitação quando houver',
+  `name` VARCHAR(50) NOT NULL,
+  `suggested_quantity` FLOAT(5,3) NOT NULL,
+  `quantity` FLOAT(5,3) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_recispes_items_recipes1_idx` (`recipes_id` ASC),
+  CONSTRAINT `fk_recispes_items_recipes1`
+    FOREIGN KEY (`recipes_id`)
+    REFERENCES `sisgeneros`.`recipes` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
