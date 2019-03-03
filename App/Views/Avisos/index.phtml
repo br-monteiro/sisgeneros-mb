@@ -3,12 +3,6 @@
 use App\Helpers\Pagination;
 use App\Helpers\View;
 
-$formatDate = function(string $value) {
-    $explodedDate = explode('-', $value);
-    $explodedDate = array_reverse($explodedDate);
-    return implode('-', $explodedDate);
-};
-
 $pagination = Pagination::make($this);
 
 ?>
@@ -29,10 +23,8 @@ $pagination = Pagination::make($this);
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Criado Por</th>
                             <th>Título</th>
                             <th>Mensagem</th>
-                            <th>Criação</th>
                             <th>Validade</th>
                             <th></th>
                         </tr>
@@ -40,17 +32,15 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['usuario_criador_nome'] ?? ''; ?></td>
-                                <td><?= View::limitString($value['titulo'], 35); ?></td>
-                                <td><?= View::limitString($value['corpo'], 35); ?></td>
-                                <td><?= $formatDate($value['created_at']); ?></td>
+                                <td><?= View::limitString($value['title'], 35); ?></td>
+                                <td><?= View::limitString($value['content'], 35); ?></td>
                                 <td>
                                     <strong class="badge badge-success">
-                                        <?= $formatDate($value['data_inicio']); ?>
+                                        <?= View::showDate($value['beginning_date']); ?>
                                     </strong>
                                     à 
                                     <strong class="badge badge-danger">
-                                        <?= $formatDate($value['data_fim']); ?>
+                                        <?= View::showDate($value['ending_date']); ?>
                                     </strong>
                                 </td>
                                 <td>
