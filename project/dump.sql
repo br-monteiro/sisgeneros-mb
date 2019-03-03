@@ -342,26 +342,6 @@ COMMENT = 'Cardápios registrados pela Organizações Militares';
 
 
 -- -----------------------------------------------------
--- Table `sisgeneros`.`menus_days`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `sisgeneros`.`menus_days` ;
-
-CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus_days` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `menus_id` INT NOT NULL,
-  `date` DATE NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_menu_days_menus1_idx` (`menus_id` ASC),
-  CONSTRAINT `fk_menu_days_menus1`
-    FOREIGN KEY (`menus_id`)
-    REFERENCES `sisgeneros`.`menus` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-COMMENT = 'Dias de um cardápito';
-
-
--- -----------------------------------------------------
 -- Table `sisgeneros`.`meals`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `sisgeneros`.`meals` ;
@@ -383,19 +363,15 @@ DROP TABLE IF EXISTS `sisgeneros`.`recipes` ;
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `meals_id` INT NOT NULL,
-  `menu_days_id` INT NOT NULL,
+  `menus_id` INT NOT NULL,
   `recipes_patterns_id` INT NOT NULL COMMENT 'Receita padrão usada como base',
   `name` VARCHAR(50) NOT NULL,
   `quantity_people` INT(5) NOT NULL COMMENT 'Quantidade de pessoas a serem atendidas',
+  `date` DATE NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_recipes_menu_days1_idx` (`menu_days_id` ASC),
   INDEX `fk_recipes_recipes_patterns1_idx` (`recipes_patterns_id` ASC),
   INDEX `fk_recipes_meals1_idx` (`meals_id` ASC),
-  CONSTRAINT `fk_recipes_menu_days1`
-    FOREIGN KEY (`menu_days_id`)
-    REFERENCES `sisgeneros`.`menus_days` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_recipes_menus1_idx` (`menus_id` ASC),
   CONSTRAINT `fk_recipes_recipes_patterns1`
     FOREIGN KEY (`recipes_patterns_id`)
     REFERENCES `sisgeneros`.`recipes_patterns` (`id`)
@@ -404,6 +380,11 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes` (
   CONSTRAINT `fk_recipes_meals1`
     FOREIGN KEY (`meals_id`)
     REFERENCES `sisgeneros`.`meals` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_recipes_menus1`
+    FOREIGN KEY (`menus_id`)
+    REFERENCES `sisgeneros`.`menus` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
