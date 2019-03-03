@@ -85,18 +85,18 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         if ($index > 4) {
                             break;
                         }
-                        $value['nota'] = round($value['nota'], 2);
+                        $value['evaluation'] = round($value['evaluation'], 2);
 
                         ?>
                         <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
+                            <?= $value['name'] ?>
+                            <span class="float-right"><?= $value['evaluation'] ?></span>
                         </h4>
                         <div class="progress mb-4">
                             <div class="progress-bar bg-success"
                                  role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 style="width: <?= ($value['evaluation'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['evaluation'] ?>"
                                  aria-valuemin="1"
                                  aria-valuemax="5"></div>
                         </div>
@@ -116,18 +116,18 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         if ($index > 4) {
                             break;
                         }
-                        $value['nota'] = round($value['nota'], 2);
+                        $value['evaluation'] = round($value['evaluation'], 2);
 
                         ?>
                         <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
+                            <?= $value['name'] ?>
+                            <span class="float-right"><?= $value['evaluation'] ?></span>
                         </h4>
                         <div class="progress mb-4">
                             <div class="progress-bar bg-danger"
                                  role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 style="width: <?= ($value['evaluation'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['evaluation'] ?>"
                                  aria-valuemin="0"
                                  aria-valuemax="5"></div>
                         </div>
