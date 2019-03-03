@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $pagination = Pagination::make($this);
 
@@ -34,12 +35,12 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['indicativo_naval']; ?></td>
+                                <td><?= $value['naval_indicative']; ?></td>
                                 <td><?= $value['name']; ?></td>
-                                <td><?= $value['nivel']; ?></td>
-                                <td><?= $value['active'] == 1 ? 'Sim' : 'Não'; ?></td>
-                                <td><?= date('d-m-Y H:i:s', $value['created_at']); ?></td>
-                                <td><?= date('d-m-Y H:i:s', $value['updated_at']); ?></td>
+                                <td><?= $value['level']; ?></td>
+                                <td><?= $value['active'] == 'yes' ? 'Sim' : 'Não'; ?></td>
+                                <td><?= View::showDate($value['created_at']); ?></td>
+                                <td><?= View::showDate($value['updated_at']); ?></td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>

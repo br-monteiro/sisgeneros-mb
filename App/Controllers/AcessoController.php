@@ -42,7 +42,7 @@ class AcessoController extends Controller implements CtrlInterface
         $model = new AcessoModel();
         $this->view->title = 'Editando Registro';
         $id = $this->getParametro('id');
-        if ($this->view->userLoggedIn['nivel'] !== 'ADMINISTRADOR') {
+        if ($this->view->userLoggedIn['level'] !== 'ADMINISTRADOR') {
             $id = $this->view->userLoggedIn['id'];
         }
         $this->view->result = $model->findById($id);

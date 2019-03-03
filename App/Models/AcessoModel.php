@@ -1,92 +1,66 @@
 <?php
-/**
- * @Model Acesso
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use HTR\Helpers\Session\Session;
-use HTR\Helpers\Criptografia\Criptografia as Cripto;
+use HTR\Helpers\Criptografia\Criptografia;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
 
 class AcessoModel extends CRUD
 {
 
-    // Tabela usada neste Model
     protected $entidade = 'users';
-    protected $id;
-    protected $username;
-    protected $password;
-    protected $omId;
-    protected $name;
-    protected $email;
-    protected $nivel;
-    protected $lastIp;
-    protected $active;
-    protected $time;
-    // Recebe o resultado da consulta feita no Banco de Dados
-    private $resultadoPaginator;
-    // Recebe o Array de links da navegação da paginação
-    private $navPaginator;
 
     /**
-     * Método uaso para retornar todos os dados da tabela.
+     * @var \HTR\Helpers\Paginator\Paginator
      */
+    private $paginator;
+
     public function returnAll()
     {
-        /*
-         * Método padrão do sistema usado para retornar todos os dados da tabela
-         */
         return $this->findAll();
     }
 
     public function paginator($pagina)
     {
-        $innerJoin = " INNER JOIN om ON users.om_id = om.id";
+        $innerJoin = " INNER JOIN oms ON users.oms_id = oms.id";
         $dados = [
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
             'maxResult' => 10,
-            'select' => 'users.*, om.indicativo_naval'
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
+            'select' => 'users.*, oms.indicativo_naval'
         ];
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function novoRegistro()
     {
-        // Seta automaticamente os atributos necessários
-        $this->startSeters()
+        $this->buildSetters()
             // Valida os Dados enviados através do formulário
             ->validaPassword()
             ->validaUsername()
-            ->validaOmId()
+            ->validaOmsId()
             ->validaName()
             ->validaEmail()
-            ->validaNivel()
+            ->validaLevel()
             // Verifica se há registro igual
             ->evitarDuplicidade();
 
         $dados = [
             'username' => $this->getUsername(),
             'password' => $this->getPassword(),
-            'om_id' => $this->getOmId(),
+            'oms_id' => $this->getOmsId(),
             'name' => $this->getName(),
             'email' => $this->getEmail(),
-            'nivel' => $this->getNivel(),
-            'trocar_senha' => 1,
-            'last_ip' => $this->getIp(),
-            'last_access' => $this->getTime(),
-            'active' => 1, // 1-ativo; 0-inativo  Default : 1
-            'created_at' => $this->getTime(),
-            'updated_at' => $this->getTime()
+            'level' => $this->getLevel(),
+            'change_password' => 'yes',
+            'active' => 'yes',
+            'created_at' => self::currentDate(),
+            'updated_at' => self::currentDate()
         ];
 
         if (parent::novo($dados)) {
@@ -96,29 +70,39 @@ class AcessoModel extends CRUD
         }
     }
 
+    /**
+     * Return the current date. By default the format is YYYY-MM-DD
+     * @param string $format The format of output
+     * @return string
+     */
+    private static function currentDate(string $format = 'Y-m-d'): string
+    {
+        return date($format);
+    }
+
     public function editarRegistro()
     {
-        // Seta automaticamente os atributos necessários
-        $this->startSeters()
+        // Seta automsaticamente os atributos necessários
+        $this->buildSetters()
             // Valida os Dados enviados através do formulário
             ->validaId()
             ->validaUsername()
-            ->validaOmId()
+            ->validaOmsId()
             ->validaName()
             ->validaEmail()
-            ->validaNivel()
+            ->validaLevel()
             // Verifica se há registro igual
             ->evitarDuplicidade();
 
         $dados = [
             'id' => $this->getId(),
             'username' => $this->getUsername(),
-            'om_id' => $this->getOmId(),
+            'oms_id' => $this->getOmsId(),
             'name' => $this->getName(),
             'email' => $this->getEmail(),
-            'nivel' => $this->getNivel(),
-            'active' => $this->getActive(), // 1-ativo; 0-inativo  Default : 1
-            'updated_at' => $this->getTime()
+            'level' => $this->getLevel(),
+            'active' => $this->getActive(),
+            'updated_at' => self::currentDate()
         ];
 
         if ($this->getPassword()) {
@@ -134,15 +118,15 @@ class AcessoModel extends CRUD
         // consulta dados o usuário logado
         $user = $this->findById($_SESSION['userId']);
 
-        if ($user['nivel'] == 'ADMINISTRADOR' && ($user['id'] != $this->getId())) {
+        if ($user['level'] == 'ADMINISTRADOR' && ($user['id'] != $this->getId())) {
             // seta a troca de senha na próxima vez que o usuário logar
-            $dados['trocar_senha'] = 1;
+            $dados['change_password'] = 'yes';
         } else {
             // Para usuário com o nível diferente de 1-Administrador
             $this->setId($user['id']);
             $dados['active'] = $user['active'];
-            $dados['nivel'] = $user['nivel'];
-            $dados['om_id'] = $user['om_id'];
+            $dados['level'] = $user['level'];
+            $dados['oms_id'] = $user['oms_id'];
         }
 
         if (parent::editar($dados, $this->getId())) {
@@ -162,19 +146,17 @@ class AcessoModel extends CRUD
         $value = parent::findById($id);
 
         if ($value) {
-            // decodifica os campos de USERNAME e EMAIL
-            $value['username'] = $value['username'];
-            $value['email'] = $value['email'];
             return $value;
         }
 
         msg::showMsg('Este registro não foi encontrado. Você será redirecionado em 5 segundos.'
             . '<meta http-equiv="refresh" content="0;URL=' . cfg::DEFAULT_URI . 'acesso" />', 'danger', false);
     }
-    /*
-     * Método usado para alterar a senha do usuário no primeiro acesso
-     */
 
+    /**
+     * Método usado para alterar a senha do usuário no primeiro acesso
+     * @param int $id The user ID
+     */
     public function mudarSenha($id)
     {
         $this->setTime()
@@ -183,8 +165,8 @@ class AcessoModel extends CRUD
 
         $dados = [
             'password' => $this->getPassword(),
-            'trocar_senha' => 0,
-            'updated_at' => time()
+            'change_password' => 'no',
+            'updated_at' => self::currentDate()
         ];
 
         if (parent::editar($dados, $id)) {
@@ -203,7 +185,7 @@ class AcessoModel extends CRUD
         $stmt->bindValue(2, $this->getName());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Nome.'
+            msg::showMsg('Já existe um registro com este Nomse.'
                 . '<script>focusOn("name")</script>', 'warning');
         }
 
@@ -234,38 +216,31 @@ class AcessoModel extends CRUD
 
         // Verifica se todos os campos foram preenchidos
         if ($username && $password) {
-            $cripto = new Cripto;
+            $cripto = new Criptografia;
             // consulta se existe um susário registrado com o USERNAME fornecido
             $result = $this->findByUsername($username);
 
             if (!$result) {
-                // retorna a mensagem de dialogo
                 msg::showMsg('<strong>Usuário inválido.</strong>'
                     . ' Verifique se digitou corretamente.'
                     . '<script>focusOn("username");</script>', 'warning');
             }
 
-            if ($result['active'] === '2') {
-                // retorna a mensagem de dialogo
+            if ($result['active'] === 'no') {
                 msg::showMsg('<strong>Usuário Bloqueado!</strong><br>'
                     . ' Consulte o Admistrador do Sistema para mais informações.'
-                    . '<style>body{background-color:#CD2626;</style>'
                     . cfg::ADMIN_CONTACT, 'danger');
             }
 
-            // verifica a autenticidade da senha
             if ($cripto->passVerify($password . cfg::STR_SALT, $result['password'])) {
-                // Caso seja um usuário autêntico, inicia a sessão
                 $this->registerSession($result);
                 return; // just stop execution
             } else {
-                // retorna a mensagem de dialogo
                 msg::showMsg('<strong>Algo está errado...</strong>'
                     . ' Verifique se digitou corretamente seu login e senha.'
                     . '<script>focusOn("password");</script>', 'warning');
             }
         }
-        // retorna a mensagem de dialogo
         msg::showMsg('Todos os campos são preenchimento obrigatório.', 'danger');
     }
 
@@ -286,19 +261,17 @@ class AcessoModel extends CRUD
         return $session->stopSession();
     }
 
-    private function startSeters()
+    private function buildSetters()
     {
-        // Seta todos os valores
-        $this->setTime(time())
-            ->setId()
+        $this->setId()
             ->setUsername(filter_input(INPUT_POST, 'username'))
             ->setPassword(filter_input(INPUT_POST, 'password'))
-            ->setOmId(filter_input(INPUT_POST, 'om_id', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setOmsId(filter_input(INPUT_POST, 'oms_id', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setEmail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
-            ->setNivel(filter_input(INPUT_POST, 'nivel', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT))
-            ->setIp($_SERVER["REMOTE_ADDR"]);
+            ->setLevel(filter_input(INPUT_POST, 'level', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT));
+
         return $this;
     }
 
@@ -316,12 +289,12 @@ class AcessoModel extends CRUD
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
     // Validação
@@ -365,18 +338,18 @@ class AcessoModel extends CRUD
     {
         $value = v::stringType()->notEmpty()->validate($this->getName());
         if (!$value) {
-            msg::showMsg('O campo Nome deve ser preenchido corretamente.'
+            msg::showMsg('O campo Nomse deve ser preenchido corretamente.'
                 . '<script>focusOn("name");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaOmId()
+    private function validaOmsId()
     {
-        $value = v::intVal()->notEmpty()->validate($this->getOmId());
+        $value = v::intVal()->notEmpty()->validate($this->getOmsId());
         if (!$value) {
             msg::showMsg('O campo OM deve ser preenchido corretamente.'
-                . '<script>focusOn("om_id");</script>', 'danger');
+                . '<script>focusOn("oms_id");</script>', 'danger');
         }
         return $this;
     }
@@ -392,19 +365,19 @@ class AcessoModel extends CRUD
         return $this;
     }
 
-    private function validaNivel()
+    private function validaLevel()
     {
-        $value = v::stringType()->notEmpty()->validate($this->getNivel());
+        $value = v::stringType()->notEmpty()->validate($this->getLevel());
         if (!$value) {
             msg::showMsg('O campo Nível de Acesso deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nivel");</script>', 'danger');
+                . '<script>focusOn("level");</script>', 'danger');
         }
         return $this;
     }
 
     private function criptoVar($attribute, $value, $password = false)
     {
-        $cripto = new Cripto;
+        $cripto = new Criptografia;
         if (!$password) {
             $this->$attribute = $value;
         } else {
