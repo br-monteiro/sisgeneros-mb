@@ -1,7 +1,4 @@
 <?php
-/**
- * @Model Fornecedor
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
@@ -13,13 +10,12 @@ use App\Config\Configurations as cfg;
 class FornecedorModel extends CRUD
 {
 
-    protected $entidade = 'fornecedor';
-    protected $id;
-    protected $nome;
-    protected $cnpj;
-    protected $dados;
-    private $resultadoPaginator;
-    private $navPaginator;
+    protected $entidade = 'suppliers';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator
+     */
+    protected $paginator;
 
     public function returnAll()
     {
@@ -32,24 +28,20 @@ class FornecedorModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'nome ASC'
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
+            'orderBy' => 'name ASC'
         ];
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
     public function novoRegistro()
@@ -60,9 +52,9 @@ class FornecedorModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getName(),
             'cnpj' => $this->getCnpj(),
-            'dados' => $this->getDados()
+            'details' => $this->getDetails()
         ];
         if (parent::novo($dados)) {
             msg::showMsg('111', 'success');
@@ -77,9 +69,9 @@ class FornecedorModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getName(),
             'cnpj' => $this->getCnpj(),
-            'dados' => $this->getDados()
+            'details' => $this->getDetails()
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -90,19 +82,19 @@ class FornecedorModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'fornecedor/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'suppliers/ver/');
         }
     }
 
     private function evitarDuplicidade()
     {
         /// Evita a duplicidade de registros
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND nome = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND name = ?");
         $stmt->bindValue(1, $this->getId());
-        $stmt->bindValue(2, $this->getNome());
+        $stmt->bindValue(2, $this->getName());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Nome.<script>focusOn("nome")</script>', 'warning');
+            msg::showMsg('Já existe um registro com este Name.<script>focusOn("name")</script>', 'warning');
         }
 
         $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND cnpj = ?");
@@ -119,21 +111,21 @@ class FornecedorModel extends CRUD
         // Seta todos os valores
         $this->setId()
             ->setCnpj(filter_input(INPUT_POST, 'cnpj', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setNome(filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setDados(filter_input(INPUT_POST, 'dados', FILTER_SANITIZE_SPECIAL_CHARS));
+            ->gstName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setDetails(filter_input(INPUT_POST, 'details', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
         $this->validaId()
-            ->validaNome()
+            ->validaName()
             ->validaCnpj()
-            ->validaDados();
+            ->validaDetails();
     }
 
     /// Seters
     private function setId()
     {
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
+        $this->id = $value ?? time();
         return $this;
     }
 
@@ -147,12 +139,12 @@ class FornecedorModel extends CRUD
         return $this;
     }
 
-    private function validaNome()
+    private function validaName()
     {
-        $value = v::stringType()->notEmpty()->validate($this->getNome());
+        $value = v::stringType()->notEmpty()->validate($this->getName());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nome");</script>', 'danger');
+                . '<script>focusOn("name");</script>', 'danger');
         }
         return $this;
     }
@@ -167,12 +159,12 @@ class FornecedorModel extends CRUD
         return $this;
     }
 
-    private function validaDados()
+    private function validaDetails()
     {
-        $value = v::stringType()->validate($this->getDados());
+        $value = v::stringType()->validate($this->getDetails());
         if (!$value) {
             msg::showMsg('O campo Dados deve ser preenchido corretamente.'
-                . '<script>focusOn("dados");</script>', 'danger');
+                . '<script>focusOn("datails");</script>', 'danger');
         }
         return $this;
     }
