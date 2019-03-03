@@ -8,13 +8,17 @@ use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
 use App\Models\AvisosListaOmsModel;
 use App\Models\OmModel;
+use App\Helpers\Utils;
 
 class AvisosModel extends CRUD
 {
 
-    protected $entidade = 'quadro_avisos';
-    private $resultadoPaginator;
-    private $navPaginator;
+    protected $entidade = 'billboards';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator 
+     */
+    private $paginator;
 
     public function returnAll()
     {
@@ -24,44 +28,39 @@ class AvisosModel extends CRUD
     public function paginator($pagina)
     {
         $innerJoin = ""
-            . " AS qa "
-            . " INNER JOIN users AS us"
-            . "     ON us.id = qa.usuario_criador "
-            . " GROUP BY qa.id";
+            . " AS bill "
+            . " GROUP BY bill.id";
         $dados = [
             'entidade' => $this->entidade . $innerJoin,
-            'select' => 'qa.*, us.name AS usuario_criador_nome',
+            'select' => 'bill.*',
             'pagina' => $pagina,
             'maxResult' => 100,
             'orderBy' => 'created_at ASC'
         ];
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
-    public function novoRegistro(array $user)
+    public function novoRegistro()
     {
         $this->validaAll();
 
         $dados = [
-            'titulo' => $this->getTitulo(),
-            'corpo' => $this->getCorpo(),
-            'usuario_criador' => $user['id'],
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
             'created_at' => date('Y-m-d'),
-            'data_inicio' => $this->getDataInicio(),
-            'data_fim' => $this->getDataFim()
+            'beginning_date' => $this->getBeginningDate(),
+            'ending_date' => $this->getEndingDate()
         ];
 
         if (parent::novo($dados)) {
@@ -70,8 +69,8 @@ class AvisosModel extends CRUD
 
             foreach ($this->buildOmsId() as $omId) {
                 $dados = [
-                    'om_id' => $omId,
-                    'quadro_avisos_id' => $lastId
+                    'oms_id' => $omId,
+                    'billboards_id' => $lastId
                 ];
                 $quadroAvisosListaOms->novo($dados);
             }
@@ -85,10 +84,10 @@ class AvisosModel extends CRUD
         $this->validaAll();
 
         $dados = [
-            'titulo' => $this->getTitulo(),
-            'corpo' => $this->getCorpo(),
-            'data_inicio' => $this->getDataInicio(),
-            'data_fim' => $this->getDataFim()
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'beginning_date' => $this->getBeginningDate(),
+            'ending_date' => $this->getEndingDate()
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -104,12 +103,12 @@ class AvisosModel extends CRUD
             $result['result'] = $aviso;
             $query = ""
                 . "SELECT "
-                . " qalo.id, om.indicativo_naval, om.nome "
-                . " FROM quadro_avisos_lista_oms AS qalo "
-                . " INNER JOIN om "
-                . "     ON om.id = qalo.om_id "
-                . " WHERE qalo.quadro_avisos_id = {$aviso['id']} "
-                . " ORDER BY om.nome ";
+                . " bol.id, oms.naval_indicative, oms.name "
+                . " FROM billboards_oms_lists AS bol "
+                . " INNER JOIN oms "
+                . "     ON oms.id = bol.oms_id "
+                . " WHERE bol.billboards_id = {$aviso['id']} "
+                . " ORDER BY oms.name ";
             $result['oms'] = $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
             return $result;
         }
@@ -120,22 +119,22 @@ class AvisosModel extends CRUD
     {
         $result = [];
         $omCount = count((new OmModel())->findAll());
-        $omInsertedCount = count((new AvisosListaOmsModel())->findAllByQuadro_avisos_id($id));
+        $omInsertedCount = count((new AvisosListaOmsModel())->findAllByBillboards_id($id));
 
         if ($omCount != $omInsertedCount) {
             $query = ""
                 . " SELECT "
-                . " om.id, om.indicativo_naval, om.nome "
-                . " FROM om "
-                . " WHERE om.id NOT IN ("
+                . " oms.id, oms.naval_indicative, oms.name "
+                . " FROM oms "
+                . " WHERE oms.id NOT IN ("
                 . "     SELECT "
-                . "         om.id "
-                . "     FROM quadro_avisos_lista_oms AS qalo "
-                . "     INNER JOIN om "
-                . "         ON om.id = qalo.om_id "
-                . "     WHERE qalo.quadro_avisos_id = {$id} "
+                . "         oms.id "
+                . "     FROM billboards_oms_lists AS bol "
+                . "     INNER JOIN oms "
+                . "         ON oms.id = bol.oms_id "
+                . "     WHERE bol.billboards_id = {$id} "
                 . " ) "
-                . " ORDER BY om.nome";
+                . " ORDER BY oms.name";
             $result = $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
         }
         return $result;
@@ -144,30 +143,30 @@ class AvisosModel extends CRUD
     public function adicionarNovaOM()
     {
         $this->setId()
-            ->setOmId(filter_input(INPUT_POST, 'om'));
+            ->setOmsId(filter_input(INPUT_POST, 'oms'));
 
         $this->validaId()
-            ->validaInt($this->getOmId());
+            ->validaInt($this->getOmsId());
 
         $query = ""
             . " SELECT "
             . " id "
-            . " FROM quadro_avisos_lista_oms AS qalo "
-            . " WHERE qalo.om_id = :omId AND qalo.quadro_avisos_id = :qaId";
+            . " FROM billboards_oms_lists AS bol "
+            . " WHERE bol.oms_id = :omId AND bol.billboards_id = :billId";
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
-            ':omId' => $this->getOmId(),
-            ':qaId' => $this->getId()
+            ':omId' => $this->getOmsId(),
+            ':billId' => $this->getId()
         ]);
 
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Esta OM já foi adicionada.', 'danger');
+            msg::showMsg('Esta oms já foi adicionada.', 'danger');
         }
 
         $dados = [
-            'om_id' => $this->getOmId(),
-            'quadro_avisos_id' => $this->getId()
+            'oms_id' => $this->getOmsId(),
+            'billboards_id' => $this->getId()
         ];
 
         if ((new AvisosListaOmsModel())->novo($dados)) {
@@ -180,16 +179,16 @@ class AvisosModel extends CRUD
         $date = date('Y-m-d');
         $query = ""
             . " SELECT "
-            . " DISTINCT qa.* "
-            . " FROM quadro_avisos AS qa "
-            . " INNER JOIN quadro_avisos_lista_oms AS qalo "
-            . "     ON qalo.quadro_avisos_id = qa.id "
+            . " DISTINCT bill.* "
+            . " FROM billboards AS bill "
+            . " INNER JOIN billboards_oms_lists AS bol "
+            . "     ON bol.billboards_id = bill.id "
             . " WHERE "
-            . "     qa.data_inicio <= DATE('{$date}') "
-            . "     AND qa.data_fim >= DATE('{$date}') "
-            . "     AND qalo.om_id = {$omId} "
-            . " GROUP BY qa.titulo, qa.corpo "
-            . " ORDER BY DATE(qa.created_at) ";
+            . "     bill.beginning_date <= DATE('{$date}') "
+            . "     AND bill.ending_date >= DATE('{$date}') "
+            . "     AND bol.oms_id = {$omId} "
+            . " GROUP BY bill.title, bill.content "
+            . " ORDER BY DATE(bill.beginning_date) ";
 
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -197,7 +196,6 @@ class AvisosModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            $this->pdo->exec("DELETE FROM quadro_avisos_lista_oms WHERE quadro_avisos_lista_oms.quadro_avisos_id = {$id};");
             header('Location: ' . cfg::DEFAULT_URI . 'avisos/ver/');
         }
     }
@@ -213,17 +211,17 @@ class AvisosModel extends CRUD
     {
         // Seta todos os valores
         $this->setId()
-            ->setTitulo(filter_input(INPUT_POST, 'titulo', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setCorpo(filter_input(INPUT_POST, 'corpo', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setDataInicio(filter_input(INPUT_POST, 'data_inicio', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setDataFim(filter_input(INPUT_POST, 'data_fim', FILTER_SANITIZE_SPECIAL_CHARS));
+            ->setTitle(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setContent(filter_input(INPUT_POST, 'content', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setBeginningDate(filter_input(INPUT_POST, 'beginning_date', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setEndingDate(filter_input(INPUT_POST, 'ending_date', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
         $this->validaId()
-            ->validaTitulo()
-            ->validaCorpo()
-            ->validaDataInicio()
-            ->validaDataFim();
+            ->validaTitle()
+            ->validaContent()
+            ->validaBeginningDate()
+            ->validaEndingDate();
     }
 
     private function setId()
@@ -251,30 +249,29 @@ class AvisosModel extends CRUD
         return $this;
     }
 
-    private function validaTitulo()
+    private function validaTitle()
     {
-        $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getTitulo());
+        $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getTitle());
         if (!$value) {
             msg::showMsg('O campo Título deve ser preenchido corretamente.'
-                . '<script>focusOn("titulo");</script>', 'danger');
+                . '<script>focusOn("title");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaCorpo()
+    private function validaContent()
     {
-        $value = v::stringType()->notEmpty()->length(3, 256)->validate($this->getCorpo());
+        $value = v::stringType()->notEmpty()->length(3, 256)->validate($this->getContent());
         if (!$value) {
             msg::showMsg('O campo Mensagem deve ser preenchido corretamente.'
-                . '<script>focusOn("titulo");</script>', 'danger');
+                . '<script>focusOn("title");</script>', 'danger');
         }
         return $this;
     }
 
     private function abstractDateValidate(string $value, string $fieldName, string $labelName)
     {
-        $date = explode('-', $value);
-        $date = $date[2] . '-' . $date[1] . '-' . $date[0];
+        $date = Utils::dateDatabaseFormate($value);
         if (!v::date()->validate($date)) {
             msg::showMsg('O campo ' . $labelName . ' deve ser preenchido corretamente.'
                 . '<script>focusOn("' . $fieldName . '");</script>', 'danger');
@@ -282,15 +279,15 @@ class AvisosModel extends CRUD
         return $date;
     }
 
-    private function validaDataInicio()
+    private function validaBeginningDate()
     {
-        $this->setDataInicio($this->abstractDateValidate($this->getDataInicio(), 'data_inicio', 'Data início'));
+        $this->setBeginningDate($this->abstractDateValidate($this->getBeginningDate(), 'beginning_date', 'Data início'));
         return $this;
     }
 
-    private function validaDataFim()
+    private function validaEndingDate()
     {
-        $this->setDataFim($this->abstractDateValidate($this->getDataFim(), 'data_fim', 'Data final'));
+        $this->setEndingDate($this->abstractDateValidate($this->getEndingDate(), 'ending_date', 'Data final'));
         return $this;
     }
 
@@ -298,7 +295,7 @@ class AvisosModel extends CRUD
     {
         $result = [];
         $requestPost = filter_input_array(INPUT_POST);
-        $items = is_array($requestPost['om'] ?? null) ? $requestPost['om'] : [];
+        $items = is_array($requestPost['oms'] ?? null) ? $requestPost['oms'] : [];
 
         foreach ($items as $omId) {
             $value = v::intVal()->validate($omId);
