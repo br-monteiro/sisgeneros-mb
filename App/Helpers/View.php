@@ -50,7 +50,7 @@ class View
 
         return $result;
     }
-    
+
     /**
      * Build the date in format DD-MM-YYYY from YYYY-MM-DD
      * @param string $date The raw date
@@ -61,5 +61,16 @@ class View
     {
         $dateEmplode = explode($delimiter, $date);
         return implode($delimiter, array_reverse($dateEmplode));
+    }
+
+    /**
+     * Check if the values A and B is equals and returns 'selected'
+     * @param mixed $a The input value
+     * @param type $b The comparison value
+     * @return string
+     */
+    public static function isSelected($a, $b): string
+    {
+        return $a === $b ? 'selected' : '';
     }
 }
