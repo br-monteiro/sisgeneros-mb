@@ -1,3 +1,8 @@
+<?php
+
+use App\Config\Configurations as cfg;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -42,14 +47,13 @@
 
                                     <div class="form-group">
                                         <label>Nível de Acesso</label>
-                                        <select name="nivel"
-                                                id="nivel"
+                                        <select name="level"
+                                                id="level"
                                                 class="form-control"
                                                 required>
-                                            <option value="ADMINISTRADOR">1 - Administrador</option>
-                                            <option value="CONTROLADOR">2 - Controlador</option>
-                                            <option value="ENCARREGADO">3 - Encarregado</option>
-                                            <option value="NORMAL">4 - Normal</option>
+                                            <?php foreach (cfg::DEFAULT_USER_LEVELS as $level): ?>
+                                                <option value="<?= $level; ?>"><?= $level; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
                                 </div>
@@ -79,13 +83,13 @@
 
                                     <div class="form-group">
                                         <label>OM</label>
-                                        <select name="om_id"
-                                                id="om_id"
+                                        <select name="oms_id"
+                                                id="oms_id"
                                                 class="form-control"
                                                 required>
                                                     <?php foreach ($this->view->resultOm as $value): ?>
                                                 <option value="<?= $value['id']; ?>">
-                                                    <?= $value['indicativo_naval']; ?>
+                                                    <?= $value['naval_indicative']; ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>

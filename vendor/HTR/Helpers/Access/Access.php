@@ -59,13 +59,13 @@ class Access extends CRUD
             // Seta os níveis de acesso permitidos na página
             $this->setNivelAcesso($nivelAcesso);
             // Verifica se o usuário tem permissão de acesso
-            if (!$this->verificarNivelAcesso($result['nivel'])) {
+            if (!$this->verificarNivelAcesso($result['level'])) {
                 // Redireciona o usuário sem permissão
                 // de acesso para página inicial
                 $this->redirectTo();
                 return;
             }
-            if (isset($result[cfg::DB_USER_CHANGE_PASSWORD_FIELD]) && $result[cfg::DB_USER_CHANGE_PASSWORD_FIELD]) {
+            if (isset($result[cfg::DB_USER_CHANGE_PASSWORD_FIELD]) && $result[cfg::DB_USER_CHANGE_PASSWORD_FIELD] === 'yes') {
                 $this->redirectTo(cfg::URI_CHANGE_PASSWORD);
             }
             // Retorna o resultado da consulta
