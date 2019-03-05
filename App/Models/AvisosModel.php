@@ -187,7 +187,7 @@ class AvisosModel extends CRUD
             . "     bill.beginning_date <= DATE('{$date}') "
             . "     AND bill.ending_date >= DATE('{$date}') "
             . "     AND bol.oms_id = {$omId} "
-            . " GROUP BY bill.title, bill.content "
+            . " GROUP BY bill.title, bill.content, bill.id "
             . " ORDER BY DATE(bill.beginning_date) ";
 
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
