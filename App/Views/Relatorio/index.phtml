@@ -45,7 +45,7 @@ $statusPatterns = [
                                 <option value="">OM</option>
                                 <?php foreach ($this->view->resultOms as $value): ?>
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
-                                        <?= $value['indicativo_naval'] ?>
+                                        <?= $value['naval_indicative'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -107,8 +107,8 @@ $statusPatterns = [
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['solicitacao_numero']; ?></td>
-                                <td><?= $value['indicativo_naval']; ?></td>
+                                <td><?= $value['solicitacao_number']; ?></td>
+                                <td><?= $value['naval_indicative']; ?></td>
                                 <td><?= $value['nota_fiscal'] ?: ''; ?></td>
                                 <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
                                 <td>
@@ -116,7 +116,7 @@ $statusPatterns = [
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= View::showDate($value['data_entrega']); ?>
+                                        <?= View::humanDate($value['delivery_date']); ?>
                                     </span>
                                 </td>
                             </tr>

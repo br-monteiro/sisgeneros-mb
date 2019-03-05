@@ -6,7 +6,7 @@
                 <div id="resultado"></div>
                 <?php if (isset($this->view->result[0])): ?>
                     <form action="<?= $this->view->controller; ?>registrarrecebimento/id/<?= $this->view->result[0]['solicitacao_id']; ?>" method="post" id="form">
-                        <input type="hidden" name="fornecedor_id" value="<?= $this->view->result[0]['fornecedor_id'] ?>">
+                        <input type="hidden" name="suppliers_id" value="<?= $this->view->result[0]['suppliers_id'] ?>">
                         <input type="hidden" name="id_licitacao" value="<?= $this->view->result[0]['id_licitacao'] ?>">
                         <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
                         <input type="hidden" name="data_entrega" value="<?= date("d-m-Y", time()); ?>">
@@ -14,10 +14,10 @@
                             <i class="fa fa-check"></i> Confirmar Recebimento
                         </button>
                         <div class="row" style="padding-top: 10px;">
-                            <div class="col-lg-4" id="numero_nota_fiscal_container">
+                            <div class="col-lg-4" id="invoice_container">
                                 <label>Número da Nota Fiscal: </label>
-                                <input type="text" name="numero_nota_fiscal"
-                                       id="numero_nota_fiscal"
+                                <input type="text" name="invoice"
+                                       id="invoice"
                                        class="form-control"
                                        maxlength="20"
                                        placeholder="Número da nota fiscal"
@@ -85,10 +85,10 @@
                                                    value="<?= $value['id']; ?>">
                                             <input type="hidden"
                                                    name="uf[]"
-                                                   value="<?= $value['item_uf']; ?>">
+                                                   value="<?= $value['uf']; ?>">
                                             <input type="hidden"
                                                    name="valor[]"
-                                                   value="<?= $value['item_valor']; ?>">
+                                                   value="<?= $value['value']; ?>">
                                             <input type="hidden"
                                                    name="fornecedor[]"
                                                    value="">
@@ -97,15 +97,15 @@
                                                    value="---">
                                             <input type="text"
                                                    name="quantidade[]"
-                                                   id="quantidade"
-                                                   value="<?= $value['item_quantidade']; ?>"
+                                                   id="quantity"
+                                                   value="<?= $value['quantity']; ?>"
                                                    class="form-control">
                                         </td>
-                                        <td><?= $value['item_quantidade']; ?></td>
-                                        <td><?= $value['item_numero']; ?></td>
-                                        <td>R$ <?= number_format($value['item_valor'], 2, ",", "."); ?></td>
-                                        <td><?= $value['item_uf']; ?></td>
-                                        <td><?= $value['item_nome']; ?></td>
+                                        <td><?= $value['quantity']; ?></td>
+                                        <td><?= $value['item_number']; ?></td>
+                                        <td>R$ <?= number_format($value['value'], 2, ",", "."); ?></td>
+                                        <td><?= $value['uf']; ?></td>
+                                        <td><?= $value['name']; ?></td>
                                         <td>
                                             <span class="badge badge-dark">
                                                 <?= $value['fornecedor_nome']; ?>

@@ -1,3 +1,9 @@
+<?php
+
+use App\Helpers\View;
+use App\Helpers\Utils;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -16,37 +22,47 @@
                         <div id="resultado"></div>
                         <form action="<?= $this->view->controller; ?>altera/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
                             <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
-                            <input type="hidden" name="id_lista" value="<?= $this->view->idLista; ?>">
+                            <input type="hidden" name="biddings_id" value="<?= $this->view->idLista; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Número</label>
                                         <input type="text"
-                                               name="numero"
-                                               id="numero"
+                                               name="number"
+                                               id="number"
                                                placeholder="Número do Item"
                                                class="form-control"
-                                               value="<?= $this->view->result['numero']; ?>"
+                                               value="<?= $this->view->result['number']; ?>"
                                                required>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text"
-                                               name="nome"
-                                               id="nome"
+                                               name="name"
+                                               id="name"
                                                placeholder="Nome do Item da Licitação"
                                                class="form-control"
-                                               value="<?= $this->view->result['nome']; ?>"
+                                               value="<?= $this->view->result['name']; ?>"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Ingrediente</label>
+                                        <input type="text"
+                                               name="ingredients_id"
+                                               id="ingredients_id"
+                                               class="form-control"
+                                               value="<?= $this->view->result['ingredients_id']; ?>"
                                                required>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Fornecedor</label>
-                                        <select name="id_fornecedor" class="form-control" required>
+                                        <select name="suppliers_id" class="form-control" required>
                                             <?php foreach ($this->view->resultFornecedor as $value): ?>
-                                                <option value="<?= $value['id']; ?>" <?= $this->view->result['id_fornecedor'] == $value['id'] ? 'selected' : ''; ?>>
-                                                    <?= $value['nome']; ?>
+                                                <option value="<?= $value['id']; ?>" <?= View::isSelected($this->view->result['suppliers_id'], $value['id']); ?>>
+                                                    <?= $value['name']; ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
@@ -69,24 +85,24 @@
                                     <div class="form-group">
                                         <label>Quantidade</label>
                                         <input type="text"
-                                               name="quantidade"
-                                               id="quantidade"
+                                               name="quantity"
+                                               id="quantity"
                                                placeholder="Quantidade Licitada"
                                                class="form-control"
                                                maxlength="50"
-                                               value="<?= $this->view->result['quantidade']; ?>"
+                                               value="<?= $this->view->result['quantity']; ?>"
                                                required>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Valor</label>
                                         <input type="text"
-                                               name="valor"
-                                               id="valor"
+                                               name="value"
+                                               id="value"
                                                placeholder="Valor do item"
                                                class="form-control"
                                                maxlength="12"
-                                               value="<?= number_format($this->view->result['valor'], 2, ',', '.'); ?>"
+                                               value="<?= Utils::floatToMoney($this->view->result['value'], ''); ?>"
                                                required>
                                     </div>
 
@@ -95,7 +111,7 @@
                                         <input type="checkbox"
                                                name="habilitacao"
                                                id="habilitacao"
-                                               <?= $this->view->result['active'] == 1 ? 'checked' : ''; ?>>
+                                               <?= $this->view->result['active'] == 'yes' ? 'checked' : ''; ?>>
                                         <span class='label label-danger'>SIM!</span>
                                     </div>
 

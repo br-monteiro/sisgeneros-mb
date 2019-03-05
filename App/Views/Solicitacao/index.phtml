@@ -5,7 +5,7 @@ use App\Helpers\View;
 
 $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
-$userNivel = $this->view->userLoggedIn['nivel'];
+$userNivel = $this->view->userLoggedIn['level'];
 
 $formatDate = function(string $value) {
     $explodedDate = explode('-', $value);
@@ -84,10 +84,10 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['numero']; ?></td>
-                                <td><?= $value['indicativo_naval']; ?></td>
+                                <td><?= $value['number']; ?></td>
+                                <td><?= $value['naval_indicative']; ?></td>
                                 <td><?= View::limitString($value['fornecedor_nome'], 17); ?></td>
-                                <td><?= $value['numero_nota_fiscal'] ?: ''; ?></td>
+                                <td><?= $value['invoice'] ?: ''; ?></td>
                                 <td>
                                     <?php if ($value['nao_licitado'] === '0') : ?>
                                         <i class="fa fa-group"></i> LIC
@@ -105,7 +105,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= $formatDate($value['data_entrega']); ?>
+                                        <?= $formatDate($value['delivery_date']); ?>
                                     </span>
                                 </td>
                                 <td>

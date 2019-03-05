@@ -4,7 +4,7 @@
             <div class="row">
                 <input type="hidden" name="id_licitacao" value="0">
                 <input type="hidden" name="nao_licitado" value="1">
-                <input type="hidden" name="numero_nota_fiscal" value="S/N">
+                <input type="hidden" name="invoice" value="S/N">
                 <input type="hidden" name="observacao">
                 <div class="col-md-12">
                     <div id="resultado"></div>
@@ -38,10 +38,10 @@
                 </div>
                 <div class="col-md-6">
                     <label>Fornecedor:</label>
-                    <select name="fornecedor_id" class="form-control" required>
+                    <select name="suppliers_id" class="form-control" required>
                         <option value="">---</option>
                         <?php foreach ($this->view->resultFornecedor as $value) : ?>
-                            <option value="<?= $value['id']; ?>"><?= $value['cnpj']; ?> - <?= $value['nome']; ?></option>
+                            <option value="<?= $value['id']; ?>"><?= $value['cnpj']; ?> - <?= $value['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

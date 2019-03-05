@@ -36,11 +36,11 @@ $pagination = Pagination::make($this);
                                 <td><?= View::limitString($value['content'], 35); ?></td>
                                 <td>
                                     <strong class="badge badge-success">
-                                        <?= View::showDate($value['beginning_date']); ?>
+                                        <?= View::humanDate($value['beginning_date']); ?>
                                     </strong>
                                     à 
                                     <strong class="badge badge-danger">
-                                        <?= View::showDate($value['ending_date']); ?>
+                                        <?= View::humanDate($value['ending_date']); ?>
                                     </strong>
                                 </td>
                                 <td>

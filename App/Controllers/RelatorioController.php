@@ -41,7 +41,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
-            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+            $db->setaFiltros()->orderBy('om.naval_indicative ASC');
         });
         $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
@@ -101,7 +101,7 @@ class RelatorioController extends Controller implements CtrlInterface
     {
         $this->view->title = 'Avaliação de Entrega dos Fornecedores';
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
-            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+            $db->setaFiltros()->orderBy('om.naval_indicative ASC');
         });
 
         $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($db) {
@@ -115,8 +115,8 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->render('mostra_avalicao_entrega');
     }
 
-    protected function demanda($itemNumero, $idLicitacao)
+    protected function demanda($itemnumber, $idLicitacao)
     {
-        return $this->solItem->quantidadeDemanda($itemNumero, $idLicitacao);
+        return $this->solItem->quantidadeDemanda($itemnumber, $idLicitacao);
     }
 }

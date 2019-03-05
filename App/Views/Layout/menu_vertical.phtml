@@ -63,7 +63,7 @@
         </div>
     </li>
 
-    <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) === false) : ?>
+    <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'CONTROLADOR']) === false) : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"
@@ -87,7 +87,7 @@
         </li>
     <?php endif; ?>
 
-    <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
+    <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"
@@ -217,7 +217,7 @@
         </li>
     <?php endif; ?>
 
-    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR') : ?>
+    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR') : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"

@@ -2,6 +2,7 @@
 
 use App\Helpers\Pagination;
 use App\Helpers\View;
+use App\Helpers\Utils;
 
 $idLista = $this->view->idLista;
 
@@ -20,12 +21,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             <div class="col-lg-12">
                 <h5>Itens da Licitação</h5>
                 <div class="alert alert-info" role="alert">
-                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                    Númeno: <strong><?= $this->view->resultLicitacao['number']; ?></strong><br>
                     Órgão:
                     <strong>
                         <?= $this->view->resultLicitacao['uasg']; ?>
                         -
-                        <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                        <?= $this->view->resultLicitacao['uasg_name']; ?>
                     </strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
@@ -53,18 +54,18 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td style='font-size: 11px'><?= $value['numero']; ?></td>
-                                <td style='font-size: 11px'><?= $value['quantidade']; ?></td>
-                                <td style='font-size: 11px'>R$ <?= number_format($value['valor'], 2, ',', '.'); ?></td>
+                                <td style='font-size: 11px'><?= $value['number']; ?></td>
+                                <td style='font-size: 11px'><?= $value['quantity']; ?></td>
+                                <td style='font-size: 11px'>R$ <?= Utils::floatToMoney($value['value']); ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
                                 <td style='font-size: 11px'>
-                                    <span class='label label-<?= $value['active'] ? 'success' : 'danger'; ?>'>
+                                    <span class='label label-<?= $value['active'] === 'yes' ? 'success' : 'danger'; ?>'>
                                         <?= $value['active'] ? 'Sim' : 'Não'; ?>
                                     </span>
                                 </td>
-                                <td style='font-size: 11px'><?= $value['nome']; ?></td>
+                                <td style='font-size: 11px'><?= $value['name']; ?></td>
                                 <td style='font-size: 11px'>
-                                    <?= View::limitString($value['fornecedor'], 25); ?>
+                                    <?= View::limitString($value['supplier'], 25); ?>
                                 </td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success btn-sm">

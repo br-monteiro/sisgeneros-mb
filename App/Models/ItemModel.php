@@ -1,7 +1,4 @@
 <?php
-/**
- * @Model Item
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
@@ -9,21 +6,17 @@ use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\Utils;
 
 class ItemModel extends CRUD
 {
 
-    protected $entidade = 'licitacao_item';
-    protected $id;
-    protected $idLista;
-    protected $idFornecedor;
-    protected $numero;
-    protected $nome;
-    protected $uf;
-    protected $quantidade;
-    protected $valor;
-    private $resultadoPaginator;
-    private $navPaginator;
+    protected $entidade = 'biddings_items';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator
+     */
+    protected $paginator;
 
     public function returnAll()
     {
@@ -33,28 +26,26 @@ class ItemModel extends CRUD
     public function paginator($pagina, $idLista)
     {
         $dados = [
-            'entidade' => 'licitacao_item INNER JOIN `fornecedor` ON `licitacao_item`.`id_fornecedor` = `fornecedor`.`id`',
+            'entidade' => 'biddings_items INNER JOIN `suppliers` ON `biddings_items`.`suppliers_id` = `suppliers`.`id`',
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => '`licitacao_item`.`numero` ASC',
-            'where' => '`licitacao_item`.`id_lista` = ?',
-            'bindValue' => [0 => $idLista],
-            'select' => '`licitacao_item`.*, `fornecedor`.`nome` AS fornecedor'
+            'orderBy' => '`biddings_items`.`number` ASC',
+            'where' => '`biddings_items`.`biddings_id` = ?',
+            'bindValue' => [$idLista],
+            'select' => '`biddings_items`.*, `suppliers`.`name` AS suppliers'
         ];
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
     public function novoRegistro()
@@ -65,21 +56,22 @@ class ItemModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'id_lista' => $this->getIdLista(),
-            'id_fornecedor' => $this->getIdFornecedor(),
-            'numero' => $this->getNumero(),
-            'nome' => $this->getNome(),
+            'biddings_id' => $this->getBiddingsId(),
+            'suppliers_id' => $this->getSuppliersId(),
+            'ingredients_id' => $this->getIngredientsId(),
+            'number' => $this->getNumber(),
+            'name' => $this->getName(),
             'uf' => $this->getUf(),
-            'quantidade' => $this->getQuantidade(),
-            'valor' => $this->getValor(),
-            'active' => $this->getHabilitacao()
+            'quantity' => $this->getQuantity(),
+            'value' => $this->getValue(),
+            'active' => $this->getActive()
         ];
 
         if (parent::novo($dados)) {
             msg::showMsg('Sucesso ao executar operação.'
                 . '<script>'
-                . 'resetFormOnDemand(["numero", "nome", "uf", "quantidade", "valor"]);'
-                . 'focusOn("numero");'
+                . 'resetFormOnDemand(["number", "name", "uf", "quantity", "value"]);'
+                . 'focusOn("number");'
                 . '</script>', 'success');
         }
     }
@@ -92,14 +84,15 @@ class ItemModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'id_lista' => $this->getIdLista(),
-            'id_fornecedor' => $this->getIdFornecedor(),
-            'numero' => $this->getNumero(),
-            'nome' => $this->getNome(),
+            'biddings_id' => $this->getBiddingsId(),
+            'suppliers_id' => $this->getSuppliersId(),
+            'ingredients_id' => $this->getIngredientsId(),
+            'number' => $this->getNumber(),
+            'name' => $this->getName(),
             'uf' => $this->getUf(),
-            'quantidade' => $this->getQuantidade(),
-            'valor' => $this->getValor(),
-            'active' => $this->getHabilitacao()
+            'quantity' => $this->getQuantity(),
+            'value' => $this->getValue(),
+            'active' => $this->getActive()
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -117,80 +110,77 @@ class ItemModel extends CRUD
     private function evitarDuplicidade()
     {
         /// Evita a duplicidade de registros
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND id_lista = ? AND numero = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND biddings_id = ? AND number = ?");
         $stmt->bindValue(1, $this->getId());
-        $stmt->bindValue(2, $this->getIdLista());
-        $stmt->bindValue(3, $this->getNumero());
+        $stmt->bindValue(2, $this->getBiddingsId());
+        $stmt->bindValue(3, $this->getNumber());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
             msg::showMsg('Já existe um Item com este Número para esta Licitação.'
-                . '<script>focusOn("numero")</script>', 'warning');
+                . '<script>focusOn("number")</script>', 'warning');
         }
 
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND id_lista = ? AND nome = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND biddings_id = ? AND name = ?");
         $stmt->bindValue(1, $this->getId());
-        $stmt->bindValue(2, $this->getIdLista());
-        $stmt->bindValue(3, $this->getNome());
+        $stmt->bindValue(2, $this->getBiddingsId());
+        $stmt->bindValue(3, $this->getName());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
             msg::showMsg('Já existe um Item com este Nome para esta Licitação.'
-                . '<script>focusOn("nome")</script>', 'warning');
+                . '<script>focusOn("name")</script>', 'warning');
         }
     }
 
     public function findByIdLista($idLista, $idFornecedor)
     {
         $stmt = $this->pdo->prepare(
-            "SELECT `licitacao_item`.*, `fornecedor`.`cnpj`, `fornecedor`.`nome` AS fornecedor,
-                fornecedor.id as fornecedor_id
-            FROM `licitacao_item` 
-            INNER JOIN `fornecedor` ON `licitacao_item`.`id_fornecedor` = `fornecedor`.`id` 
-            WHERE `licitacao_item`.`id_lista` = ? AND fornecedor.id = ? AND `licitacao_item`.`active` = 1
-            ORDER BY `licitacao_item`.`numero` ASC");
+            "SELECT `biddings_items`.*, `suppliers`.`cnpj`, `suppliers`.`name` AS supplier,
+                suppliers.id as supplier_id
+            FROM `biddings_items` 
+            INNER JOIN `suppliers` ON `biddings_items`.`suppliers_id` = `suppliers`.`id` 
+            WHERE `biddings_items`.`biddings_id` = ? AND suppliers.id = ? AND `biddings_items`.`active` = 'yes'
+            ORDER BY `biddings_items`.`number` ASC");
         $stmt->execute([$idLista, $idFornecedor]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     private function validaAll()
     {
-        // Seta todos os valores
+        // Seta todos os valuees
         $this->setId()
-            ->setIdLista()
-            ->setIdFornecedor(filter_input(INPUT_POST, 'id_fornecedor'))
-            ->setHabilitacao(filter_input(INPUT_POST, 'habilitacao'))
-            ->setNumero(filter_input(INPUT_POST, 'numero', FILTER_VALIDATE_INT))
-            ->setNome(filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setBiddingsId()
+            ->setSuppliersId(filter_input(INPUT_POST, 'suppliers_id'))
+            ->setActive(filter_input(INPUT_POST, 'active'))
+            ->setNumber(filter_input(INPUT_POST, 'number', FILTER_VALIDATE_INT))
+            ->setIngredientsId(filter_input(INPUT_POST, 'ingredients_id', FILTER_VALIDATE_INT))
+            ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUf(filter_input(INPUT_POST, 'uf', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setValor(filter_input(INPUT_POST, 'valor', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setQuantidade(filter_input(INPUT_POST, 'quantidade', FILTER_VALIDATE_INT));
+            ->setValue(filter_input(INPUT_POST, 'value', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT));
 
-        $valor = $this->getvalor();
-        $valor = str_replace(".", "", $valor);
-        $valor = str_replace(",", ".", $valor);
-        $valor = $valor ? number_format($valor, 2) : '0.0';
-        $this->setValor($valor);
+        $this->setValue(Utils::moneyToFloat($this->getValue()));
         // Inicia a Validação dos dados
         $this->validaId()
-            ->validaIdLista()
-            ->validaIdFornecedor()
-            ->validaNumero()
-            ->validaNome()
+            ->validaBiddingsId()
+            ->validaSuppliersId()
+            ->validaNumber()
+            ->validaName()
             ->validaUf()
-            ->validaQuantidade()
-            ->validaHabilitacao();
+            ->validaQuantity()
+            ->validaActive();
     }
 
     private function setId()
     {
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
+        $this->setId($value ?? time());
         return $this;
     }
 
-    private function setIdLista()
+    private function setBiddingsId()
     {
-        $value = filter_input(INPUT_POST, 'id_lista');
-        $this->idLista = !empty($value) ? $value : time();
+        $value = filter_input(INPUT_POST, 'biddings_id');
+        $this->setBiddingsId($value ?? time());
         return $this;
     }
 
@@ -204,40 +194,40 @@ class ItemModel extends CRUD
         return $this;
     }
 
-    private function validaIdLista()
+    private function validaBiddingsId()
     {
-        $value = v::intVal()->validate($this->getIdLista());
+        $value = v::intVal()->validate($this->getBiddingsId());
         if (!$value) {
             msg::showMsg('O campo ID LISTA deve ser um número inteiro válido.', 'danger');
         }
         return $this;
     }
 
-    private function validaIdFornecedor()
+    private function validaSuppliersId()
     {
-        $value = v::intVal()->validate($this->getIdFornecedor());
+        $value = v::intVal()->validate($this->getSuppliersId());
         if (!$value) {
             msg::showMsg('O campo ID DO FORNECEDOR deve ser um número inteiro válido.', 'danger');
         }
         return $this;
     }
 
-    private function validaNumero()
+    private function validaNumber()
     {
-        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getNumero());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getNumber());
         if (!$value) {
-            msg::showMsg('O campo Numero deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("numero");</script>', 'danger');
+            msg::showMsg('O campo Número deve ser deve ser preenchido corretamente.'
+                . '<script>focusOn("number");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaNome()
+    private function validaName()
     {
-        $value = v::stringType()->notEmpty()->validate($this->getNome());
+        $value = v::stringType()->notEmpty()->validate($this->getName());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nome");</script>', 'danger');
+                . '<script>focusOn("name");</script>', 'danger');
         }
         return $this;
     }
@@ -252,19 +242,19 @@ class ItemModel extends CRUD
         return $this;
     }
 
-    private function validaQuantidade()
+    private function validaQuantity()
     {
-        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantity());
         if (!$value) {
-            msg::showMsg('O campo Quantidade deve ser preenchido corretamente.'
-                . '<script>focusOn("quantidade");</script>', 'danger');
+            msg::showMsg('O campo quantity deve ser preenchido corretamente.'
+                . '<script>focusOn("quantity");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaHabilitacao()
+    private function validaActive()
     {
-        $value = $this->getHabilitacao() ? 1 : 0;
-        $this->setHabilitacao($value);
+        $value = $this->getActive() ? 'yes' : 'no';
+        $this->setActive($value);
     }
 }

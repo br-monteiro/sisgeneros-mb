@@ -27,7 +27,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Numero</th>
+                            <th>number</th>
                             <th>Descrição</th>
                             <th>UASG</th>
                             <th>Órgão</th>
@@ -37,10 +37,10 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr class="table-licitacao" data-id-lista="<?= $value['id_lista']; ?>">
-                                <td><?= $value['numero']; ?></td>
-                                <td><?= $value['descricao']; ?></td>
+                                <td><?= $value['number']; ?></td>
+                                <td><?= $value['description']; ?></td>
                                 <td><?= $value['uasg']; ?></td>
-                                <td><?= $value['nome_uasg']; ?></td>
+                                <td><?= $value['uasg_name']; ?></td>
                                 <td>
                                     <span class="label label-danger">
                                         <?= date('d-m-Y', $value['validade']); ?>

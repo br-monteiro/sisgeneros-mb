@@ -41,7 +41,7 @@ use App\Helpers\View;
                                                name="beginning_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
-                                               value="<?= View::showDate($this->view->result['beginning_date']); ?>"
+                                               value="<?= View::humanDate($this->view->result['beginning_date']); ?>"
                                                data-mask="00-00-0000"
                                                required>
                                     </div>
@@ -54,7 +54,7 @@ use App\Helpers\View;
                                                name="ending_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
-                                               value="<?= View::showDate($this->view->result['ending_date']); ?>"
+                                               value="<?= View::humanDate($this->view->result['ending_date']); ?>"
                                                data-mask="00-00-0000"
                                                required>
                                     </div>

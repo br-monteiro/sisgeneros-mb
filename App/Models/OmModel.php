@@ -65,9 +65,9 @@ class OmModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getNome(),
             'uasg' => $this->getUasg(),
-            'indicativo_naval' => $this->getIndicativoNaval(),
+            'naval_indicative' => $this->getIndicativoNaval(),
             'agente_fiscal' => $this->getAgenteFiscal(),
             'agente_fiscal_posto' => $this->getAgenteFiscalPosto(),
             'gestor_municiamento' => $this->getGestorMuniciamento(),
@@ -90,9 +90,9 @@ class OmModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getNome(),
             'uasg' => $this->getUasg(),
-            'indicativo_naval' => $this->getIndicativoNaval(),
+            'naval_indicative' => $this->getIndicativoNaval(),
             'agente_fiscal' => $this->getAgenteFiscal(),
             'agente_fiscal_posto' => $this->getAgenteFiscalPosto(),
             'gestor_municiamento' => $this->getGestorMuniciamento(),
@@ -122,7 +122,7 @@ class OmModel extends CRUD
         $stmt->bindValue(2, $this->getNome());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Nome.<script>focusOn("nome")</script>', 'warning');
+            msg::showMsg('Já existe um registro com este Nome.<script>focusOn("name")</script>', 'warning');
         }
 
         $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND uasg = ?");
@@ -133,12 +133,12 @@ class OmModel extends CRUD
             msg::showMsg('Já existe um registro com este número de UASG.<script>focusOn("uasg")</script>', 'warning');
         }
 
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND indicativo_naval = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND naval_indicative = ?");
         $stmt->bindValue(1, $this->getId());
         $stmt->bindValue(2, $this->getIndicativoNaval());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Indicativo Naval.<script>focusOn("indicativo_naval")</script>', 'warning');
+            msg::showMsg('Já existe um registro com este Indicativo Naval.<script>focusOn("naval_indicative")</script>', 'warning');
         }
     }
 
@@ -148,8 +148,8 @@ class OmModel extends CRUD
         $this->setTime(time())
             ->setId()
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
-            ->setNome(filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setIndicativoNaval(filter_input(INPUT_POST, 'indicativo_naval'))
+            ->setNome(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setIndicativoNaval(filter_input(INPUT_POST, 'naval_indicative'))
             ->setAgenteFiscal(filter_input(INPUT_POST, 'agente_fiscal'))
             ->setAgenteFiscalPosto(filter_input(INPUT_POST, 'agente_fiscal_posto'))
             ->setGestorMuniciamento(filter_input(INPUT_POST, 'gestor_municiamento'))
@@ -173,7 +173,7 @@ class OmModel extends CRUD
     private function setId()
     {
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
+        $this->setId($value ?? time());
         return $this;
     }
 
@@ -191,7 +191,7 @@ class OmModel extends CRUD
         $value = v::stringType()->notEmpty()->length(1, 60)->validate($this->getNome());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nome");</script>', 'danger');
+                . '<script>focusOn("name");</script>', 'danger');
         }
         return $this;
     }
@@ -213,7 +213,7 @@ class OmModel extends CRUD
         if (!$value) {
             msg::showMsg('O campo Indicativo Naval deve ser preenchido'
                 . 'corretamente <strong>com 6 caracteres</strong>.'
-                . '<script>focusOn("indicativo_naval");</script>', 'danger');
+                . '<script>focusOn("naval_indicative");</script>', 'danger');
         }
         return $this;
     }
