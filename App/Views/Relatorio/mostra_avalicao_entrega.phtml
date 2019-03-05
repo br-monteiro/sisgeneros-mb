@@ -45,7 +45,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('fornecedor') ? 'selected' : '' ?>>
                                         <?= $value['cnpj'] ?>
                                         -
-                                        <?= $value['nome'] ?>
+                                        <?= $value['name'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -60,7 +60,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                 <option value="">OM</option>
                                 <?php foreach ($this->view->resultOms as $value): ?>
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
-                                        <?= $value['indicativo_naval'] ?>
+                                        <?= $value['naval_indicative'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -123,16 +123,16 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <?= $value['fornecedor_nome']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['solicitacao_numero']; ?>
+                                    <?= $value['solicitacao_number']; ?>
                                     -
                                     <?= $value['solicitacao_status']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['licitacao_numero']; ?>
+                                    <?= $value['licitacao_number']; ?>
                                     <i class="fa fa-info-circle text-info" title="<?= $value['licitacao_uasg_nome']; ?>"></i>
                                 </td>
                                 <td>
-                                    <?= $value['om_indicativo_naval']; ?>
+                                    <?= $value['om_naval_indicative']; ?>
                                 </td>
                                 <td>
                                     <?= date('d-m-Y', $value['criacao']); ?>

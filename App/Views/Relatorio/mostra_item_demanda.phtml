@@ -23,10 +23,10 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     Órgão:
                     <strong>
                         <?= $this->view->resultLicitacao['uasg']; ?> - 
-                        <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                        <?= $this->view->resultLicitacao['uasg_name']; ?>
                     </strong><br>
-                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong> | 
-                    Descrição: <strong><?= $this->view->resultLicitacao['descricao']; ?></strong>
+                    Númeno: <strong><?= $this->view->resultLicitacao['number']; ?></strong> | 
+                    Descrição: <strong><?= $this->view->resultLicitacao['description']; ?></strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?>
                 <div class="row">
@@ -49,19 +49,19 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td style='font-size: 11px'><?= $value['numero']; ?></td>
+                                <td style='font-size: 11px'><?= $value['number']; ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
-                                <td style='font-size: 11px'><?= $value['nome']; ?></td>
+                                <td style='font-size: 11px'><?= $value['name']; ?></td>
                                 <td style='font-size: 11px'><?= $value['fornecedor']; ?></td>
                                 <td>
                                     <span class="label label-success">
-                                        <?= $value['quantidade']; ?>
+                                        <?= $value['quantity']; ?>
                                     </span>
                                 </td>
                                 <td>
                                     <?php
-                                    $demanda = $this->demanda($value['numero'], $this->view->resultLicitacao['id']);
-                                    $restante = $value['quantidade'] - $demanda;
+                                    $demanda = $this->demanda($value['number'], $this->view->resultLicitacao['id']);
+                                    $restante = $value['quantity'] - $demanda;
                                     if ($demanda):
 
                                         ?>

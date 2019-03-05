@@ -31,7 +31,7 @@ class AcessoModel extends CRUD
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
             'maxResult' => 10,
-            'select' => 'users.*, oms.indicativo_naval'
+            'select' => 'users.*, oms.naval_indicative'
         ];
 
         $this->paginator = new Paginator($dados);
@@ -278,12 +278,12 @@ class AcessoModel extends CRUD
     private function setId($value = null)
     {
         if ($value) {
-            $this->id = $value;
+            $this->setId($value);
             return $this;
         }
 
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: $this->getTime();
+        $this->setId($value ?? $this->getTime());
         return $this;
     }
 

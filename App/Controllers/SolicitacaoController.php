@@ -52,7 +52,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $this->view->title = "Adicionar itens";
         $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($e) {
-            return $e->setaCampos(['id', 'nome', 'cnpj'])
+            return $e->setaCampos(['id', 'name', 'cnpj'])
                     ->setaFiltros()
                     ->orderBy('fornecedor.nome ASC');
         });
@@ -189,7 +189,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $model = new SolicitacaoModel();
-        $model->novoRegistro($this->view->userLoggedIn['om_id']);
+        $model->novoRegistro($this->view->userLoggedIn['oms_id']);
     }
 
     public function registranaolicitadoAction()
@@ -198,7 +198,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->clearAccessList()
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        (new SolicitacaoModel())->novoNaoLicitado($this->view->userLoggedIn['om_id'], getcwd());
+        (new SolicitacaoModel())->novoNaoLicitado($this->view->userLoggedIn['oms_id'], getcwd());
     }
 
     public function alteraAction()
@@ -330,8 +330,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $file = $this->getParametro('file');
         $solicitacao = (new SolicitacaoModel())->findByIdLista($this->view->idLista);
-        $numero = $solicitacao['numero'] ?? 'error';
-        $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $numero . cfg::DS . $file;
+        $number = $solicitacao['number'] ?? 'error';
+        $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $number . cfg::DS . $file;
         if (file_exists($fullPath)) {
             @unlink($fullPath);
         }
@@ -356,9 +356,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $solicitacaoModel = new SolicitacaoModel();
         $solicitacao = $solicitacaoModel->findByIdLista($this->view->idLista);
-        $numero = $solicitacao['numero'] ?? 'error';
-        if ($numero !== 'error') {
-            $solicitacaoModel->saveOneFile(getcwd(), $numero);
+        $number = $solicitacao['number'] ?? 'error';
+        if ($number !== 'error') {
+            $solicitacaoModel->saveOneFile(getcwd(), $number);
         }
     }
 

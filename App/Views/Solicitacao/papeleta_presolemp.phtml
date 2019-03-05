@@ -77,7 +77,7 @@ $total = 0;
             <br>
             <br>
             PRÉ-SOLICITAÇÃO DE EMPENHO -
-            Nº <?= $this->view->resultSolicitacao['numero']; ?>
+            Nº <?= $this->view->resultSolicitacao['number']; ?>
         </td>
     </tr>
     <tr>
@@ -121,17 +121,17 @@ $total = 0;
             <span class="centro_custo text-normal"></span>
         </td>
     </tr>
-    <?php if (isset($this->view->resultLicitacao['numero'])): ?>
+    <?php if (isset($this->view->resultLicitacao['number'])): ?>
         <tr>
             <td class="informacoes left">
                 <span>NR Processo:</span>
-                <?= $this->view->resultLicitacao['numero']; ?>
+                <?= $this->view->resultLicitacao['number']; ?>
             </td>
         </tr>
         <tr>
             <td class="informacoes left text-uppercase">
                 <span>UASG Licitação:</span>
-                <?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                <?= $this->view->resultLicitacao['uasg']; ?> - <?= $this->view->resultLicitacao['uasg_name']; ?>
             </td>
         </tr>
     <?php else: ?>
@@ -144,7 +144,7 @@ $total = 0;
     <tr>
         <td class="informacoes left text-uppercase">
             <span>Data Entrega:</span>
-            <?= View::showDate($this->view->resultSolicitacao['data_entrega']); ?>
+            <?= View::humanDate($this->view->resultSolicitacao['delivery_date']); ?>
         </td>
     </tr>
     <tr>
@@ -213,16 +213,16 @@ $total = 0;
                 <tbody>
                     <?php foreach ($this->view->result as $value): ?>
                         <?php
-                        $totaItem = $value['item_quantidade'] * $value['item_valor'];
+                        $totaItem = $value['quantity'] * $value['value'];
                         $total += $totaItem;
 
                         ?>
                         <tr>
-                            <td><?= $value['item_numero'] ?: ''; ?></td>
-                            <td class="left"><?= $value['item_nome']; ?></td>
-                            <td><?= $value['item_uf']; ?></td>
-                            <td><?= $value['item_quantidade']; ?></td>
-                            <td><?= number_format($value['item_valor'], 2, ',', '.'); ?></td>
+                            <td><?= $value['item_number'] ?: ''; ?></td>
+                            <td class="left"><?= $value['name']; ?></td>
+                            <td><?= $value['uf']; ?></td>
+                            <td><?= $value['quantity']; ?></td>
+                            <td><?= number_format($value['value'], 2, ',', '.'); ?></td>
                             <td><?= number_format($totaItem, 2, ',', '.'); ?></td>
                         </tr>
                     <?php endforeach; ?>

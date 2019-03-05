@@ -22,14 +22,14 @@
         font-weight: bold;
         font-size: 14px;
     }
-    .tipo-documento, .numero, .data {
+    .tipo-documento, .number, .data {
         text-align: right;
         padding-right: 50px;
     }
     .tipo-documento {
         font-size: 14px;
     }
-    .numero {
+    .number {
         font-size: 18px;
     }
     .data {
@@ -123,7 +123,7 @@ if (!isset($this->view->result[0])) {
     <tr>
         <td colspan="3" class="cabecalho">
             MARINHA DO BRASIL<br />
-            <?= ($this->view->result[0]['nome']); ?><br />
+            <?= ($this->view->result[0]['name']); ?><br />
             DIVISÃO DE MUNICIAMENTO
         </td>
     </tr>
@@ -135,10 +135,10 @@ if (!isset($this->view->result[0])) {
                 Agente Fiscal
             </div>
         </td>
-        <td class="numero">
+        <td class="number">
             Solicitação Nº
             <strong>
-                <?= ($this->view->result[0]['numero']); ?>
+                <?= ($this->view->result[0]['number']); ?>
             </strong>
         </td>
     </tr>
@@ -195,12 +195,12 @@ if (!isset($this->view->result[0])) {
                         ?>
                         <tr>
                             <td><?= $i++; ?></td>
-                            <td class='discricao'><?= $value['item_nome']; ?></td>
-                            <td><?= isset($value['licitacao_numero']) ? $value['licitacao_numero'] : 'NL'; ?></td>
-                            <td><?= $value['item_uf']; ?></td>
-                            <td><?= $q = $value['item_quantidade']; ?></td>
-                            <td><?= $q2 = $value['item_quantidade_atendida'] > 0 ? $value['item_quantidade_atendida'] : ''; ?></td>
-                            <td><?= number_format($v = $value['item_valor'], 2, ',', '.'); ?></td>
+                            <td class='discricao'><?= $value['name']; ?></td>
+                            <td><?= isset($value['licitacao_number']) ? $value['licitacao_number'] : 'NL'; ?></td>
+                            <td><?= $value['uf']; ?></td>
+                            <td><?= $q = $value['quantity']; ?></td>
+                            <td><?= $q2 = $value['delivered'] > 0 ? $value['delivered'] : ''; ?></td>
+                            <td><?= number_format($v = $value['value'], 2, ',', '.'); ?></td>
                             <td>
                                 <?php
                                     $acc = 0;
@@ -229,7 +229,7 @@ if (!isset($this->view->result[0])) {
     </tr>
     <tr>
         <td class="data_entrega">
-            Data de entrega: <strong><?= $value['data_entrega']; ?></strong>
+            Data de entrega: <strong><?= $value['delivery_date']; ?></strong>
         </td>
         <td class="recebedor">
             RECEBIDO EM ________/________/________<br />
@@ -244,7 +244,7 @@ if (!isset($this->view->result[0])) {
     <tr>
         <td colspan="8" class="obs">
             OBSERVAÇÃO: O material deve ser entregue junto com a NFE, com os dados bancários na mesma.<br>
-            Nota Fiscal Nº: <?= $this->view->result[0]['numero_nota_fiscal']; ?>
+            Nota Fiscal Nº: <?= $this->view->result[0]['invoice']; ?>
         </td>
     </tr>
     <tr>

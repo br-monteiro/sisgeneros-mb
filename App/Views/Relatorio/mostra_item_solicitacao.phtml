@@ -19,7 +19,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             <div class="col-lg-12">
                 <h5>Itens da Solicitação</h5>
                 <div class="alert alert-info" role="alert">
-                    Número da Solicitação: <strong><?= $this->view->resultSolicitacao['numero_solicitacao']; ?></strong><br>
+                    Número da Solicitação: <strong><?= $this->view->resultSolicitacao['number_solicitacao']; ?></strong><br>
                     Organização Militar: <strong><?= $this->view->resultSolicitacao['om_nome']; ?></strong><br>
                     Data da Solicitação: 
                     <span class="text-danger">
@@ -27,16 +27,16 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     </span><br>
                     Data estipulada para entrega: 
                     <span class="text-danger">
-                        <?= $this->view->resultSolicitacao['data_entrega']; ?>
+                        <?= $this->view->resultSolicitacao['delivery_date']; ?>
                     </span>
                     <br>
                     <?php if ($this->view->resultSolicitacao['nao_licitado'] == 0): ?>
                         Fornecedor: <strong><?= $this->view->resultSolicitacao['fornecedor_nome']; ?></strong><br>
-                        Licitação: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                        Licitação: <strong><?= $this->view->resultLicitacao['number']; ?></strong><br>
                         Órgão:
                         <strong>
                             <?= $this->view->resultLicitacao['uasg']; ?> - 
-                            <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                            <?= $this->view->resultLicitacao['uasg_name']; ?>
                         </strong>
                     <?php else: ?>
                         <br>
@@ -64,11 +64,11 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['item_quantidade']; ?></td>
-                                <td><?= $value['item_quantidade_atendida']; ?></td>
-                                <td><?= $value['item_uf']; ?></td>
-                                <td><?= $value['item_numero']; ?></td>
-                                <td><?= $value['item_nome']; ?></td>
+                                <td><?= $value['quantity']; ?></td>
+                                <td><?= $value['delivered']; ?></td>
+                                <td><?= $value['uf']; ?></td>
+                                <td><?= $value['item_number']; ?></td>
+                                <td><?= $value['name']; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

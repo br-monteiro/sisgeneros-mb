@@ -29,7 +29,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Entregas em Atraso</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesAtrasadas['quantidade']; ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesAtrasadas['quantity']; ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-truck fa-fw"></i>
@@ -45,7 +45,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Acompanhamento de Solicitações (Mensal)</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesMensal['quantidade'] ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesMensal['quantity'] ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-list fa-fw"></i>
@@ -61,7 +61,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Aguard. aprov.</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->pendAprov['quantidade'] ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->pendAprov['quantity'] ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-thumbs-up fa-fw"></i>
@@ -167,12 +167,12 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <tbody>
                             <?php foreach ($this->view->lastUpdated as $value): ?>
                                 <tr>
-                                    <td><?= $value['numero']; ?></td>
-                                    <td><?= $value['indicativo_naval']; ?></td>
+                                    <td><?= $value['number']; ?></td>
+                                    <td><?= $value['naval_indicative']; ?></td>
                                     <td><?= $value['status']; ?></td>
                                     <td><?= date('d-m-Y H:i:s', $value['updated_at']); ?></td>
                                     <td>
-                                        <a href="solicitacao/ver/busca/<?= $value['numero']; ?>" class="btn btn-dark btn-sm">
+                                        <a href="solicitacao/ver/busca/<?= $value['number']; ?>" class="btn btn-dark btn-sm">
                                             <i class="fa fa-arrow-circle-right"></i> Ver Solicitação
                                         </a>
                                     </td>

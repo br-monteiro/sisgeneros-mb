@@ -125,7 +125,7 @@ class FornecedorModel extends CRUD
     private function setId()
     {
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?? time();
+        $this->setId($value ?? time());
         return $this;
     }
 

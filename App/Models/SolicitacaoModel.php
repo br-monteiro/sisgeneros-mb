@@ -10,21 +10,18 @@ use Respect\Validation\Validator as v;
 use App\Models\AvaliacaoFornecedorModel;
 use App\Config\Configurations as cfg;
 use HTR\System\ControllerAbstract;
+use App\Helpers\Utils;
 
 class SolicitacaoModel extends CRUD
 {
 
-    protected $entidade = 'solicitacao';
-    protected $id;
-    protected $idLista;
-    protected $idLicitacao;
-    protected $omId;
-    protected $numero;
+    protected $entidade = 'requests';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator
+     */
+    protected $paginator;
     protected $listaItens = [];
-    protected $naoLicitado = 0;
-    protected $dataEntrega;
-    private $resultadoPaginator;
-    private $navPaginator;
 
     public function returnAll()
     {
@@ -33,25 +30,25 @@ class SolicitacaoModel extends CRUD
 
     public function recuperaDadosRelatorioSolicitacao($idLista)
     {
-        $solicitacao = new SolicitacaoModel();
-        $solicitacao = $solicitacao->findById_lista($idLista);
+        $requests = new SolicitacaoModel();
+        $requests = $requests->findById_lista($idLista);
 
-        if ($solicitacao['nao_licitado'] == 0) {
-            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, licitacao.*,"
-                . "om.nome as om_nome,"
-                . "fornecedor.nome as fornecedor_nome "
-                . "FROM solicitacao "
-                . "INNER JOIN om ON om.id = solicitacao.om_id "
-                . "INNER JOIN licitacao ON licitacao.id = solicitacao.id_licitacao "
-                . "INNER JOIN fornecedor ON fornecedor.id = solicitacao.fornecedor_id "
-                . "WHERE solicitacao.id_lista = ?";
+        if ($requests['biddings_id']) {
+            $query = "SELECT requests.*, requests.number AS number_requests, biddings.*,"
+                . "oms.name as oms_name, "
+                . "suppliers.name as suppliers_name "
+                . "FROM requests "
+                . "INNER JOIN oms ON oms.id = requests.oms_id "
+                . "INNER JOIN biddings ON biddings.id = requests.biddings_id "
+                . "INNER JOIN suppliers ON suppliers.id = requests.suppliers_id "
+                . "WHERE requests.id = ?";
         } else {
-            $query = "SELECT solicitacao.*, solicitacao.numero AS numero_solicitacao, om.nome as om_nome,"
-                . "fornecedor.nome as fornecedor_nome "
-                . "FROM solicitacao "
-                . "INNER JOIN om ON om.id = solicitacao.om_id "
-                . "INNER JOIN fornecedor ON fornecedor.id = solicitacao.fornecedor_id "
-                . "WHERE solicitacao.id_lista = ?";
+            $query = "SELECT requests.*, requests.number AS number_requests, oms.name as oms_name,"
+                . "suppliers.name as suppliers_name "
+                . "FROM requests "
+                . "INNER JOIN oms ON oms.id = requests.oms_id "
+                . "INNER JOIN suppliers ON suppliers.id = requests.suppliers_id "
+                . "WHERE requests.id = ?";
         }
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$idLista]);
@@ -61,25 +58,25 @@ class SolicitacaoModel extends CRUD
     public function alteraDataEntrega($idLista, $user)
     {
         // verifica se o usuário não é adminitrador
-        if ($user['nivel'] !== 'ADMINISTRADOR') {
+        if ($user['level'] !== 'ADMINISTRADOR') {
             // colsuta a solicitação por id_lista
             $sol = $this->findById_lista($idLista);
             // verifica se a solicitação é da mesma OM que o usuário lodado
-            if ($sol['om_id'] != $user['om_id']) {
+            if ($sol['oms_id'] != $user['oms_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
-                header("location:" . cfg::DEFAULT_URI . "solicitacao/");
+                header("location:" . cfg::DEFAULT_URI . "requests/");
                 return; // just stop the execution
             }
         }
 
         $this->setId()
-            ->setDataEntrega(filter_input(INPUT_POST, 'data_entrega', FILTER_SANITIZE_SPECIAL_CHARS));
+            ->setDataEntrega(filter_input(INPUT_POST, 'delivery_date', FILTER_SANITIZE_SPECIAL_CHARS));
         $id = $this->getId();
 
         $this->validaDataEntrega($this->getDataEntrega());
 
         $dados = [
-            'data_entrega' => $this->getDataEntrega()
+            'delivery_date' => $this->getDataEntrega()
         ];
 
         if (parent::editar($dados, $id)) {
@@ -90,54 +87,54 @@ class SolicitacaoModel extends CRUD
     public function retornaDadosPapeleta($id, $user = null, $controllerReceber = false)
     {
         $where = '';
-        if (isset($user['nivel']) && $user['nivel'] !== 'ADMINISTRADOR') {
-            $where = ' AND om.id = ' . $user['om_id'];
+        if (isset($user['level']) && $user['level'] !== 'ADMINISTRADOR') {
+            $where = ' AND oms.id = ' . $user['oms_id'];
         }
         if (!$controllerReceber) {
             $where .= " AND status != 'ABERTO' AND status != 'APROVADO' ";
         } else {
             $where .= " AND status = 'SOLICITADO' ";
         }
-        $stmt = $this->pdo->prepare("SELECT nao_licitado FROM solicitacao WHERE id = ? ");
+        $stmt = $this->pdo->prepare("SELECT biddings_id FROM requests WHERE id = ? ");
         $stmt->execute([$id]);
-        $solicitacao = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if ($solicitacao['nao_licitado'] == 1) {
+        $requests = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($requests['biddings_id']) {
             $query = "SELECT 
                 sol.*,
-                sol.id as solicitacao_id,
-                om.*,
+                sol.id as requests_id,
+                oms.*,
                 item.*,
-                sol.updated_at as alteracao,
-                fornecedor.nome AS fornecedor_nome,
-                fornecedor.cnpj
-            FROM solicitacao AS sol
-            INNER JOIN om
-               ON om.id = sol.om_id
-            INNER JOIN solicitacao_item as item
-               ON item.id_lista = sol.id_lista
-            INNER JOIN fornecedor
-               ON fornecedor.id = sol.fornecedor_id
+                sol.updated_at,
+                suppliers.name AS suppliers_name,
+                suppliers.cnpj
+            FROM requests AS sol
+            INNER JOIN oms
+               ON oms.id = sol.oms_id
+            INNER JOIN requests_items as item
+               ON item.requests_id = sol.id
+            INNER JOIN suppliers
+               ON suppliers.id = sol.suppliers_id
             WHERE sol.id = ? {$where}";
         } else {
             $query = "SELECT
                 sol.*,
-                sol.id as solicitacao_id,
-                om.*,
+                sol.id as requests_id,
+                oms.*,
                 item.id as item_id,
                 item.*,
-                sol.updated_at as alteracao,
-                fornecedor.nome AS fornecedor_nome,
-                fornecedor.cnpj,
-                licitacao.numero AS licitacao_numero
-            FROM solicitacao AS sol
-            INNER JOIN solicitacao_item AS item
-               ON item.id_lista = sol.id_lista
-            INNER JOIN om
-               ON om.id = sol.om_id
-            INNER JOIN fornecedor
-               ON fornecedor.id = sol.fornecedor_id
-           INNER JOIN licitacao
-               ON licitacao.id = sol.id_licitacao
+                sol.updated_at,
+                suppliers.name AS suppliers_name,
+                suppliers.cnpj,
+                biddings.number AS biddings_number
+            FROM requests AS sol
+            INNER JOIN requests_items AS item
+               ON item.requests_id = sol.id
+            INNER JOIN oms
+               ON oms.id = sol.oms_id
+            INNER JOIN suppliers
+               ON suppliers.id = sol.suppliers_id
+           INNER JOIN biddings
+               ON biddings.id = sol.biddings_id
             WHERE sol.id = ? {$where}";
         }
         $stmt = $this->pdo->prepare($query);
@@ -148,12 +145,12 @@ class SolicitacaoModel extends CRUD
     public function recebimento($id, $user)
     {
         // Valida dados
-        $this->validaAll($user['om_id']);
+        $this->validaAll($user['oms_id']);
         $dados = [
             'status' => 'RECEBIDO',
             'updated_at' => time(),
-            'numero_nota_fiscal' => $this->getNumeroNotaFiscal(),
-            'observacao' => $this->getObservacao()
+            'invoice' => $this->getInvoice(),
+            'observation' => $this->getObservation()
         ];
         if (parent::editar($dados, $id)) {
             $dados['lista_itens'] = $this->getListaItens();
@@ -161,13 +158,12 @@ class SolicitacaoModel extends CRUD
             $dados = $itens->recebimento($dados['lista_itens']);
 
             /// seta a nota para a entrega
-            $solicitacao = $this->findById($id);
+            $requests = $this->findById($id);
             $avalicao = new AvaliacaoFornecedorModel();
-            $value['nota'] = filter_input(INPUT_POST, 'nota', FILTER_VALIDATE_INT) ?: 1;
-            $value['licitacao_id'] = $solicitacao['id_licitacao'];
-            $value['fornecedor_id'] = $solicitacao['fornecedor_id'];
-            $value['solicitacao_id'] = $solicitacao['id'];
-            $value['nao_entregue'] = 0;
+            $value['evaluation'] = filter_input(INPUT_POST, 'evaluation', FILTER_VALIDATE_INT) ?: 1;
+            $value['biddings_id'] = $requests['biddings_id'];
+            $value['suppliers_id'] = $requests['suppliers_id'];
+            $value['requests_id'] = $requests['id'];
 
             $avalicao->novoRegistro($value);
             if ($dados === true) {
@@ -176,15 +172,15 @@ class SolicitacaoModel extends CRUD
                     . 'mostrar("btn_voltar");'
                     . 'ocultar("tabela_result");'
                     . 'ocultar("btn_enviar");'
-                    . 'ocultar("numero_nota_fiscal_container");'
-                    . 'ocultar("observacao");'
-                    . 'ocultar("nota");'
+                    . 'ocultar("invoice_container");'
+                    . 'ocultar("observation");'
+                    . 'ocultar("evaluation");'
                     . 'ocultar("legenda");'
                     . '</script>', 'success');
             } else {
                 $error = [];
                 foreach ($dados as $value) {
-                    $error[] = "Iten Nº " . $value['item_numero'] . " - " . $value['item_nome'] . "<br>";
+                    $error[] = "Iten Nº " . $value['number'] . " - " . $value['name'] . "<br>";
                 }
                 msg::showMsg('Houve erro ao gravar os seguintes itens:<br>'
                     . implode('', $error)
@@ -195,16 +191,16 @@ class SolicitacaoModel extends CRUD
 
     public function recbimentoNaoLicitado($id, $idLista)
     {
-        $this->setNumeroNotaFiscal(filter_input(INPUT_POST, 'numero_nota_fiscal'));
-        $this->validaNumeroNotaFiscal($this->getNumeroNotaFiscal());
+        $this->setnumberNotaFiscal(filter_input(INPUT_POST, 'invoice'));
+        $this->validanumberNotaFiscal($this->getInvoice());
 
-        $this->setObservacao(filter_input(INPUT_POST, 'observacao', FILTER_SANITIZE_SPECIAL_CHARS));
+        $this->setObservation(filter_input(INPUT_POST, 'observation', FILTER_SANITIZE_SPECIAL_CHARS));
 
         $dados = [
             'status' => 'RECEBIDO',
             'updated_at' => time(),
-            'numero_nota_fiscal' => $this->getNumeroNotaFiscal(),
-            'observacao' => $this->getObservacao()
+            'invoice' => $this->getInvoice(),
+            'observation' => $this->getObservation()
         ];
         parent::editar($dados, $id);
 
@@ -215,32 +211,32 @@ class SolicitacaoModel extends CRUD
             . 'mostrar("btn_voltar");'
             . 'ocultar("tabela_result");'
             . 'ocultar("btn_enviar");'
-            . 'ocultar("numero_nota_fiscal_container");'
-            . 'ocultar("observacao");'
-            . 'ocultar("nota");'
+            . 'ocultar("invoice_container");'
+            . 'ocultar("observation");'
+            . 'ocultar("evaluation");'
             . 'ocultar("legenda");'
             . '</script>', 'success');
     }
 
-    public function paginator($pagina, $user, $busca = null, $om = null, $dtInicio = null, $dtFim = null)
+    public function paginator($pagina, $user, $busca = null, $oms = null, $dtInicio = null, $dtFim = null)
     {
-        $innerJoin = " AS sol INNER JOIN om ON om.id = sol.om_id ";
-        $subQuery = ' (SELECT nome FROM fornecedor AS f WHERE f.id = sol.fornecedor_id) as fornecedor_nome ';
+        $innerJoin = " AS sol INNER JOIN oms ON oms.id = sol.oms_id ";
+        $subQuery = ' (SELECT name FROM suppliers AS f WHERE f.id = sol.suppliers_id) as suppliers_name ';
 
         $dados = [
-            'select' => 'sol.*, ' . $subQuery . ', om.indicativo_naval',
+            'select' => 'sol.*, ' . $subQuery . ', oms.naval_indicative',
             'entidade' => $this->entidade . $innerJoin,
             'pagina' => $pagina,
             'maxResult' => 100,
             'orderBy' => 'sol.updated_at DESC'
         ];
 
-        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $dados['where'] = 'om_id = :omId ';
-            $dados['bindValue'] = [':omId' => $user['om_id']];
+        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $dados['where'] = 'oms_id = :omsId ';
+            $dados['bindValue'] = [':omsId' => $user['oms_id']];
         }
 
-        if ($user['nivel'] === 'CONTROLADOR') {
+        if ($user['level'] === 'CONTROLADOR') {
             $dados['where'] = 'status != :status ';
             $dados['bindValue'] = [':status' => 'ABERTO'];
         }
@@ -249,24 +245,17 @@ class SolicitacaoModel extends CRUD
             $dateInit = $dateEnd = $busca;
 
             if (preg_match('/\d{2}-\d{2}-\d{4}/', $busca)) {
-                $exDate = explode('-', $busca);
-                $exDate = array_reverse($exDate);
-                $exDate = implode('-', $exDate);
-                $exDate .= 'T00:00:00+00:00';
-
-                $date = new \DateTime($exDate);
-                $dateInit = $date->getTimestamp();
-                $date->modify('+23 hour');
-                $dateEnd = $date->getTimestamp();
+                $date = Utils::dateDatabaseFormate($busca);
+                $dateEnd = $busca;
             }
 
             $andExists = isset($dados['where']) ? 'AND' : '';
             $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
                 . 'sol.status LIKE :search '
-                . 'OR sol.numero LIKE :search '
+                . 'OR sol.number LIKE :search '
                 . 'OR sol.created_at BETWEEN :dInit AND :dEnd '
                 . 'OR sol.updated_at BETWEEN :dInit AND :dEnd '
-                . 'OR sol.data_entrega LIKE :search '
+                . 'OR sol.delivery_date LIKE :search '
                 . ') ';
 
             $bindValue = [
@@ -286,13 +275,13 @@ class SolicitacaoModel extends CRUD
     public function paginatorSolicitacoes(ControllerAbstract $controller)
     {
         $select = ""
-            . " sol.numero AS solicitacao_numero, "
-            . " om.indicativo_naval, sol.numero_nota_fiscal AS nota_fiscal, "
-            . " sol.nao_licitado, sol.data_entrega, "
-            . " sol.status AS solicitacao_status ";
+            . " sol.number AS requests_number, "
+            . " oms.naval_indicative, sol.invoice, "
+            . " sol.biddings_id, sol.delivery_date, "
+            . " sol.status AS requests_status ";
         $innerJoin = ""
             . " AS sol "
-            . " INNER JOIN om ON om.id = sol.om_id ";
+            . " INNER JOIN oms ON oms.id = sol.oms_id ";
         $dados = [
             'entidade' => $this->entidade . $innerJoin,
             'select' => $select,
@@ -303,9 +292,9 @@ class SolicitacaoModel extends CRUD
         ];
         $params = $controller->getParametro();
         // search by Om
-        if (isset($params['om']) && intval($params['om']) !== 0) {
-            $dados['where'] = ' om.id = :omId ';
-            $dados['bindValue'][':omId'] = $params['om'];
+        if (isset($params['oms']) && intval($params['oms']) !== 0) {
+            $dados['where'] = ' oms.id = :omsId ';
+            $dados['bindValue'][':omsId'] = $params['oms'];
         }
         // search by status
         if (isset($params['status'])) {
@@ -318,99 +307,83 @@ class SolicitacaoModel extends CRUD
         }
         // search by Date Init
         if (isset($params['dateInit']) && preg_match('/\d{2}-\d{2}-\d{4}/', $params['dateInit'])) {
-            $exDate = explode('-', $params['dateInit']);
-            $exDate = array_reverse($exDate);
-            $exDate = implode('-', $exDate);
-            $exDate .= 'T00:00:00+00:00';
-            $date = new \DateTime($exDate);
             if (isset($dados['where'])) {
                 $dados['where'] .= ' AND sol.created_at >= :dateInit ';
             } else {
                 $dados['where'] = ' sol.created_at >= :dateInit ';
             }
-            $dados['bindValue'][':dateInit'] = $date->getTimestamp();
+            $dados['bindValue'][':dateInit'] = Utils::dateDatabaseFormate($params['dateInit']);
         }
         // search by Date End
         if (isset($params['dateEnd']) && preg_match('/\d{2}-\d{2}-\d{4}/', $params['dateEnd'])) {
-            $exDate = explode('-', $params['dateEnd']);
-            $exDate = array_reverse($exDate);
-            $exDate = implode('-', $exDate);
-            $exDate .= 'T23:59:00+00:00';
-            $date = new \DateTime($exDate);
             if (isset($dados['where'])) {
                 $dados['where'] .= ' AND sol.created_at <= :dateEnd ';
             } else {
                 $dados['where'] = ' sol.created_at <= :dateEnd ';
             }
-            $dados['bindValue'][':dateEnd'] = $date->getTimestamp();
+            $dados['bindValue'][':dateEnd'] = Utils::dateDatabaseFormate($params['dateEnd']);
         }
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
-    public function novoNaoLicitado($om, $directoryReference)
+    public function novoNaoLicitado($oms, $directoryReference)
     {
-        $this->validaAll($om);
+        $this->validaAll($oms);
         $this->validaDataEntrega($this->getDataEntrega());
         $this->validaArquivos();
         $dados = [
-            'id_licitacao' => $this->getIdLicitacao(),
-            'id_lista' => $this->getIdLista(),
-            'om_id' => $this->getOmId(),
-            'fornecedor_id' => $this->getFornecedorId(),
-            'numero' => $this->getNumero(),
+            'biddings_id' => $this->getBiddingsId(),
+            'oms_id' => $this->getOmsId(),
+            'suppliers_id' => $this->getSuppliersId(),
+            'number' => $this->getnumber(),
             'status' => 'ABERTO',
-            'ano' => date('Y'),
             'created_at' => time(),
             'updated_at' => time(),
-            'nao_licitado' => 1,
-            'data_entrega' => $this->getDataEntrega()
+            'biddings_id' => 1,
+            'delivery_date' => $this->getDataEntrega()
         ];
 
         if (parent::novo($dados)) {
             $dados['lista_itens'] = $this->getListaItens();
             (new Itens())->novoNaoLicitado($dados);
 
-            $this->saveFiles($directoryReference, $dados['numero']);
+            $this->saveFiles($directoryReference, $dados['number']);
 
             msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                . "<strong>Solicitação Nº {$this->getNumero()} <br>"
+                . "<strong>Solicitação Nº {$this->getnumber()} <br>"
                 . "Status: ABERTO.</strong><br>"
-                . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                . "<a href='" . cfg::DEFAULT_URI . "requests/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                 . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                 . '<script>resetForm(); </script>', 'success');
         }
     }
 
-    public function novoRegistro($om)
+    public function novoRegistro($oms)
     {
         // Valida dados
-        $this->validaAll($om);
+        $this->validaAll($oms);
         $this->validaDataEntrega($this->getDataEntrega());
 
         $dados = [
-            'id_licitacao' => $this->getIdLicitacao(),
-            'id_lista' => $this->getIdLista(),
-            'om_id' => $this->getOmId(),
-            'fornecedor_id' => $this->getFornecedorId(),
-            'numero' => $this->getNumero(),
+            'biddings_id' => $this->getBiddingsId(),
+            'oms_id' => $this->getOmsId(),
+            'suppliers_id' => $this->getSuppliersId(),
+            'number' => $this->getnumber(),
             'status' => 'ABERTO',
-            'ano' => date('Y'),
             'created_at' => time(),
             'updated_at' => time(),
-            'nao_licitado' => $this->getNaoLicitado(),
-            'data_entrega' => $this->getDataEntrega()
+            'biddings_id' => $this->getBiddingsId(),
+            'delivery_date' => $this->getDataEntrega()
         ];
 
         if (parent::novo($dados)) {
@@ -420,9 +393,9 @@ class SolicitacaoModel extends CRUD
 
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                    . "<strong>Solicitação Nº {$this->getNumero()} <br>"
+                    . "<strong>Solicitação Nº {$this->getnumber()} <br>"
                     . "Status: ABERTO.</strong><br>"
-                    . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                    . "<a href='" . cfg::DEFAULT_URI . "requests/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
             }
@@ -430,7 +403,7 @@ class SolicitacaoModel extends CRUD
             $error = [];
 
             foreach ($dados as $value) {
-                $error[] = "Iten Nº " . $value['item_numero'] . " - " . $value['item_nome'] . "<br>";
+                $error[] = "Iten Nº " . $value['item_number'] . " - " . $value['name'] . "<br>";
             }
 
             msg::showMsg('Houve erro ao gravar os seguintes itens:<br>'
@@ -443,7 +416,7 @@ class SolicitacaoModel extends CRUD
         $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ?");
         $stmt->bindValue(1, $id);
         if ($stmt->execute()) {
-            header('Location: ' . cfg::DEFAULT_URI . 'solicitacao/');
+            header('Location: ' . cfg::DEFAULT_URI . 'requests/');
         }
     }
 
@@ -464,21 +437,21 @@ class SolicitacaoModel extends CRUD
         ];
 
         if (parent::editar($dados, $id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'solicitacao/');
+            header('Location: ' . cfg::DEFAULT_URI . 'requests/');
         }
     }
 
     public function avaliaAcesso($idlista, $user)
     {
-        $solicitacao = $this->findById_lista($idlista);
+        $requests = $this->findById_lista($idlista);
         // verifica se a solicitação já foi aprovada
-        if ($solicitacao['status'] !== 'ABERTO') {
-            header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
+        if ($requests['status'] !== 'ABERTO') {
+            header("Location:" . cfg::DEFAULT_URI . "requests/");
             return true;
             // verifica se o usuário é da mensa OM da solicitação
-        } elseif ($user['nivel'] !== 'ADMINISTRADOR') {
-            if ($user['om_id'] != $solicitacao['om_id']) {
-                header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
+        } elseif ($user['level'] !== 'ADMINISTRADOR') {
+            if ($user['oms_id'] != $requests['oms_id']) {
+                header("Location:" . cfg::DEFAULT_URI . "requests/");
                 return true;
             }
         }
@@ -492,7 +465,7 @@ class SolicitacaoModel extends CRUD
     {
         if ($number > 0) {
             $hasEqualsRegister = $this->pdo
-                ->query("SELECT id FROM solicitacao WHERE numero = {$number}")
+                ->query("SELECT id FROM requests WHERE number = {$number}")
                 ->fetch(\PDO::FETCH_OBJ);
 
             // If exists a register with this number, try with the number plus one
@@ -505,12 +478,12 @@ class SolicitacaoModel extends CRUD
 
         $currentYear = date('Y');
         $currentYearShort = date('y');
-        $query = "SELECT COUNT(id) as quantity FROM solicitacao WHERE ano = '{$currentYear}'";
+        $query = "SELECT COUNT(id) as quantity FROM requests WHERE YEAR(created_at) = '{$currentYear}'";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         $registersQuantity = $stmt->fetch(\PDO::FETCH_OBJ)->quantity;
         $number = (int) $currentYearShort . ($registersQuantity + 1);
-        // check if in the exact moment exists a register with this number
+        // check if in the exact momsent exists a register with this number
         return $this->numberGenerator($number);
     }
 
@@ -522,16 +495,7 @@ class SolicitacaoModel extends CRUD
      */
     public function processStatus(int $id, string $status, string $action)
     {
-        $statusPatterns = [
-            'ABERTO' => 'APROVADO',
-            'APROVADO' => 'PROCESSADO',
-            'PROCESSADO' => 'EMPENHADO',
-            'EMPENHADO' => 'SOLICITADO',
-            'SOLICITADO' => 'RECEBIDO',
-            'RECEBIDO' => 'NF-ENTREGUE',
-            'NF-ENTREGUE' => 'NF-FINANCAS',
-            'NF-FINANCAS' => 'NF-PAGA'
-        ];
+        $statusPatterns = cfg::DEFAULT_REQUEST_STATUS;
         $allowedActions = [
             'PROXIMO',
             'ANTERIOR'
@@ -551,7 +515,7 @@ class SolicitacaoModel extends CRUD
             ) {
                 $dados = [
                     'status' => $nextSatus,
-                    'updated_at' => time()
+                    'updated_at' => date('Y-m-d')
                 ];
             } elseif (
                 $previousStatus !== false &&
@@ -561,7 +525,7 @@ class SolicitacaoModel extends CRUD
             ) {
                 $dados = [
                     'status' => $previousStatus,
-                    'updated_at' => time()
+                    'updated_at' => date('Y-m-d')
                 ];
             }
 
@@ -581,12 +545,12 @@ class SolicitacaoModel extends CRUD
         $query = ""
             . " SELECT "
             . " sol.*, "
-            . " forn.nome AS fornecedor_nome, "
-            . " forn.cnpj AS fornecedor_cnpj, "
-            . " forn.dados AS fornecedor_dados "
+            . " supp.name AS suppliers_name, "
+            . " supp.cnpj AS suppliers_cnpj, "
+            . " supp.dados AS suppliers_dados "
             . " FROM {$this->entidade} AS sol "
-            . " INNER JOIN fornecedor AS forn "
-            . "     ON forn.id = sol.fornecedor_id "
+            . " INNER JOIN suppliers AS supp "
+            . "     ON supp.id = sol.suppliers_id "
             . " WHERE sol.id_lista = :idLista ";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':idLista' => $idLista]);
@@ -601,8 +565,8 @@ class SolicitacaoModel extends CRUD
             . "FROM {$this->entidade} "
             . "WHERE status LIKE :status";
 
-        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $where = " AND om_id = {$user['om_id']} ";
+        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND oms_id = {$user['oms_id']} ";
             $query . $where;
         }
 
@@ -618,10 +582,10 @@ class SolicitacaoModel extends CRUD
             . "SELECT "
             . "COUNT(*) quantidade "
             . "FROM {$this->entidade} "
-            . "WHERE status LIKE :status AND data_entrega < date('now')";
+            . "WHERE status LIKE :status AND delivery_date < '" . date('Y-m-d') . "'";
 
-        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $where = " AND om_id = {$user['om_id']} ";
+        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND oms_id = {$user['oms_id']} ";
             $query . $where;
         }
 
@@ -632,8 +596,8 @@ class SolicitacaoModel extends CRUD
 
     public function findSolitacoesMensal($user)
     {
-        $mesPassado = date(strtotime("- 1 month", time()));
-        $hoje = time();
+        $mesPassado = date('Y-m-d', strtotime("- 1 month", time()));
+        $hoje = date('Y-m-d');
 
         $query = ""
             . "SELECT "
@@ -641,8 +605,8 @@ class SolicitacaoModel extends CRUD
             . "FROM {$this->entidade} "
             . "WHERE updated_at BETWEEN :dInit AND :dEnd";
 
-        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $where = " AND om_id = {$user['om_id']} ";
+        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " AND oms_id = {$user['oms_id']} ";
             $query .= $where;
         }
 
@@ -659,17 +623,17 @@ class SolicitacaoModel extends CRUD
     public function lastUpdated(array $user): array
     {
         $where = '';
-        if (!in_array($user['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $where = " WHERE sol.om_id = " . $user['om_id'];
+        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $where = " WHERE sol.oms_id = " . $user['oms_id'];
         }
         $query = ""
             . " SELECT "
-            . "     sol.numero, "
+            . "     sol.number, "
             . "     sol.status, "
             . "     sol.updated_at, "
-            . "     om.indicativo_naval"
+            . "     oms.naval_indicative"
             . " FROM {$this->entidade} AS sol "
-            . " INNER JOIN om ON om.id = sol.om_id "
+            . " INNER JOIN oms ON oms.id = sol.oms_id "
             . " {$where} "
             . " ORDER BY "
             . "     sol.updated_at DESC "
@@ -677,26 +641,25 @@ class SolicitacaoModel extends CRUD
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    private function validaAll($om)
+    private function validaAll($oms)
     {
         $value = filter_input_array(INPUT_POST);
-        $this->setNaoLicitado(filter_var($value['nao_licitado'], FILTER_VALIDATE_INT))
-            ->setFornecedorId(filter_var($value['fornecedor_id'], FILTER_VALIDATE_INT))
-            ->setNumeroNotaFiscal(filter_var($value['numero_nota_fiscal'], FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setDataEntrega(filter_var($value['data_entrega'], FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setObservacao(filter_var($value['observacao'], FILTER_SANITIZE_SPECIAL_CHARS))
+        $this->setBiddingsId(filter_var($value['biddings_id'], FILTER_VALIDATE_INT))
+            ->setSuppliersId(filter_var($value['suppliers_id'], FILTER_VALIDATE_INT))
+            ->setnumberNotaFiscal(filter_var($value['invoice'], FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setDataEntrega(filter_var($value['delivery_date'], FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setObservation(filter_var($value['observation'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setId()
-            ->setIdLista()
-            ->setOmId(filter_var($om, FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setIdLicitacao(filter_var($value['id_licitacao'], FILTER_VALIDATE_INT))
-            ->setNumero($this->numberGenerator());
+            ->setOmsId(filter_var($oms, FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setBiddingsId(filter_var($value['biddings_id'], FILTER_VALIDATE_INT))
+            ->setnumber($this->numberGenerator());
 
-        $this->validaNumeroNotaFiscal($this->getNumeroNotaFiscal());
+        $this->validanumberNotaFiscal($this->getInvoice());
         $this->validaFornecedor();
 
-        for ($i = 0; $i < count($value['quantidade']); $i++) {
+        for ($i = 0; $i < count($value['quantity']); $i++) {
             $id = filter_var($value['id'][$i], FILTER_VALIDATE_INT);
-            $quantidade = str_replace(",", ".", $value['quantidade'][$i]);
+            $quantidade = str_replace(",", ".", $value['quantity'][$i]);
             $quantidade = filter_var($quantidade, FILTER_VALIDATE_FLOAT);
 
             if ($id AND $quantidade) {
@@ -704,7 +667,7 @@ class SolicitacaoModel extends CRUD
             }
         }
 
-        if (!$this->getNaoLicitado()) {
+        if (!$this->getBiddingsId()) {
             $this->validaId()
                 ->validaNaoLicitado()
                 ->validaListaItens()
@@ -712,19 +675,18 @@ class SolicitacaoModel extends CRUD
             return $this;
         }
 
-        for ($i = 0; $i < count($value['quantidade']); $i++) {
-            $quantidade = $this->validaQuantidade($value['quantidade'][$i]);
+        for ($i = 0; $i < count($value['quantity']); $i++) {
+            $quantidade = $this->validaQuantidade($value['quantity'][$i]);
             $uf = $this->validaUf($value['uf'][$i]);
-            $valor = $this->validaValor($value['valor'][$i]);
-            $nome = $this->validaNome($value['nome'][$i]);
+            $valor = $this->validaValor($value['value'][$i]);
+            $name = $this->validaNomse($value['name'][$i]);
             $this->listaItens[] = [
-                'id_lista' => $this->getIdLista(),
-                'item_numero' => 0,
-                'item_quantidade' => $quantidade,
-                'item_quantidade_atendida' => 0,
-                'item_uf' => $uf,
-                'item_valor' => $valor,
-                'item_nome' => $nome,
+                'number' => 0,
+                'quantity' => $quantidade,
+                'delivered' => 0,
+                'uf' => $uf,
+                'value' => $valor,
+                'name' => $name,
             ];
         }
     }
@@ -732,14 +694,7 @@ class SolicitacaoModel extends CRUD
     private function setId()
     {
         $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
-        return $this;
-    }
-
-    private function setIdLista()
-    {
-        $value = filter_input(INPUT_POST, 'id_lista');
-        $this->idLista = $value ?: time();
+        $this->setId($value ?? time());
         return $this;
     }
 
@@ -755,18 +710,18 @@ class SolicitacaoModel extends CRUD
 
     private function validaFornecedor($input = null)
     {
-        $value = v::intVal()->validate($this->getFornecedorId());
+        $value = v::intVal()->validate($this->getSuppliersId());
         if (!$value) {
-            msg::showMsg('É necessário informar um fornecedor', 'danger');
+            msg::showMsg('É necessário informar um suppliers', 'danger');
         }
         return $this;
     }
 
     private function validaIdLicitacao()
     {
-        $licitacao = new Licitacao();
+        $biddings = new Licitacao();
         // consulta no banco de dados para verificar se a licitação é válida
-        $value = $licitacao->findById($this->getIdLicitacao());
+        $value = $biddings->findById($this->getBiddingsId());
         // verifica se há um retorno na consulta feita acima
         $value = $value['id'] ?: 'inválido';
         $value = v::intVal()->validate($value);
@@ -778,7 +733,7 @@ class SolicitacaoModel extends CRUD
 
     private function validaNaoLicitado()
     {
-        $value = v::intVal()->validate($this->getNaoLicitado());
+        $value = v::intVal()->validate($this->getBiddingsId());
         if (!$value) {
             msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
         }
@@ -839,7 +794,7 @@ class SolicitacaoModel extends CRUD
         return $date;
     }
 
-    private function validaNome($value)
+    private function validaNomse($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
         if (!$validate) {
@@ -849,19 +804,19 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
-    private function validaNumeroNotaFiscal($value)
+    private function validanumberNotaFiscal($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 20)->validate($value);
         if (!$validate) {
             msg::showMsg('Para realizar o recebimeto é necessário fornecer o número da nota fiscal'
-                . '<script>focusOn("numero_nota_fiscal");</script>', 'danger');
+                . '<script>focusOn("invoice");</script>', 'danger');
         }
         return $this;
     }
 
     private function validaDataEntrega($value)
     {
-        $this->setDataEntrega($this->abstractDateValidate($value, 'data_entrega', 'Data estipulada para entrega'));
+        $this->setDataEntrega($this->abstractDateValidate($value, 'delivery_date', 'Data estipulada para entrega'));
         return $this;
     }
 

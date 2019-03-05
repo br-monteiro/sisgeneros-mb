@@ -39,8 +39,8 @@ $pagination = Pagination::make($this);
                                 <td><?= $value['name']; ?></td>
                                 <td><?= $value['level']; ?></td>
                                 <td><?= $value['active'] == 'yes' ? 'Sim' : 'Não'; ?></td>
-                                <td><?= View::showDate($value['created_at']); ?></td>
-                                <td><?= View::showDate($value['updated_at']); ?></td>
+                                <td><?= View::humanDate($value['created_at']); ?></td>
+                                <td><?= View::humanDate($value['updated_at']); ?></td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>

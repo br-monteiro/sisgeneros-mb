@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\View;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -21,12 +26,12 @@
                                     <div class="form-group">
                                         <label>Número</label>
                                         <input type="text"
-                                               name="numero"
-                                               id="numero"
+                                               name="number"
+                                               id="number"
                                                placeholder="Número da Licitação"
                                                class="form-control"
                                                maxlength="10"
-                                               value="<?= $this->view->result['numero']; ?>"
+                                               value="<?= $this->view->result['number']; ?>"
                                                required>
                                     </div>
 
@@ -38,19 +43,19 @@
                                                placeholder="Data de Validade da Licitação"
                                                class="form-control"
                                                maxlength="10"
-                                               value="<?= date("d/m/Y", $this->view->result['validade']); ?>"
+                                               value="<?= View::humanDate($this->view->result['validate']); ?>"
                                                required>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Descrição</label>
                                         <input type="text"
-                                               name="descricao"
-                                               id="descricao"
+                                               name="description"
+                                               id="description"
                                                placeholder="Descrição da Licitação"
                                                class="form-control"
                                                maxlength="30"
-                                               value="<?= $this->view->result['descricao']; ?>"
+                                               value="<?= $this->view->result['description']; ?>"
                                                required>
                                     </div>
                                 </div>
@@ -71,12 +76,12 @@
                                     <div class="form-group">
                                         <label>Órgão Resposável</label>
                                         <input type="text"
-                                               name="nome_uasg"
-                                               id="nome_uasg"
+                                               name="uasg_name"
+                                               id="uasg_name"
                                                placeholder="Nome do Órgão Resposável pela Licitação"
                                                class="form-control"
                                                maxlength="50"
-                                               value="<?= $this->view->result['nome_uasg']; ?>"
+                                               value="<?= $this->view->result['uasg_name']; ?>"
                                                required>
                                     </div>
 

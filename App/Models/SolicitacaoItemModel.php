@@ -1,7 +1,4 @@
 <?php
-/**
- * @Model SolicitacaoItem
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
@@ -15,14 +12,12 @@ use App\Config\Configurations as cfg;
 class SolicitacaoItemModel extends CRUD
 {
 
-    protected $entidade = 'solicitacao_item';
-    protected $id;
-    protected $idLista;
-    protected $quantidade;
-    protected $listaItens = [];
-    protected $error = [];
-    private $resultadoPaginator;
-    private $navPaginator;
+    protected $entidade = 'requests_items';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator
+     */
+    protected $paginator;
 
     public function returnAll()
     {
@@ -32,8 +27,8 @@ class SolicitacaoItemModel extends CRUD
     public function recebimento($dados)
     {
         foreach ($dados as $key => $val) {
-            $val = is_array($val) ? $val['item_quantidade'] : $val;
-            $update['item_quantidade_atendida'] = $val;
+            $val = is_array($val) ? $val['quantity'] : $val;
+            $update['delivered'] = $val;
             parent::editar($update, $key);
         }
 
@@ -44,7 +39,7 @@ class SolicitacaoItemModel extends CRUD
     {
         $value = filter_input_array(INPUT_POST);
         for ($i = 0; $i < count($value['id']); $i++) {
-            $dados['item_quantidade_atendida'] = $value['quantidade'][$i];
+            $dados['delivered'] = $value['quantity'][$i];
             parent::editar($dados, $value['id'][$i]);
         }
     }
@@ -55,24 +50,22 @@ class SolicitacaoItemModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 50,
-            'orderBy' => 'item_numero ASC',
-            'where' => 'id_lista = ?',
-            'bindValue' => [0 => $idLista]
+            'orderBy' => 'number ASC',
+            'where' => 'requests_id = ?',
+            'bindValue' => [$idLista]
         ];
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function getResultadoPaginator()
     {
-        return $this->resultadoPaginator;
+        return $this->paginator->getResultado();
     }
 
     public function getNavePaginator()
     {
-        return $this->navPaginator;
+        return $this->paginator->getNaveBtn();
     }
 
     public function novoRegistro($dados)
@@ -83,17 +76,17 @@ class SolicitacaoItemModel extends CRUD
         foreach ($this->getListaItens() as $idItem => $quantidade) {
             $value = $item->findById($idItem);
             $dados = [
-                'id_lista' => $this->getIdLista(),
-                'item_numero' => $value['numero'],
-                'item_nome' => $value['nome'],
-                'item_uf' => $value['uf'],
-                'item_quantidade' => $quantidade < 0 ? 0 : $quantidade,
-                'item_valor' => $value['valor']
+                'requests_id' => $this->getIdLista(),
+                'number' => $value['number'],
+                'name' => $value['name'],
+                'uf' => $value['uf'],
+                'quantity' => $quantidade < 0 ? 0 : $quantidade,
+                'value' => $value['value']
             ];
-            if (!$value['numero']) {
+            if (!$value['number']) {
                 $this->error[] = [
-                    'item_numero' => $this->getItemNumero(),
-                    'item_nome' => $this->getItemNome()
+                    'number' => $this->getNumber(),
+                    'name' => $this->getNome()
                 ];
             } else {
                 parent::novo($dados);
@@ -108,46 +101,46 @@ class SolicitacaoItemModel extends CRUD
     public function novoNaoLicitado($dados)
     {
         foreach ($dados['lista_itens'] as $value) {
-            $value['item_uf'] = strtoupper($value['item_uf']);
-            $value['item_valor'] = strtoupper($value['item_valor']);
-            $value['item_nome'] = strtoupper($value['item_nome']);
+            $value['uf'] = strtoupper($value['uf']);
+            $value['value'] = strtoupper($value['value']);
+            $value['name'] = strtoupper($value['name']);
             parent::novo($value);
         }
     }
 
     public function editarRegistro($idLista, $user)
     {
-        $this->setQuantidade(filter_input(INPUT_POST, 'quantidade', FILTER_VALIDATE_INT))
+        $this->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT))
             ->setId(filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT))
-            ->validaQuantidade()
+            ->validaQuantity()
             ->validaId();
 
         $item = $this->findById($this->getId());
 
         $solicitacaoModel = new Solicitacao();
-        $solicitacao = $solicitacaoModel->findById_lista($item['id_lista']);
+        $solicitacao = $solicitacaoModel->findById_lista($item['requests_id']);
 
         if ($solicitacao['status'] !== 'ABERTO') {
             // redireciona para solicitacao/ se a Solicitação ja estiver aprovada
             header("Location:" . cfg::DEFAULT_URI . 'solicitacao/');
             return true;
         }
-        if ($item['id_lista'] != $idLista) {
+        if ($item['requests_id'] != $idLista) {
             // não deixa prosseguir se o item pertencer a outra lista
             msg::showMsg('O Item não pode ser alterado.'
-                . '<script>focusOn("quantidade");</script>', 'danger');
+                . '<script>focusOn("quantity");</script>', 'danger');
         }
         // redireciona se o usuário tiver nível diferente de 1-Administrador e
         // se a Om da Solicitação for diferente da do usuário
-        if ($user['nivel'] !== 'ADMINISTRADOR') {
-            if ($solicitacao['om'] != $user['om']) {
+        if ($user['level'] !== 'ADMINISTRADOR') {
+            if ($solicitacao['oms_id'] != $user['oms_id']) {
                 header("Location:" . cfg::DEFAULT_URI . 'solicitacao/');
                 return true;
             }
         }
 
         $dados = [
-            'item_quantidade' => $this->getQuantidade(),
+            'quantity' => $this->getQuantity(),
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -158,7 +151,7 @@ class SolicitacaoItemModel extends CRUD
 
     public function removerRegistro($id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ? ;");
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE requests_id = ? ;");
         $stmt->bindValue(1, $id);
         return $stmt->execute();
     }
@@ -168,7 +161,7 @@ class SolicitacaoItemModel extends CRUD
         $this->db->instrucao('select')
             ->setaEntidade($this->getEntidade())
             ->setaFiltros()
-            ->where('id_lista', '=', $idlitsa);
+            ->where('requests_id', '=', $idlitsa);
         $numRows = count($this->db->executa('select')->fetchAll(\PDO::FETCH_ASSOC));
         if ($numRows > 1) {
             parent::remover($id);
@@ -176,28 +169,28 @@ class SolicitacaoItemModel extends CRUD
         header("Location:" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$idlitsa}");
     }
 
-    public function quantidadeDemanda($itemNumero, $idLicitacao)
+    public function quantidadeDemanda($itemnumber, $idLicitacao)
     {
         $stmt = $this->pdo->prepare(""
-            . " SELECT SUM(`solicitacao_item`.`item_quantidade_atendida`) as quantidade "
-            . " FROM `solicitacao_item` "
-            . " INNER JOIN `solicitacao` "
-            . "     ON `solicitacao_item`.`id_lista` = `solicitacao`.`id_lista` "
+            . " SELECT SUM(`requests_items`.`delivered`) as sum_quantity "
+            . " FROM `requests_items` "
+            . " INNER JOIN `requests` "
+            . "     ON `requests_items`.`requests_id` = `requests`.`id` "
             . " WHERE "
-            . "     `solicitacao`.`status` IN ('RECEBIDO', 'NF-ENTREGUE', 'NF-FINANCAS', 'NF-PAGA') "
-            . "     AND `solicitacao_item`.`item_numero` = ? "
-            . "     AND `solicitacao`.`id_licitacao` = ?;");
-        $stmt->execute([$itemNumero, $idLicitacao]);
+            . "     `requests`.`status` IN ('RECEBIDO', 'NF-ENTREGUE', 'NF-FINANCAS', 'NF-PAGA') "
+            . "     AND `requests_items`.`number` = ? "
+            . "     AND `requests`.`biddings_id` = ?;");
+        $stmt->execute([$itemnumber, $idLicitacao]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['quantidade'] : false;
+        return $result ? $result['quantity'] : false;
     }
 
     private function setAll($dados)
     {
         // Seta todos os valores
         $this->setId()
-            ->setIdLista($dados['id_lista'])
-            ->setIdLicitacao($dados['id_licitacao'])
+            ->setIdLista($dados['requests_id'])
+            ->setIdLicitacao($dados['biddings_id'])
             ->setListaItens($dados['lista_itens']);
     }
 
@@ -210,12 +203,12 @@ class SolicitacaoItemModel extends CRUD
         return $this;
     }
 
-    private function validaQuantidade()
+    private function validaQuantity()
     {
-        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantidade());
+        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantity());
         if (!$value) {
             msg::showMsg('O campo Quantidade deve ser preenchido corretamente.'
-                . '<script>focusOn("quantidade");</script>', 'danger');
+                . '<script>focusOn("quantity");</script>', 'danger');
         }
         return $this;
     }
