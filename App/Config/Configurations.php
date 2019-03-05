@@ -37,7 +37,7 @@ class Configurations extends InternalConfigurations
      */
     public static function htrFileConfigs(): \stdClass
     {
-        $projectDirectory = str_replace('App/Config', '', __DIR__);
+        $projectDirectory = str_replace('App' . self::DS . 'Config', '', __DIR__);
         $file = $projectDirectory . self::DS . 'htr.json';
 
         if (file_exists($file)) {
