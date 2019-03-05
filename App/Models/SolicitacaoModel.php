@@ -267,9 +267,7 @@ class SolicitacaoModel extends CRUD
             $dados['bindValue'] = array_merge($dados['bindValue'], $bindValue);
         }
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
+        $this->paginator = new Paginator($dados);
     }
 
     public function paginatorSolicitacoes(ControllerAbstract $controller)
