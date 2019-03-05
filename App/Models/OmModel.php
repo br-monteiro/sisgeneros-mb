@@ -13,7 +13,7 @@ use App\Config\Configurations as cfg;
 class OmModel extends CRUD
 {
 
-    protected $entidade = 'om';
+    protected $entidade = 'oms';
     protected $id;
     protected $nome;
     protected $uasg;
