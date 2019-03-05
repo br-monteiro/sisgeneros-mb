@@ -561,7 +561,7 @@ class SolicitacaoModel extends CRUD
     {
         $query = ""
             . "SELECT "
-            . "COUNT(*) quantidade "
+            . "COUNT(*) quantity "
             . "FROM {$this->entidade} "
             . "WHERE status LIKE :status";
 
@@ -580,7 +580,7 @@ class SolicitacaoModel extends CRUD
 
         $query = ""
             . "SELECT "
-            . "COUNT(*) quantidade "
+            . "COUNT(*) quantity "
             . "FROM {$this->entidade} "
             . "WHERE status LIKE :status AND delivery_date < '" . date('Y-m-d') . "'";
 
@@ -601,7 +601,7 @@ class SolicitacaoModel extends CRUD
 
         $query = ""
             . "SELECT "
-            . "COUNT(*) quantidade "
+            . "COUNT(*) quantity "
             . "FROM {$this->entidade} "
             . "WHERE updated_at BETWEEN :dInit AND :dEnd";
 

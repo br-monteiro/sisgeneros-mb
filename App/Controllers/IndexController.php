@@ -5,7 +5,6 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\SolicitacaoModel as Solicitacao;
-use App\Models\FornecedorModel;
 use App\Models\AvaliacaoFornecedorModel as Avaliacao;
 use App\Models\AvisosModel;
 
