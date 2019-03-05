@@ -142,7 +142,7 @@ class AvisosModel extends CRUD
 
     public function adicionarNovaOM()
     {
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setOmsId(filter_input(INPUT_POST, 'oms'));
 
         $this->validaId()
@@ -210,7 +210,7 @@ class AvisosModel extends CRUD
     private function validaAll()
     {
         // Seta todos os valores
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setTitle(filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setContent(filter_input(INPUT_POST, 'content', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setBeginningDate(filter_input(INPUT_POST, 'beginning_date', FILTER_SANITIZE_SPECIAL_CHARS))
@@ -223,14 +223,7 @@ class AvisosModel extends CRUD
             ->validaBeginningDate()
             ->validaEndingDate();
     }
-
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? time());
-        return $this;
-    }
-
+    
     private function validaInt($value)
     {
         $value = v::intVal()->validate($value);

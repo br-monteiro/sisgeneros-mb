@@ -147,7 +147,7 @@ class ItemModel extends CRUD
     private function validaAll()
     {
         // Seta todos os valuees
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setBiddingsId()
             ->setSuppliersId(filter_input(INPUT_POST, 'suppliers_id'))
             ->setActive(filter_input(INPUT_POST, 'active'))
@@ -168,13 +168,6 @@ class ItemModel extends CRUD
             ->validaUf()
             ->validaQuantity()
             ->validaActive();
-    }
-
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? time());
-        return $this;
     }
 
     private function setBiddingsId()

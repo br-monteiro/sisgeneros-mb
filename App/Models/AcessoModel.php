@@ -263,7 +263,7 @@ class AcessoModel extends CRUD
 
     private function buildSetters()
     {
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setUsername(filter_input(INPUT_POST, 'username'))
             ->setPassword(filter_input(INPUT_POST, 'password'))
             ->setOmsId(filter_input(INPUT_POST, 'oms_id', FILTER_SANITIZE_SPECIAL_CHARS))
@@ -272,18 +272,6 @@ class AcessoModel extends CRUD
             ->setLevel(filter_input(INPUT_POST, 'level', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT));
 
-        return $this;
-    }
-
-    private function setId($value = null)
-    {
-        if ($value) {
-            $this->setId($value);
-            return $this;
-        }
-
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? $this->getTime());
         return $this;
     }
 

@@ -109,7 +109,7 @@ class FornecedorModel extends CRUD
     private function validaAll()
     {
         // Seta todos os valores
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setCnpj(filter_input(INPUT_POST, 'cnpj', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setDetails(filter_input(INPUT_POST, 'details', FILTER_SANITIZE_SPECIAL_CHARS));
@@ -119,14 +119,6 @@ class FornecedorModel extends CRUD
             ->validaName()
             ->validaCnpj()
             ->validaDetails();
-    }
-
-    /// Seters
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? time());
-        return $this;
     }
 
     // Validação

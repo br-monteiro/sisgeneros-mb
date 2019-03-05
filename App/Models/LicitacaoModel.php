@@ -163,7 +163,7 @@ class LicitacaoModel extends CRUD
     private function validaAll()
     {
         // Seta todos os valores
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setnumber(filter_input(INPUT_POST, 'number', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
             ->setdescription(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS))
@@ -177,14 +177,6 @@ class LicitacaoModel extends CRUD
             ->validaDescription()
             ->validaUasgName()
             ->validaValidate();
-    }
-
-    /// Seters
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? time());
-        return $this;
     }
 
     // Validação

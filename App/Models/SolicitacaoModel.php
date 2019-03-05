@@ -69,7 +69,7 @@ class SolicitacaoModel extends CRUD
             }
         }
 
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setDataEntrega(filter_input(INPUT_POST, 'delivery_date', FILTER_SANITIZE_SPECIAL_CHARS));
         $id = $this->getId();
 
@@ -687,13 +687,6 @@ class SolicitacaoModel extends CRUD
                 'name' => $name,
             ];
         }
-    }
-
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->setId($value ?? time());
-        return $this;
     }
 
     // Validação

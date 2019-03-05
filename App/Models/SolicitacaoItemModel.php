@@ -188,7 +188,7 @@ class SolicitacaoItemModel extends CRUD
     private function setAll($dados)
     {
         // Seta todos os valores
-        $this->setId()
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setIdLista($dados['requests_id'])
             ->setIdLicitacao($dados['biddings_id'])
             ->setListaItens($dados['lista_itens']);
