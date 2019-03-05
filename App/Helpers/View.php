@@ -57,7 +57,7 @@ class View
      * @param string $delimiter The separate number. By default is '-'
      * @return string
      */
-    public static function showDate(string $date, string $delimiter = '-'): string
+    public static function humanDate(string $date, string $delimiter = '-'): string
     {
         $dateEmplode = explode($delimiter, $date);
         return implode($delimiter, array_reverse($dateEmplode));
