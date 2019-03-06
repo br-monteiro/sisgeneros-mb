@@ -66,12 +66,12 @@ CREATE TABLE om (
     indicativo_naval          VARCHAR (6),
     created_at                TIMESTAMP,
     updated_at                TIMESTAMP,
-    agente_fiscal             VARCHAR (100),
-    agente_fiscal_posto       VARCHAR (40),
-    gestor_municiamento       VARCHAR (100),
-    gestor_municiamento_posto VARCHAR (40),
-    fiel_municiamento         VARCHAR (100),
-    fiel_municiamento_posto   VARCHAR (40) 
+    fiscal_agent             VARCHAR (100),
+    fiscal_agent_graduation       VARCHAR (40),
+    munition_manager       VARCHAR (100),
+    munition_manager_graduation VARCHAR (40),
+    munition_fiel         VARCHAR (100),
+    munition_fiel_graduation   VARCHAR (40) 
 );
 
 -- Table: quadro_avisos

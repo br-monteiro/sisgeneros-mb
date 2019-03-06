@@ -130,8 +130,8 @@ if (!isset($this->view->result[0])) {
     <tr>
         <td colspan="2" class="agente-fiscal">
             <div class="content-assinatura">
-                <?= ($this->view->result[0]['agente_fiscal']); ?><br />
-                <?= ($this->view->result[0]['agente_fiscal_posto']); ?><br />
+                <?= ($this->view->result[0]['fiscal_agent']); ?><br />
+                <?= ($this->view->result[0]['fiscal_agent_graduation']); ?><br />
                 Agente Fiscal
             </div>
         </td>
@@ -250,8 +250,8 @@ if (!isset($this->view->result[0])) {
     <tr>
         <td class="assinaturas">
             <div class="content-assinatura">
-                <?= $this->view->result[0]['gestor_municiamento']; ?><br />
-                <?= $this->view->result[0]['gestor_municiamento_posto']; ?><br />
+                <?= $this->view->result[0]['munition_manager']; ?><br />
+                <?= $this->view->result[0]['munition_manager_graduation']; ?><br />
                 Gestor(a) de Municiamento
             </div>
         </td>
@@ -264,8 +264,8 @@ if (!isset($this->view->result[0])) {
         </td>
         <td class="assinaturas">
             <div class="content-assinatura">
-                <?= $this->view->result[0]['fiel_municiamento']; ?><br />
-                <?= $this->view->result[0]['fiel_municiamento_posto']; ?><br />
+                <?= $this->view->result[0]['munition_fiel']; ?><br />
+                <?= $this->view->result[0]['munition_fiel_graduation']; ?><br />
                 Fiel de Municiamento
             </div>
         </td>
