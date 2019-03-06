@@ -35,7 +35,7 @@ class AvisosModel extends CRUD
             'select' => 'bill.*',
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'created_at ASC'
+            'orderBy' => 'beginning_date ASC'
         ];
 
         $this->paginator = new Paginator($dados);
@@ -58,7 +58,6 @@ class AvisosModel extends CRUD
         $dados = [
             'title' => $this->getTitle(),
             'content' => $this->getContent(),
-            'created_at' => date('Y-m-d'),
             'beginning_date' => $this->getBeginningDate(),
             'ending_date' => $this->getEndingDate()
         ];
