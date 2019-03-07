@@ -117,25 +117,25 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td>
-                                    <?= $value['nota']; ?>
+                                    <?= $value['evaluation']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['fornecedor_nome']; ?>
+                                    <?= $value['suppliers_name']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['solicitacao_number']; ?>
+                                    <?= $value['requests_number']; ?>
                                     -
-                                    <?= $value['solicitacao_status']; ?>
+                                    <?= $value['requests_status']; ?>
                                 </td>
                                 <td>
                                     <?= $value['licitacao_number']; ?>
-                                    <i class="fa fa-info-circle text-info" title="<?= $value['licitacao_uasg_nome']; ?>"></i>
+                                    <i class="fa fa-info-circle text-info" title="<?= $value['biddings_uasg_name']; ?>"></i>
                                 </td>
                                 <td>
                                     <?= $value['om_naval_indicative']; ?>
                                 </td>
                                 <td>
-                                    <?= date('d-m-Y', $value['criacao']); ?>
+                                    <?= date('d-m-Y', strtotime($value['created_at'])); ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -200,7 +200,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                 url += 'dateEnd/' + dateEnd + '/';
             }
             if (fornecedor) {
-                url += 'fornecedor/' + fornecedor;
+                url += 'suppliers/' + fornecedor;
             }
             window.location = url;
         });
