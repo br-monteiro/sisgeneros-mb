@@ -43,4 +43,23 @@ class Utils
         $value = $value ? number_format($value, 2) : '0.0';
         return floatval($value);
     }
+
+    /**
+     * Normali a number to float
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $withComma
+     * @return type
+     */
+    public static function normalizeFloat($value, int $decimals = 2, bool $withComma = false)
+    {
+        $value = str_replace(",", ".", $value);
+        $value = number_format($value, $decimals);
+
+        if ($withComma) {
+            $value = str_replace(".", ",", $value);
+        }
+
+        return $value;
+    }
 }

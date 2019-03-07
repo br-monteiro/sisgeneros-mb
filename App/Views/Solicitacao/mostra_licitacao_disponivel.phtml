@@ -57,9 +57,9 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
 </div>
 <script>
     $('.table-licitacao').click(function link() {
-        var idLista = this.dataset.idLista;
-        if (idLista) {
-            window.location = '<?= $this->view->controller; ?>fornecedor/idlista/' + idLista;
+        var idlista = this.dataset.idlista;
+        if (idlista) {
+            window.location = '<?= $this->view->controller; ?>fornecedor/idlista/' + idlista;
         }
     });
 </script>

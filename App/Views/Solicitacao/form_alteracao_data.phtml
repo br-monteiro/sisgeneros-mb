@@ -19,15 +19,15 @@ use App\Helpers\View;
                     </div>
                     <div class="panel-body">
                         <div id="resultado"></div>
-                        <form action="<?= $this->view->controller; ?>alterandodata/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
+                        <form action="<?= $this->view->controller; ?>alterandodata/id/<?= $this->view->result['id']; ?>" method="post" id="form">
                             <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>Data estipulada para entrega</label>
                                         <input type="text"
-                                               name="data_entrega"
-                                               id="data_entrega"
+                                               name="delivery_date"
+                                               id="delivery_date"
                                                placeholder="dd-mm-aaaa"
                                                class="form-control"
                                                maxlength="10"
@@ -37,7 +37,7 @@ use App\Helpers\View;
 
                                     <div class="form-group">
                                         <button class="btn btn-primary"><i class="fa fa-check"></i> Alterar</button>
-                                        <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idLista; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                        <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $this->view->idlista; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
                                     </div>
                                 </div>
                             </div>

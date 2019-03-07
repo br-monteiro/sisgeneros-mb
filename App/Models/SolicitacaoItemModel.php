@@ -8,6 +8,7 @@ use App\Models\ItemModel as Item;
 use App\Models\SolicitacaoModel as Solicitacao;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\Utils;
 
 class SolicitacaoItemModel extends CRUD
 {
@@ -44,7 +45,7 @@ class SolicitacaoItemModel extends CRUD
         }
     }
 
-    public function paginator($pagina, $idLista)
+    public function paginator($pagina, $idlista)
     {
         $dados = [
             'entidade' => $this->entidade,
@@ -52,7 +53,7 @@ class SolicitacaoItemModel extends CRUD
             'maxResult' => 50,
             'orderBy' => 'number ASC',
             'where' => 'requests_id = ?',
-            'bindValue' => [$idLista]
+            'bindValue' => [$idlista]
         ];
 
         $this->paginator = new Paginator($dados);
@@ -76,7 +77,7 @@ class SolicitacaoItemModel extends CRUD
         foreach ($this->getListaItens() as $idItem => $quantidade) {
             $value = $item->findById($idItem);
             $dados = [
-                'requests_id' => $this->getIdLista(),
+                'requests_id' => $this->getidlista(),
                 'number' => $value['number'],
                 'name' => $value['name'],
                 'uf' => $value['uf'],
@@ -98,19 +99,26 @@ class SolicitacaoItemModel extends CRUD
         return $this->getError();
     }
 
-    public function novoNaoLicitado($dados)
+    public function novoNaoLicitado($dados, $requestId)
     {
-        foreach ($dados['lista_itens'] as $value) {
-            $value['uf'] = strtoupper($value['uf']);
-            $value['value'] = strtoupper($value['value']);
-            $value['name'] = strtoupper($value['name']);
-            parent::novo($value);
+        foreach ($dados as $value) {
+            parent::novo([
+                'requests_id' => $requestId,
+                'name' => $value['name'],
+                'uf' => $value['uf'],
+                'quantity' => $value['quantity'],
+                'delivered' => 0,
+                'value' => $value['value']
+            ]);
         }
     }
 
-    public function editarRegistro($idLista, $user)
+    public function editarRegistro($idlista, $user)
     {
-        $this->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT))
+        $quantity = filter_input(INPUT_POST, 'quantity');
+        $quantity = Utils::moneyToFloat($quantity);
+
+        $this->setQuantity($quantity)
             ->setId(filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT))
             ->validaQuantity()
             ->validaId();
@@ -118,14 +126,14 @@ class SolicitacaoItemModel extends CRUD
         $item = $this->findById($this->getId());
 
         $solicitacaoModel = new Solicitacao();
-        $solicitacao = $solicitacaoModel->findById_lista($item['requests_id']);
+        $solicitacao = $solicitacaoModel->findById($item['requests_id']);
 
         if ($solicitacao['status'] !== 'ABERTO') {
             // redireciona para solicitacao/ se a Solicitação ja estiver aprovada
             header("Location:" . cfg::DEFAULT_URI . 'solicitacao/');
             return true;
         }
-        if ($item['requests_id'] != $idLista) {
+        if ($item['requests_id'] != $idlista) {
             // não deixa prosseguir se o item pertencer a outra lista
             msg::showMsg('O Item não pode ser alterado.'
                 . '<script>focusOn("quantity");</script>', 'danger');
@@ -140,7 +148,7 @@ class SolicitacaoItemModel extends CRUD
         }
 
         $dados = [
-            'quantity' => $this->getQuantity(),
+            'quantity' => Utils::normalizeFloat($this->getQuantity(), 3),
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -189,7 +197,7 @@ class SolicitacaoItemModel extends CRUD
     {
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setIdLista($dados['requests_id'])
+            ->setidlista($dados['requests_id'])
             ->setIdLicitacao($dados['biddings_id'])
             ->setListaItens($dados['lista_itens']);
     }
@@ -205,7 +213,7 @@ class SolicitacaoItemModel extends CRUD
 
     private function validaQuantity()
     {
-        $value = v::intVal()->notEmpty()->noWhitespace()->validate($this->getQuantity());
+        $value = v::floatVal()->notEmpty()->noWhitespace()->validate($this->getQuantity());
         if (!$value) {
             msg::showMsg('O campo Quantidade deve ser preenchido corretamente.'
                 . '<script>focusOn("quantity");</script>', 'danger');

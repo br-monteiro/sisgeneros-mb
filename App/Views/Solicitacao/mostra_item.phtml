@@ -12,7 +12,7 @@
                     CNPJ: <strong class="label label-success"><?= $this->view->result[0]['cnpj']; ?></strong>
                 </div>
                 <div id="resultado"></div>
-                <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
+                <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idlista; ?>" method="post" id="form">
                     <input type="hidden" name="id_licitacao" value="<?= $this->view->resultLicitacao['id'] ?>">
                     <input type="hidden" name="suppliers_id" value="<?= $this->view->result[0]['suppliers_id'] ?>">
                     <input type="hidden" name="nao_licitado" value="0">
@@ -25,8 +25,8 @@
                         <div class="col-md-4" style="margin-top: 10px;">
                             <label>Data estipulada para entrega:</label>
                             <input type="text"
-                                   name="data_entrega"
-                                   id="data_entrega"
+                                   name="delivery_date"
+                                   id="delivery_date"
                                    class="form-control"
                                    placeholder="Data no formato DD-MM-AAAA"
                                    maxlength="10"
@@ -54,7 +54,7 @@
                                                name="fornecedor[]"
                                                value="<?= $value['suppliers_id']; ?>">
                                         <input type="text"
-                                               name="quantidade[]"
+                                               name="quantity[]"
                                                id="quantity"
                                                class="form-control">
                                     </td>

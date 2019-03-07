@@ -9,7 +9,7 @@
                         <input type="hidden" name="suppliers_id" value="<?= $this->view->result[0]['suppliers_id'] ?>">
                         <input type="hidden" name="id_licitacao" value="<?= $this->view->result[0]['id_licitacao'] ?>">
                         <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
-                        <input type="hidden" name="data_entrega" value="<?= date("d-m-Y", time()); ?>">
+                        <input type="hidden" name="delivery_date" value="<?= date("d-m-Y", time()); ?>">
                         <button class="btn btn-success" id='btn_enviar'>
                             <i class="fa fa-check"></i> Confirmar Recebimento
                         </button>
@@ -87,16 +87,16 @@
                                                    name="uf[]"
                                                    value="<?= $value['uf']; ?>">
                                             <input type="hidden"
-                                                   name="valor[]"
+                                                   name="value[]"
                                                    value="<?= $value['value']; ?>">
                                             <input type="hidden"
                                                    name="fornecedor[]"
                                                    value="">
                                             <input type="hidden"
-                                                   name="nome[]"
+                                                   name="name[]"
                                                    value="---">
                                             <input type="text"
-                                                   name="quantidade[]"
+                                                   name="quantity[]"
                                                    id="quantity"
                                                    value="<?= $value['quantity']; ?>"
                                                    class="form-control">
@@ -108,7 +108,7 @@
                                         <td><?= $value['name']; ?></td>
                                         <td>
                                             <span class="badge badge-dark">
-                                                <?= $value['fornecedor_nome']; ?>
+                                                <?= $value['suppliers_name']; ?>
                                             </span>
                                             <br>
                                             <span>

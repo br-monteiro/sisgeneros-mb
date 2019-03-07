@@ -20,9 +20,9 @@ use App\Helpers\Utils;
                     </div>
                     <div class="panel-body">
                         <div id="resultado"></div>
-                        <form action="<?= $this->view->controller; ?>altera/idlista/<?= $this->view->idLista; ?>" method="post" id="form">
+                        <form action="<?= $this->view->controller; ?>altera/idlista/<?= $this->view->idlista; ?>" method="post" id="form">
                             <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
-                            <input type="hidden" name="biddings_id" value="<?= $this->view->idLista; ?>">
+                            <input type="hidden" name="biddings_id" value="<?= $this->view->idlista; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
@@ -119,7 +119,7 @@ use App\Helpers\Utils;
                                         <button class="btn btn-primary">
                                             <i class="fa fa-check"></i> Alterar
                                         </button>
-                                        <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idLista; ?>" class="btn btn-warning">
+                                        <a href="<?= $this->view->controller; ?>listar/idlista/<?= $this->view->idlista; ?>" class="btn btn-warning">
                                             <i class="fa fa-arrow-left"></i> Voltar
                                         </a>
                                     </div>
