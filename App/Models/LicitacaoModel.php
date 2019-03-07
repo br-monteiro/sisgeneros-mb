@@ -112,7 +112,7 @@ class LicitacaoModel extends CRUD
 
         if (parent::novo($dados)) {
             msg::showMsg('Licitação Registrada com Sucesso. '
-                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $this->getIdLista() . "' class='btn btn-info'>"
+                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $this->getidlista() . "' class='btn btn-info'>"
                 . "<i class='fa fa-plus-circle'></i> Adicionar Item</a>"
                 . '<script>resetForm();</script>', 'success');
         }

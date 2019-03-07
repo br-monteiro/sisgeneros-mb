@@ -2,13 +2,13 @@
 
 use App\Helpers\Pagination;
 
-$idLista = $this->view->idLista;
+$idlista = $this->view->idlista;
 
-$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
-            'previous' => "{$controllerName}detalhar/idlista/{$idLista}/pagina/{$btn['previous']}",
-            'next' => "{$controllerName}detalhar/idlista/{$idLista}/pagina/{$btn['next']}",
-            'current' => "{$controllerName}detalhar/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+            'previous' => "{$controllerName}detalhar/idlista/{$idlista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}detalhar/idlista/{$idlista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}detalhar/idlista/{$idlista}/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
 
@@ -31,7 +31,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     </span>
                     <br>
                     <?php if ($this->view->resultSolicitacao['nao_licitado'] == 0): ?>
-                        Fornecedor: <strong><?= $this->view->resultSolicitacao['fornecedor_nome']; ?></strong><br>
+                        Fornecedor: <strong><?= $this->view->resultSolicitacao['suppliers_name']; ?></strong><br>
                         Licitação: <strong><?= $this->view->resultLicitacao['number']; ?></strong><br>
                         Órgão:
                         <strong>

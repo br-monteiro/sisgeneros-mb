@@ -23,7 +23,7 @@ class ItemModel extends CRUD
         return $this->findAll();
     }
 
-    public function paginator($pagina, $idLista)
+    public function paginator($pagina, $idlista)
     {
         $dados = [
             'entidade' => 'biddings_items INNER JOIN `suppliers` ON `biddings_items`.`suppliers_id` = `suppliers`.`id`',
@@ -31,7 +31,7 @@ class ItemModel extends CRUD
             'maxResult' => 100,
             'orderBy' => '`biddings_items`.`number` ASC',
             'where' => '`biddings_items`.`biddings_id` = ?',
-            'bindValue' => [$idLista],
+            'bindValue' => [$idlista],
             'select' => '`biddings_items`.*, `suppliers`.`name` AS suppliers'
         ];
 
@@ -100,10 +100,10 @@ class ItemModel extends CRUD
         }
     }
 
-    public function removerRegistro($id, $idLista)
+    public function removerRegistro($id, $idlista)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'item/listar/idlista/' . $idLista);
+            header('Location: ' . cfg::DEFAULT_URI . 'item/listar/idlista/' . $idlista);
         }
     }
 
@@ -131,7 +131,7 @@ class ItemModel extends CRUD
         }
     }
 
-    public function findByIdLista($idLista, $idFornecedor)
+    public function findByidlista($idlista, $idFornecedor)
     {
         $stmt = $this->pdo->prepare(
             "SELECT `biddings_items`.*, `suppliers`.`cnpj`, `suppliers`.`name` AS supplier,
@@ -140,7 +140,7 @@ class ItemModel extends CRUD
             INNER JOIN `suppliers` ON `biddings_items`.`suppliers_id` = `suppliers`.`id` 
             WHERE `biddings_items`.`biddings_id` = ? AND suppliers.id = ? AND `biddings_items`.`active` = 'yes'
             ORDER BY `biddings_items`.`number` ASC");
-        $stmt->execute([$idLista, $idFornecedor]);
+        $stmt->execute([$idlista, $idFornecedor]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 

@@ -47,11 +47,11 @@
         font-size: 16px;
         padding-top: 25px;
     }
-    .obs, .data_entrega {
+    .obs, .delivery_date {
         text-align: left;
         padding-left: 50px;
     }
-    .data_entrega {
+    .delivery_date {
         font-size: 14px;
     }
     .agente-fiscal {
@@ -144,7 +144,7 @@ if (!isset($this->view->result[0])) {
     </tr>
     <tr>
         <td colspan="2" class="fornecedor">
-            FORNECEDOR: <?= ($this->view->result[0]['cnpj']); ?> - <?= ($this->view->result[0]['fornecedor_nome']); ?>
+            FORNECEDOR: <?= ($this->view->result[0]['cnpj']); ?> - <?= ($this->view->result[0]['suppliers_name']); ?>
         </td>
         <td class="tipo-documento">
             <?=
@@ -228,7 +228,7 @@ if (!isset($this->view->result[0])) {
         </td>
     </tr>
     <tr>
-        <td class="data_entrega">
+        <td class="delivery_date">
             Data de entrega: <strong><?= $value['delivery_date']; ?></strong>
         </td>
         <td class="recebedor">

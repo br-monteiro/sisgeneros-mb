@@ -86,7 +86,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                             <tr>
                                 <td><?= $value['number']; ?></td>
                                 <td><?= $value['naval_indicative']; ?></td>
-                                <td><?= View::limitString($value['fornecedor_nome'], 17); ?></td>
+                                <td><?= View::limitString($value['suppliers_name'], 17); ?></td>
                                 <td><?= $value['invoice'] ?: ''; ?></td>
                                 <td>
                                     <?php if ($value['nao_licitado'] === '0') : ?>

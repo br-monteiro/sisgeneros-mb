@@ -2,13 +2,13 @@
 
 use App\Helpers\Pagination;
 
-$idLista = $this->view->idLista;
+$idlista = $this->view->idlista;
 
-$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
-            'previous' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/{$btn['previous']}",
-            'next' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/{$btn['next']}",
-            'current' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+            'previous' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
 

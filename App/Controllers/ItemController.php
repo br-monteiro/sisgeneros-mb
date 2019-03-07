@@ -20,8 +20,8 @@ class ItemController extends Controller implements CtrlInterface
         $this->view->controller = cfg::DEFAULT_URI . 'item/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $this->view->idLista = $this->getParametro('idlista');
-        if (!$this->view->idLista) {
+        $this->view->idlista = $this->getParametro('idlista');
+        if (!$this->view->idlista) {
             header("Location:" . cfg::DEFAULT_URI . "licitacao/");
         }
     }
@@ -52,18 +52,18 @@ class ItemController extends Controller implements CtrlInterface
     public function eliminarAction()
     {
         $model = new ItemModel();
-        $model->removerRegistro($this->getParametro('id'), $this->view->idLista);
+        $model->removerRegistro($this->getParametro('id'), $this->view->idlista);
     }
 
     public function listarAction()
     {
         $model = new ItemModel();
         $this->view->title = 'Lista de Itens da Licitação';
-        $model->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $model->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $licitacao = new Licitacao();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
+        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idlista);
         $this->render('index');
     }
 

@@ -28,11 +28,9 @@ class SolicitacaoModel extends CRUD
         return $this->findAll();
     }
 
-    public function recuperaDadosRelatorioSolicitacao($idLista)
+    public function recuperaDadosRelatorioSolicitacao($id)
     {
-        $requests = new SolicitacaoModel();
-        $requests = $requests->findById_lista($idLista);
-
+        $requests = $this->findById($id);
         if ($requests['biddings_id']) {
             $query = "SELECT requests.*, requests.number AS number_requests, biddings.*,"
                 . "oms.name as oms_name, "
@@ -51,32 +49,32 @@ class SolicitacaoModel extends CRUD
                 . "WHERE requests.id = ?";
         }
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$idLista]);
+        $stmt->execute([$id]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function alteraDataEntrega($idLista, $user)
+    public function alteraDeliveryDate($id, $user)
     {
         // verifica se o usuário não é adminitrador
         if ($user['level'] !== 'ADMINISTRADOR') {
             // colsuta a solicitação por id_lista
-            $sol = $this->findById_lista($idLista);
+            $sol = $this->findById($id);
             // verifica se a solicitação é da mesma OM que o usuário lodado
             if ($sol['oms_id'] != $user['oms_id']) {
                 // caso seja de outra OM, redireciona para histórico de solicitações
                 header("location:" . cfg::DEFAULT_URI . "requests/");
-                return; // just stop the execution
+                exit; // just stop the execution
             }
         }
 
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setDataEntrega(filter_input(INPUT_POST, 'delivery_date', FILTER_SANITIZE_SPECIAL_CHARS));
+            ->setDeliveryDate(filter_input(INPUT_POST, 'delivery_date', FILTER_SANITIZE_SPECIAL_CHARS));
         $id = $this->getId();
 
-        $this->validaDataEntrega($this->getDataEntrega());
+        $this->validaDeliveryDate($this->getDeliveryDate());
 
         $dados = [
-            'delivery_date' => $this->getDataEntrega()
+            'delivery_date' => $this->getDeliveryDate()
         ];
 
         if (parent::editar($dados, $id)) {
@@ -148,14 +146,14 @@ class SolicitacaoModel extends CRUD
         $this->validaAll($user['oms_id']);
         $dados = [
             'status' => 'RECEBIDO',
-            'updated_at' => time(),
+            'updated_at' => date('Y-m-d'),
             'invoice' => $this->getInvoice(),
             'observation' => $this->getObservation()
         ];
         if (parent::editar($dados, $id)) {
-            $dados['lista_itens'] = $this->getListaItens();
+            $dados['items_list'] = $this->getItemsList();
             $itens = new Itens();
-            $dados = $itens->recebimento($dados['lista_itens']);
+            $dados = $itens->recebimento($dados['items_list']);
 
             /// seta a nota para a entrega
             $requests = $this->findById($id);
@@ -189,23 +187,23 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function recbimentoNaoLicitado($id, $idLista)
+    public function recbimentoNaoLicitado($id, $idlista)
     {
-        $this->setnumberNotaFiscal(filter_input(INPUT_POST, 'invoice'));
-        $this->validanumberNotaFiscal($this->getInvoice());
+        $this->setInvoice(filter_input(INPUT_POST, 'invoice'));
+        $this->validaInvoice($this->getInvoice());
 
         $this->setObservation(filter_input(INPUT_POST, 'observation', FILTER_SANITIZE_SPECIAL_CHARS));
 
         $dados = [
             'status' => 'RECEBIDO',
-            'updated_at' => time(),
+            'updated_at' => date('Y-m-d'),
             'invoice' => $this->getInvoice(),
             'observation' => $this->getObservation()
         ];
         parent::editar($dados, $id);
 
         $itens = new Itens();
-        $itens->recebimentoNaoLicitado($idLista);
+        $itens->recebimentoNaoLicitado($idlista);
         msg::showMsg('Operação efetuada com sucesso!'
             . '<script>'
             . 'mostrar("btn_voltar");'
@@ -337,30 +335,31 @@ class SolicitacaoModel extends CRUD
     public function novoNaoLicitado($oms, $directoryReference)
     {
         $this->validaAll($oms);
-        $this->validaDataEntrega($this->getDataEntrega());
-        $this->validaArquivos();
+        $this->validaDeliveryDate($this->getDeliveryDate());
+        $this->validaFiles();
         $dados = [
             'biddings_id' => $this->getBiddingsId(),
             'oms_id' => $this->getOmsId(),
             'suppliers_id' => $this->getSuppliersId(),
-            'number' => $this->getnumber(),
+            'number' => $this->getNumber(),
             'status' => 'ABERTO',
-            'created_at' => time(),
-            'updated_at' => time(),
-            'biddings_id' => 1,
-            'delivery_date' => $this->getDataEntrega()
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+            'biddings_id' => 0,
+            'delivery_date' => $this->getDeliveryDate()
         ];
 
         if (parent::novo($dados)) {
-            $dados['lista_itens'] = $this->getListaItens();
-            (new Itens())->novoNaoLicitado($dados);
+            $lastId = $this->pdo->lastInsertId();
+
+            (new Itens())->novoNaoLicitado($this->getItemsList(), $lastId);
 
             $this->saveFiles($directoryReference, $dados['number']);
 
             msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                . "<strong>Solicitação Nº {$this->getnumber()} <br>"
+                . "<strong>Solicitação Nº {$this->getNumber()} <br>"
                 . "Status: ABERTO.</strong><br>"
-                . "<a href='" . cfg::DEFAULT_URI . "requests/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                . "<a href='" . cfg::DEFAULT_URI . "solicitacao/detalhar/idlista/{$lastId}' class='btn btn-info'>"
                 . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                 . '<script>resetForm(); </script>', 'success');
         }
@@ -370,30 +369,30 @@ class SolicitacaoModel extends CRUD
     {
         // Valida dados
         $this->validaAll($oms);
-        $this->validaDataEntrega($this->getDataEntrega());
+        $this->validaDeliveryDate($this->getDeliveryDate());
 
         $dados = [
             'biddings_id' => $this->getBiddingsId(),
             'oms_id' => $this->getOmsId(),
             'suppliers_id' => $this->getSuppliersId(),
-            'number' => $this->getnumber(),
+            'number' => $this->getNumber(),
             'status' => 'ABERTO',
-            'created_at' => time(),
-            'updated_at' => time(),
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
             'biddings_id' => $this->getBiddingsId(),
-            'delivery_date' => $this->getDataEntrega()
+            'delivery_date' => $this->getDeliveryDate()
         ];
 
         if (parent::novo($dados)) {
-            $dados['lista_itens'] = $this->getListaItens();
+            $dados['items_list'] = $this->getItemsList();
             $itens = new Itens();
             $dados = $itens->novoRegistro($dados);
 
             if ($dados === true) {
                 msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                    . "<strong>Solicitação Nº {$this->getnumber()} <br>"
+                    . "<strong>Solicitação Nº {$this->getNumber()} <br>"
                     . "Status: ABERTO.</strong><br>"
-                    . "<a href='" . cfg::DEFAULT_URI . "requests/detalhar/idlista/{$this->getIdLista()}' class='btn btn-info'>"
+                    . "<a href='" . cfg::DEFAULT_URI . "requests/detalhar/idlista/{$this->getidlista()}' class='btn btn-info'>"
                     . '<i class="fa fa-info-circle"></i> Detalhar Solicitação</a>'
                     . '<script>resetForm(); </script>', 'success');
             }
@@ -421,7 +420,7 @@ class SolicitacaoModel extends CRUD
     public function update($id)
     {
         $dados = [
-            'updated_at' => time()
+            'updated_at' => date('Y-m-d')
         ];
 
         return parent::editar($dados, $id);
@@ -431,7 +430,7 @@ class SolicitacaoModel extends CRUD
     {
         $dados = [
             'status' => 'APROVADO',
-            'updated_at' => time()
+            'updated_at' => date('Y-m-d')
         ];
 
         if (parent::editar($dados, $id)) {
@@ -439,20 +438,17 @@ class SolicitacaoModel extends CRUD
         }
     }
 
-    public function avaliaAcesso($idlista, $user)
+    public function avaliaAcesso($id, $user)
     {
-        $requests = $this->findById_lista($idlista);
+        $requests = $this->findById($id);
         // verifica se a solicitação já foi aprovada
         if ($requests['status'] !== 'ABERTO') {
-            header("Location:" . cfg::DEFAULT_URI . "requests/");
-            return true;
+            header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
             // verifica se o usuário é da mensa OM da solicitação
-        } elseif ($user['level'] !== 'ADMINISTRADOR') {
-            if ($user['oms_id'] != $requests['oms_id']) {
-                header("Location:" . cfg::DEFAULT_URI . "requests/");
-                return true;
-            }
+        } elseif ($user['level'] !== 'ADMINISTRADOR' && $user['oms_id'] != $requests['oms_id']) {
+            header("Location:" . cfg::DEFAULT_URI . "solicitacao/");
         }
+        return $requests;
     }
 
     /**
@@ -535,23 +531,23 @@ class SolicitacaoModel extends CRUD
 
     /**
      * Select the Solicitation by Id Lista Field
-     * @param int $idLista
+     * @param int $requestId
      * @return array
      */
-    public function findByIdLista($idLista)
+    public function findByidlista($requestId)
     {
         $query = ""
             . " SELECT "
             . " sol.*, "
             . " supp.name AS suppliers_name, "
             . " supp.cnpj AS suppliers_cnpj, "
-            . " supp.dados AS suppliers_dados "
+            . " supp.details AS suppliers_details "
             . " FROM {$this->entidade} AS sol "
             . " INNER JOIN suppliers AS supp "
             . "     ON supp.id = sol.suppliers_id "
-            . " WHERE sol.id_lista = :idLista ";
+            . " WHERE sol.id = :requestId ";
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':idLista' => $idLista]);
+        $stmt->execute([':requestId' => $requestId]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
@@ -644,49 +640,74 @@ class SolicitacaoModel extends CRUD
         $value = filter_input_array(INPUT_POST);
         $this->setBiddingsId(filter_var($value['biddings_id'], FILTER_VALIDATE_INT))
             ->setSuppliersId(filter_var($value['suppliers_id'], FILTER_VALIDATE_INT))
-            ->setnumberNotaFiscal(filter_var($value['invoice'], FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setDataEntrega(filter_var($value['delivery_date'], FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setInvoice(filter_var($value['invoice'], FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setDeliveryDate(filter_var($value['delivery_date'], FILTER_SANITIZE_SPECIAL_CHARS))
             ->setObservation(filter_var($value['observation'], FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setId()
             ->setOmsId(filter_var($oms, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setBiddingsId(filter_var($value['biddings_id'], FILTER_VALIDATE_INT))
-            ->setnumber($this->numberGenerator());
+            ->setNumber($this->numberGenerator())
+            ->setId(filter_var($value['id'] ?? time(), FILTER_VALIDATE_INT));
 
-        $this->validanumberNotaFiscal($this->getInvoice());
-        $this->validaFornecedor();
+        $this->validaInvoice($this->getInvoice());
+        $this->validaSuppliers();
+        $this->validaId();
 
-        for ($i = 0; $i < count($value['quantity']); $i++) {
-            $id = filter_var($value['id'][$i], FILTER_VALIDATE_INT);
-            $quantidade = str_replace(",", ".", $value['quantity'][$i]);
-            $quantidade = filter_var($quantidade, FILTER_VALIDATE_FLOAT);
+        if (!$this->getBiddingsId()) {
+            $this->setItemsList($this->buildItemsNotBiddings($value));
+        } else {
+            $this->validaBiddingsId();
+            $this->setItemsList($this->buildItemsBiddings($value));
+        }
 
-            if ($id AND $quantidade) {
-                $this->listaItens[$id] = $quantidade;
+        $this->validaItemsList();
+    }
+
+    /**
+     * Make the itens of Not Biggings requests
+     * @param array $values The input values
+     * @return array
+     */
+    private function buildItemsNotBiddings(array $values): array
+    {
+        $result = [];
+
+        if (isset($values['quantity']) && is_array($values['quantity'])) {
+            foreach ($values['quantity'] as $index => $value) {
+                $result[] = [
+                    'number' => 0,
+                    'delivered' => 0,
+                    'quantity' => $this->validaQuantity($value),
+                    'uf' => $this->validaUf($values['uf'][$index]),
+                    'value' => $this->validaValue($values['value'][$index]),
+                    'name' => $this->validaName($values['name'][$index]),
+                ];
             }
         }
 
-        if (!$this->getBiddingsId()) {
-            $this->validaId()
-                ->validaNaoLicitado()
-                ->validaListaItens()
-                ->validaIdLicitacao();
-            return $this;
+        return $result;
+    }
+
+    /**
+     * Make the itens of Biggings requests
+     * @param array $values The input values
+     * @return array
+     */
+    private function buildItemsBiddings(array $values): array
+    {
+        $result = [];
+
+        if (isset($values['quantity'], $values['ids']) && is_array($values['quantity'])) {
+            foreach ($values['quantity'] as $index => $value) {
+                $id = filter_var($values['ids'][$index], FILTER_VALIDATE_INT);
+                $quantidade = filter_var(Utils::moneyToFloat($value), FILTER_VALIDATE_FLOAT);
+
+                if ($id && $quantidade) {
+                    $result[$id] = $quantidade;
+                }
+            }
         }
 
-        for ($i = 0; $i < count($value['quantity']); $i++) {
-            $quantidade = $this->validaQuantidade($value['quantity'][$i]);
-            $uf = $this->validaUf($value['uf'][$i]);
-            $valor = $this->validaValor($value['value'][$i]);
-            $name = $this->validaNomse($value['name'][$i]);
-            $this->listaItens[] = [
-                'number' => 0,
-                'quantity' => $quantidade,
-                'delivered' => 0,
-                'uf' => $uf,
-                'value' => $valor,
-                'name' => $name,
-            ];
-        }
+        return $result;
     }
 
     // Validação
@@ -699,48 +720,38 @@ class SolicitacaoModel extends CRUD
         return $input ?? $this;
     }
 
-    private function validaFornecedor($input = null)
+    private function validaSuppliers($input = null)
     {
         $value = v::intVal()->validate($this->getSuppliersId());
         if (!$value) {
-            msg::showMsg('É necessário informar um suppliers', 'danger');
+            msg::showMsg('É necessário informar um Fornecedor', 'danger');
         }
         return $this;
     }
 
-    private function validaIdLicitacao()
+    private function validaBiddingsId()
     {
         $biddings = new Licitacao();
         // consulta no banco de dados para verificar se a licitação é válida
         $value = $biddings->findById($this->getBiddingsId());
         // verifica se há um retorno na consulta feita acima
-        $value = $value['id'] ?: 'inválido';
-        $value = v::intVal()->validate($value);
+        $value = $value['id'] ?? false;
         if (!$value) {
             msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
         }
         return $this;
     }
 
-    private function validaNaoLicitado()
+    private function validaItemsList()
     {
-        $value = v::intVal()->validate($this->getBiddingsId());
-        if (!$value) {
-            msg::showMsg('Erro: Não foi possível verificar a licitação.', 'danger');
-        }
-        return $this;
-    }
-
-    private function validaListaItens()
-    {
-        if (empty($this->getListaItens())) {
+        if (empty($this->getItemsList())) {
             msg::showMsg('Para realizar uma solicitação, é imprescindível'
                 . ' fornecer a quantidade de no mínimo um Item.', 'danger');
         }
         return $this;
     }
 
-    private function validaQuantidade($value)
+    private function validaQuantity($value)
     {
         $value = str_replace(",", ".", $value);
         $validate = v::floatVal()->validate($value);
@@ -761,7 +772,7 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
-    private function validaValor($value)
+    private function validaValue($value)
     {
         $value = str_replace(".", "", $value);
         $value = str_replace(",", ".", $value);
@@ -785,7 +796,7 @@ class SolicitacaoModel extends CRUD
         return $date;
     }
 
-    private function validaNomse($value)
+    private function validaName($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 50)->validate($value);
         if (!$validate) {
@@ -795,7 +806,7 @@ class SolicitacaoModel extends CRUD
         return $value;
     }
 
-    private function validanumberNotaFiscal($value)
+    private function validaInvoice($value)
     {
         $validate = v::stringType()->notEmpty()->length(3, 20)->validate($value);
         if (!$validate) {
@@ -805,15 +816,15 @@ class SolicitacaoModel extends CRUD
         return $this;
     }
 
-    private function validaDataEntrega($value)
+    private function validaDeliveryDate($value)
     {
-        $this->setDataEntrega($this->abstractDateValidate($value, 'delivery_date', 'Data estipulada para entrega'));
+        $this->setDeliveryDate($this->abstractDateValidate($value, 'delivery_date', 'Data estipulada para entrega'));
         return $this;
     }
 
-    private function validaArquivos()
+    private function validaFiles()
     {
-        $files = $_FILES['arquivos'] ?? false;
+        $files = $_FILES['files'] ?? false;
         if ($files) {
             foreach ($files['type'] as $type) {
                 if ($type != 'application/pdf') {
@@ -832,7 +843,7 @@ class SolicitacaoModel extends CRUD
      */
     private function saveFiles(string $directoryReference, int $solicitationNumber)
     {
-        $files = $_FILES['arquivos'] ?? false;
+        $files = $_FILES['files'] ?? false;
         $fullPath = $directoryReference . cfg::DS . 'arquivos' . cfg::DS . $solicitationNumber . cfg::DS;
 
         if ($files && $this->createDirectory($fullPath)) {

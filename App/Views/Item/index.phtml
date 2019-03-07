@@ -4,13 +4,13 @@ use App\Helpers\Pagination;
 use App\Helpers\View;
 use App\Helpers\Utils;
 
-$idLista = $this->view->idLista;
+$idlista = $this->view->idlista;
 
-$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
-            'previous' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['previous']}",
-            'next' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['next']}",
-            'current' => "{$controllerName}listar/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+            'previous' => "{$controllerName}listar/idlista/{$idlista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}listar/idlista/{$idlista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}listar/idlista/{$idlista}/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
 
@@ -30,7 +30,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     </strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
-                <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idLista; ?>" class="btn btn-info">
+                <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idlista; ?>" class="btn btn-info">
                     <i class="fa fa-plus-circle"></i> Novo Registro
                 </a>
                 <div class="row">
@@ -68,11 +68,11 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                                     <?= View::limitString($value['supplier'], 25); ?>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success btn-sm">
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idlista; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a
-                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idlista; ?>')"
                                         class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
