@@ -215,6 +215,31 @@
                 </div>
             </div>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#Ingredientes"
+               aria-expanded="false"
+               aria-controls="Ingredientes">
+                <i class="fa fa-cutlery fa-fw"></i> Ingredientes
+                <span class="fa arrow"></span>
+            </a>
+            <div id="Ingredientes"
+                 class="collapse"
+                 aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="Ingredientes/ver">
+                        <i class="fa fa-cog"></i> Gerenciar
+                    </a>
+                    <a class="collapse-item" href="Ingredientes/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
     <?php endif; ?>
 
     <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR') : ?>
