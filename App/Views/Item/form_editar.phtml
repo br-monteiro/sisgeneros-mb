@@ -49,12 +49,13 @@ use App\Helpers\Utils;
 
                                     <div class="form-group">
                                         <label>Ingrediente</label>
-                                        <input type="text"
-                                               name="ingredients_id"
-                                               id="ingredients_id"
-                                               class="form-control"
-                                               value="<?= $this->view->result['ingredients_id']; ?>"
-                                               required>
+                                        <select name="ingredients_id" class="form-control" required>
+                                            <?php foreach ($this->view->resultIngredients as $value): ?>
+                                                <option value="<?= $value['id']; ?>" <?= View::isSelected($value['id'], $this->view->result['ingredients_id']); ?>>
+                                                    <?= $value['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -90,7 +91,7 @@ use App\Helpers\Utils;
                                                placeholder="Quantidade Licitada"
                                                class="form-control"
                                                maxlength="50"
-                                               value="<?= $this->view->result['quantity']; ?>"
+                                               value="<?= intval($this->view->result['quantity']); ?>"
                                                required>
                                     </div>
 
@@ -109,8 +110,8 @@ use App\Helpers\Utils;
                                     <div class="form-group">
                                         <label>Habilitar Item para pedidos?</label>
                                         <input type="checkbox"
-                                               name="habilitacao"
-                                               id="habilitacao"
+                                               name="active"
+                                               id="active"
                                                <?= $this->view->result['active'] == 'yes' ? 'checked' : ''; ?>>
                                         <span class='label label-danger'>SIM!</span>
                                     </div>

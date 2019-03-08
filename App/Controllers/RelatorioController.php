@@ -68,7 +68,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $solItem = new SolItem();
         $this->view->title = 'Itens da Solicitação';
         $this->view->resultSolicitacao = $model->recuperaDadosRelatorioSolicitacao($this->view->idlista);
-        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
         $solItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solItem->getResultadoPaginator();
         $this->view->btn = $solItem->getNavePaginator();

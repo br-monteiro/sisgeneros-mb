@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\View;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -7,7 +12,7 @@
                 <?php if (isset($this->view->result[0])): ?>
                     <form action="<?= $this->view->controller; ?>registrarrecebimento/id/<?= $this->view->result[0]['solicitacao_id']; ?>" method="post" id="form">
                         <input type="hidden" name="suppliers_id" value="<?= $this->view->result[0]['suppliers_id'] ?>">
-                        <input type="hidden" name="id_licitacao" value="<?= $this->view->result[0]['id_licitacao'] ?>">
+                        <input type="hidden" name="biddings_id" value="<?= $this->view->result[0]['biddings_id'] ?>">
                         <input type="hidden" name="nao_licitado" value="<?= $this->view->result[0]['nao_licitado'] ?>">
                         <input type="hidden" name="delivery_date" value="<?= date("d-m-Y", time()); ?>">
                         <button class="btn btn-success" id='btn_enviar'>
@@ -50,9 +55,9 @@
                             <?php endif; ?>
                         </div>
                         <div class="row" style="padding-top: 10px; margin-bottom: 20px;">
-                            <div class="col-lg-4" id="observacao">
+                            <div class="col-lg-4" id="observation">
                                 <label>Observação: </label>
-                                <textarea name="observacao"
+                                <textarea name="observation"
                                           placeholder="Observações"
                                           class="form-control"></textarea>
                             </div>
@@ -101,9 +106,9 @@
                                                    value="<?= $value['quantity']; ?>"
                                                    class="form-control">
                                         </td>
-                                        <td><?= $value['quantity']; ?></td>
+                                        <td><?= intval($value['quantity']); ?></td>
                                         <td><?= $value['item_number']; ?></td>
-                                        <td>R$ <?= number_format($value['value'], 2, ",", "."); ?></td>
+                                        <td><?= View::floatToMoney($value['value']); ?></td>
                                         <td><?= $value['uf']; ?></td>
                                         <td><?= $value['name']; ?></td>
                                         <td>

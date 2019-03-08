@@ -38,10 +38,12 @@ use App\Helpers\View;
                                     <div class="form-group">
                                         <label>Validade</label>
                                         <input type="text"
-                                               name="validade"
-                                               id="validade"
+                                               name='validate'
+                                               id='validate'
                                                placeholder="Data de Validade da Licitação"
                                                class="form-control"
+                                               data-mask="##-##-####"
+                                               data-mask-reverse="true"
                                                maxlength="10"
                                                value="<?= View::humanDate($this->view->result['validate']); ?>"
                                                required>

@@ -1,4 +1,6 @@
 <?php
+
+use App\Helpers\View;
 $cfg = App\Config\Configurations::htrFileConfigs();
 
 ?>
@@ -170,7 +172,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                                     <td><?= $value['number']; ?></td>
                                     <td><?= $value['naval_indicative']; ?></td>
                                     <td><?= $value['status']; ?></td>
-                                    <td><?= date('d-m-Y H:i:s', $value['updated_at']); ?></td>
+                                    <td><?= View::humanDate($value['updated_at']); ?></td>
                                     <td>
                                         <a href="solicitacao/ver/busca/<?= $value['number']; ?>" class="btn btn-dark btn-sm">
                                             <i class="fa fa-arrow-circle-right"></i> Ver Solicitação

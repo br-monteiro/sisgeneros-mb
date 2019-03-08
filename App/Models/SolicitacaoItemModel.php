@@ -69,34 +69,22 @@ class SolicitacaoItemModel extends CRUD
         return $this->paginator->getNaveBtn();
     }
 
-    public function novoRegistro($dados)
+    public function novoRegistro($dados, $requestsId)
     {
-        // Seta todos os dados
-        $this->setAll($dados);
         $item = new Item();
-        foreach ($this->getListaItens() as $idItem => $quantidade) {
+        foreach ($dados as $idItem => $quantity) {
             $value = $item->findById($idItem);
             $dados = [
-                'requests_id' => $this->getidlista(),
+                'requests_id' => $requestsId,
                 'number' => $value['number'],
                 'name' => $value['name'],
                 'uf' => $value['uf'],
-                'quantity' => $quantidade < 0 ? 0 : $quantidade,
+                'quantity' => $quantity,
+                'delivered' => 0,
                 'value' => $value['value']
             ];
-            if (!$value['number']) {
-                $this->error[] = [
-                    'number' => $this->getNumber(),
-                    'name' => $this->getNome()
-                ];
-            } else {
-                parent::novo($dados);
-            }
+            parent::novo($dados);
         }
-        if (empty($this->getError())) {
-            return true;
-        }
-        return $this->getError();
     }
 
     public function novoNaoLicitado($dados, $requestId)

@@ -7,12 +7,6 @@ $busca = $this->getParametro('busca');
 $busca = $busca ? '/busca/' . $busca : '';
 $userNivel = $this->view->userLoggedIn['level'];
 
-$formatDate = function(string $value) {
-    $explodedDate = explode('-', $value);
-    $explodedDate = array_reverse($explodedDate);
-    return implode('-', $explodedDate);
-};
-
 /**
  * This function build the string used in src attribute of action buttons
  * @param array $value The current solicitation
@@ -89,7 +83,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                 <td><?= View::limitString($value['suppliers_name'], 17); ?></td>
                                 <td><?= $value['invoice'] ?: ''; ?></td>
                                 <td>
-                                    <?php if ($value['nao_licitado'] === '0') : ?>
+                                    <?php if ($value['biddings_id']) : ?>
                                         <i class="fa fa-group"></i> LIC
                                     <?php else : ?>
                                         <i class="fa fa-shopping-cart"></i> NL
@@ -100,16 +94,16 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($bus
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= date('d-m-Y', $value['updated_at']); ?>
+                                        <?= View::humanDate($value['updated_at']); ?>
                                     </span>
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= $formatDate($value['delivery_date']); ?>
+                                        <?= View::humanDate($value['delivery_date']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
+                                    <a href="<?= $this->view->controller; ?>detalhar/idlista/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Itens
                                     </a>
 

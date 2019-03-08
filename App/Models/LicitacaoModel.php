@@ -6,6 +6,7 @@ use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\View;
 
 class LicitacaoModel extends CRUD
 {
@@ -56,6 +57,7 @@ class LicitacaoModel extends CRUD
         $stmt = $this->pdo->prepare("
             SELECT
                 DISTINCT biddings.number,
+                    biddings.id AS biddings_id,
                     biddings.uasg,
                     biddings.description,
                     biddings.uasg_name,
@@ -77,14 +79,14 @@ class LicitacaoModel extends CRUD
         $stmt = $this->pdo->prepare("
             SELECT
                 DISTINCT biddings.number,
-                    biddings.id,
+                    biddings.id AS biddings_id,
                     biddings.uasg,
                     biddings.uasg_name,
                     item.name produtoNome,
                     suppliers.name AS name,
                     suppliers.id as suppliers_id
             FROM biddings
-            INNER JOIN biddings_item AS item
+            INNER JOIN biddings_items AS item
                 ON item.biddings_id = biddings.id AND item.active = 'yes'
             INNER JOIN suppliers
                 ON suppliers.id = item.suppliers_id
@@ -105,14 +107,15 @@ class LicitacaoModel extends CRUD
             'number' => $this->getNumber(),
             'uasg' => $this->getUasg(),
             'description' => $this->getDescription(),
-            'uasg_name' => $this->getUsasgName(),
+            'uasg_name' => $this->getUasgName(),
             'validate' => $this->getValidate(),
             'created_at' => date('Y-m-d')
         ];
 
         if (parent::novo($dados)) {
+            $lastId = $this->pdo->lastInsertId();
             msg::showMsg('Licitação Registrada com Sucesso. '
-                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $this->getidlista() . "' class='btn btn-info'>"
+                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $lastId . "' class='btn btn-info'>"
                 . "<i class='fa fa-plus-circle'></i> Adicionar Item</a>"
                 . '<script>resetForm();</script>', 'success');
         }
@@ -129,7 +132,7 @@ class LicitacaoModel extends CRUD
             'number' => $this->getnumber(),
             'uasg' => $this->getUasg(),
             'description' => $this->getDescription(),
-            'uasg_name' => $this->getUsasgName(),
+            'uasg_name' => $this->getUasgName(),
             'validate' => $this->getValidate()
         ];
 
@@ -166,8 +169,8 @@ class LicitacaoModel extends CRUD
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setnumber(filter_input(INPUT_POST, 'number', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
-            ->setdescription(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setNomeUasg(filter_input(INPUT_POST, 'uasg_name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setDescription(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setUasgName(filter_input(INPUT_POST, 'uasg_name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setValidate(filter_input(INPUT_POST, 'validate', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
@@ -213,7 +216,7 @@ class LicitacaoModel extends CRUD
 
     private function validaUasgName()
     {
-        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getNomeUasg());
+        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getUasgName());
         if (!$value) {
             msg::showMsg('O campo Nome da Uasg deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("uasg_name");</script>', 'danger');
@@ -233,8 +236,7 @@ class LicitacaoModel extends CRUD
 
     private function validaValidate()
     {
-        $validate = explode('/', $this->validate);
-        $validate = $validate[2] . '-' . $validate[1] . '-' . $validate[0];
+        $validate = View::dateDatabaseFormate($this->getValidate());
         $value = v::date()->validate($validate);
         if (!$value) {
             msg::showMsg('O campo Validade deve ser preenchido corretamente.'

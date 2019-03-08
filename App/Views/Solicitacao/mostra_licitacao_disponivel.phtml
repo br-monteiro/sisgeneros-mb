@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) {
         return [
@@ -36,14 +37,14 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                     </thead>
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
-                            <tr class="table-licitacao" data-id-lista="<?= $value['id_lista']; ?>">
+                            <tr class="table-licitacao" data-id="<?= $value['id']; ?>">
                                 <td><?= $value['number']; ?></td>
                                 <td><?= $value['description']; ?></td>
                                 <td><?= $value['uasg']; ?></td>
                                 <td><?= $value['uasg_name']; ?></td>
                                 <td>
                                     <span class="label label-danger">
-                                        <?= date('d-m-Y', $value['validade']); ?>
+                                        <?= View::humanDate($value['validate']); ?>
                                     </span>
                                 </td>
                             </tr>
@@ -57,9 +58,9 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
 </div>
 <script>
     $('.table-licitacao').click(function link() {
-        var idlista = this.dataset.idlista;
-        if (idlista) {
-            window.location = '<?= $this->view->controller; ?>fornecedor/idlista/' + idlista;
+        var id = this.dataset.id;
+        if (id) {
+            window.location = '<?= $this->view->controller; ?>fornecedor/idlista/' + id;
         }
     });
 </script>

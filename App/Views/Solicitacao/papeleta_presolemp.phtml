@@ -7,7 +7,7 @@ setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
 date_default_timezone_set(cfg::TIMEZONE);
 
 if (in_array($this->view->resultSolicitacao['status'] ?? false, ['ABERTO', 'APROVADO', false])) {
-    exit;
+    die("<i class='fa fa-info-circle'></i> A papeleta não pode ser gerada..");
 }
 
 $total = 0;
@@ -180,7 +180,7 @@ $total = 0;
                             ND
                         </th>
                         <th class="text-center width-10-percent">
-                            CONT.
+                            CONTA
                         </th>
                     </tr>
                     <tr>
@@ -218,19 +218,19 @@ $total = 0;
 
                         ?>
                         <tr>
-                            <td><?= $value['item_number'] ?: ''; ?></td>
+                            <td><?= $value['number'] ?: ''; ?></td>
                             <td class="left"><?= $value['name']; ?></td>
                             <td><?= $value['uf']; ?></td>
-                            <td><?= $value['quantity']; ?></td>
-                            <td><?= number_format($value['value'], 2, ',', '.'); ?></td>
-                            <td><?= number_format($totaItem, 2, ',', '.'); ?></td>
+                            <td><?= intval($value['quantity']); ?></td>
+                            <td><?= View::floatToMoney($value['value'], ''); ?></td>
+                            <td><?= View::floatToMoney($totaItem, ''); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="5"class="right">Total (R$)</td>
-                        <td><?= number_format($total, 2, ',', '.'); ?></td>
+                        <td><?= View::floatToMoney($total, ''); ?></td>
                     </tr>
                 </tfoot>
             </table>

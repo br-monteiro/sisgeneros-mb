@@ -53,11 +53,13 @@ class Utils
      */
     public static function normalizeFloat($value, int $decimals = 2, bool $withComma = false)
     {
-        $value = str_replace(",", ".", $value);
-        $value = number_format($value, $decimals);
+        if ($value) {
+            $value = str_replace(",", ".", $value);
+            $value = number_format($value, $decimals);
 
-        if ($withComma) {
-            $value = str_replace(".", ",", $value);
+            if ($withComma) {
+                $value = str_replace(".", ",", $value);
+            }
         }
 
         return $value;

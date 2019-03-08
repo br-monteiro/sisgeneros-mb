@@ -7,6 +7,7 @@ use HTR\Helpers\Access\Access;
 use App\Models\FornecedorModel as Fornecedor;
 use App\Models\LicitacaoModel as Licitacao;
 use App\Models\ItemModel;
+use App\Models\IngredientesModel;
 use App\Config\Configurations as cfg;
 
 class ItemController extends Controller implements CtrlInterface
@@ -35,6 +36,10 @@ class ItemController extends Controller implements CtrlInterface
     {
         $this->view->title = 'Novo Registro';
         $fornecedor = new Fornecedor();
+        $this->view->resultIngredients = (new IngredientesModel())->findAll(function ($i) {
+            return $i->setaFiltros()
+                    ->orderBY('name ASC');
+        });
         $this->view->resultFornecedor = $fornecedor->findAll();
         $this->render('form_novo');
     }
@@ -45,6 +50,10 @@ class ItemController extends Controller implements CtrlInterface
         $this->view->title = 'Editando Registro';
         $fornecedor = new Fornecedor();
         $this->view->resultFornecedor = $fornecedor->findAll();
+        $this->view->resultIngredients = (new IngredientesModel())->findAll(function ($i) {
+            return $i->setaFiltros()
+                    ->orderBY('name ASC');
+        });
         $this->view->result = $model->findById($this->getParametro('id'));
         $this->render('form_editar');
     }
@@ -63,7 +72,7 @@ class ItemController extends Controller implements CtrlInterface
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
         $licitacao = new Licitacao();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->idlista);
         $this->render('index');
     }
 

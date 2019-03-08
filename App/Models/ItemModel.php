@@ -32,7 +32,7 @@ class ItemModel extends CRUD
             'orderBy' => '`biddings_items`.`number` ASC',
             'where' => '`biddings_items`.`biddings_id` = ?',
             'bindValue' => [$idlista],
-            'select' => '`biddings_items`.*, `suppliers`.`name` AS suppliers'
+            'select' => '`biddings_items`.*, `suppliers`.`name` AS supplier'
         ];
 
         $this->paginator = new Paginator($dados);
@@ -131,7 +131,7 @@ class ItemModel extends CRUD
         }
     }
 
-    public function findByidlista($idlista, $idFornecedor)
+    public function findByIdlista($idlista, $idFornecedor)
     {
         $stmt = $this->pdo->prepare(
             "SELECT `biddings_items`.*, `suppliers`.`cnpj`, `suppliers`.`name` AS supplier,
@@ -148,9 +148,9 @@ class ItemModel extends CRUD
     {
         // Seta todos os valuees
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setBiddingsId()
+            ->setBiddingsId(filter_input(INPUT_POST, 'biddings_id'))
             ->setSuppliersId(filter_input(INPUT_POST, 'suppliers_id'))
-            ->setActive(filter_input(INPUT_POST, 'active'))
+            ->setActive(filter_input(INPUT_POST, 'active') == 'on' ? 'yes' : 'no')
             ->setNumber(filter_input(INPUT_POST, 'number', FILTER_VALIDATE_INT))
             ->setIngredientsId(filter_input(INPUT_POST, 'ingredients_id', FILTER_VALIDATE_INT))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
@@ -166,15 +166,7 @@ class ItemModel extends CRUD
             ->validaNumber()
             ->validaName()
             ->validaUf()
-            ->validaQuantity()
-            ->validaActive();
-    }
-
-    private function setBiddingsId()
-    {
-        $value = filter_input(INPUT_POST, 'biddings_id');
-        $this->setBiddingsId($value ?? time());
-        return $this;
+            ->validaQuantity();
     }
 
     // Validação
@@ -243,11 +235,5 @@ class ItemModel extends CRUD
                 . '<script>focusOn("quantity");</script>', 'danger');
         }
         return $this;
-    }
-
-    private function validaActive()
-    {
-        $value = $this->getActive() ? 'yes' : 'no';
-        $this->setActive($value);
     }
 }

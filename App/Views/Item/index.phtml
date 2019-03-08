@@ -55,12 +55,12 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idl
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td style='font-size: 11px'><?= $value['number']; ?></td>
-                                <td style='font-size: 11px'><?= $value['quantity']; ?></td>
-                                <td style='font-size: 11px'>R$ <?= Utils::floatToMoney($value['value']); ?></td>
+                                <td style='font-size: 11px'><?= intval($value['quantity']); ?></td>
+                                <td style='font-size: 11px'><?= Utils::floatToMoney($value['value']); ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
                                 <td style='font-size: 11px'>
                                     <span class='label label-<?= $value['active'] === 'yes' ? 'success' : 'danger'; ?>'>
-                                        <?= $value['active'] ? 'Sim' : 'Não'; ?>
+                                        <?= $value['active'] === 'yes' ? 'Sim' : 'Não'; ?>
                                     </span>
                                 </td>
                                 <td style='font-size: 11px'><?= $value['name']; ?></td>
