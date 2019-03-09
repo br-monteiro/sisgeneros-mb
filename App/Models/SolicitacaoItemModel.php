@@ -27,21 +27,18 @@ class SolicitacaoItemModel extends CRUD
 
     public function recebimento($dados)
     {
-        foreach ($dados as $key => $val) {
-            $val = is_array($val) ? $val['quantity'] : $val;
-            $update['delivered'] = $val;
-            parent::editar($update, $key);
+        foreach ($dados as $id => $quantity) {
+            parent::editar(['delivered' => $quantity], $id);
         }
-
-        return true;
     }
 
     public function recebimentoNaoLicitado()
     {
         $value = filter_input_array(INPUT_POST);
-        for ($i = 0; $i < count($value['id']); $i++) {
+
+        for ($i = 0; $i < count($value['ids']); $i++) {
             $dados['delivered'] = $value['quantity'][$i];
-            parent::editar($dados, $value['id'][$i]);
+            parent::editar($dados, $value['ids'][$i]);
         }
     }
 

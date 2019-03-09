@@ -275,10 +275,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $solicitacao = new SolicitacaoModel();
         $resultSolicitacao = $solicitacao->findById($this->getParametro('id'));
+
         if ($resultSolicitacao['biddings_id']) {
-            $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
+            $solicitacao->recebimento($resultSolicitacao['id']);
         } else {
-            $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
+            $solicitacao->recebimentoNaoLicitado($resultSolicitacao['id']);
         }
     }
 

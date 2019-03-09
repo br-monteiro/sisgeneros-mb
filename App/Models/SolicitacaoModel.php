@@ -145,54 +145,44 @@ class SolicitacaoModel extends CRUD
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function recebimento($id, $user)
+    public function recebimento($id)
     {
-        // Valida dados
-        $this->validaAll($user['oms_id']);
+        $this->setInvoice(filter_input(INPUT_POST, 'invoice'));
+        $this->validaInvoice($this->getInvoice());
+        $this->setObservation(filter_input(INPUT_POST, 'observation', FILTER_SANITIZE_SPECIAL_CHARS));
+        $this->setItemsList($this->buildItemsBiddings(filter_input_array(INPUT_POST)));
+        $this->validaItemsList();
+
         $dados = [
             'status' => 'RECEBIDO',
             'updated_at' => date('Y-m-d H:i:s'),
             'invoice' => $this->getInvoice(),
             'observation' => $this->getObservation()
         ];
+
         if (parent::editar($dados, $id)) {
-            $dados['items_list'] = $this->getItemsList();
-            $itens = new Itens();
-            $dados = $itens->recebimento($dados['items_list']);
 
-            /// seta a nota para a entrega
-            $requests = $this->findById($id);
-            $avalicao = new AvaliacaoFornecedorModel();
-            $value['evaluation'] = filter_input(INPUT_POST, 'evaluation', FILTER_VALIDATE_INT) ?: 1;
-            $value['biddings_id'] = $requests['biddings_id'];
-            $value['suppliers_id'] = $requests['suppliers_id'];
-            $value['requests_id'] = $requests['id'];
+            (new Itens())->recebimento($this->getItemsList());
 
-            $avalicao->novoRegistro($value);
-            if ($dados === true) {
-                msg::showMsg('Operação efetuada com sucesso!'
-                    . '<script>'
-                    . 'mostrar("btn_voltar");'
-                    . 'ocultar("tabela_result");'
-                    . 'ocultar("btn_enviar");'
-                    . 'ocultar("invoice_container");'
-                    . 'ocultar("observation");'
-                    . 'ocultar("evaluation");'
-                    . 'ocultar("legenda");'
-                    . '</script>', 'success');
-            } else {
-                $error = [];
-                foreach ($dados as $value) {
-                    $error[] = "Iten Nº " . $value['number'] . " - " . $value['name'] . "<br>";
-                }
-                msg::showMsg('Houve erro ao gravar os seguintes itens:<br>'
-                    . implode('', $error)
-                    . '<script>resetForm(); </script>', 'danger');
-            }
+            (new AvaliacaoFornecedorModel())->novoRegistro([
+                'evaluation' => filter_input(INPUT_POST, 'evaluation', FILTER_VALIDATE_INT) ?: 3,
+                'requests_id' => $id
+            ]);
+
+            msg::showMsg('Operação efetuada com sucesso!'
+                . '<script>'
+                . 'mostrar("btn_voltar");'
+                . 'ocultar("tabela_result");'
+                . 'ocultar("btn_enviar");'
+                . 'ocultar("invoice_container");'
+                . 'ocultar("observation");'
+                . 'ocultar("evaluation");'
+                . 'ocultar("legenda");'
+                . '</script>', 'success');
         }
     }
 
-    public function recbimentoNaoLicitado($id, $idlista)
+    public function recebimentoNaoLicitado($id)
     {
         $this->setInvoice(filter_input(INPUT_POST, 'invoice'));
         $this->validaInvoice($this->getInvoice());
@@ -205,10 +195,11 @@ class SolicitacaoModel extends CRUD
             'invoice' => $this->getInvoice(),
             'observation' => $this->getObservation()
         ];
+
         parent::editar($dados, $id);
 
         $itens = new Itens();
-        $itens->recebimentoNaoLicitado($idlista);
+        $itens->recebimentoNaoLicitado($id);
         msg::showMsg('Operação efetuada com sucesso!'
             . '<script>'
             . 'mostrar("btn_voltar");'
@@ -563,18 +554,15 @@ class SolicitacaoModel extends CRUD
 
     public function findQtdSolicitAtrasadas($user, $status = 'SOLICITADO')
     {
-
         $query = ""
-            . "SELECT "
-            . "COUNT(*) quantity "
-            . "FROM {$this->entidade} "
-            . "WHERE status LIKE :status AND delivery_date < '" . date('Y-m-d') . "'";
-
+            . " SELECT "
+            . " COUNT(*) AS quantity "
+            . " FROM {$this->entidade} "
+            . " WHERE status LIKE :status AND delivery_date < '" . date('Y-m-d') . "' ";
         if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
             $where = " AND oms_id = {$user['oms_id']} ";
             $query . $where;
         }
-
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':status' => $status]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -582,23 +570,19 @@ class SolicitacaoModel extends CRUD
 
     public function findSolitacoesMensal($user)
     {
-        $mesPassado = date('Y-m-d', strtotime("- 1 month", time()));
-        $hoje = date('Y-m-d');
-
         $query = ""
-            . "SELECT "
-            . "COUNT(*) quantity "
-            . "FROM {$this->entidade} "
-            . "WHERE updated_at BETWEEN :dInit AND :dEnd";
+            . " SELECT "
+            . " COUNT(*) AS quantity "
+            . " FROM {$this->entidade} "
+            . " WHERE created_at BETWEEN '" . date('Y-m') . "-01' AND '" . date('Y-m-d') . "' ";
 
-        if (!in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
-            $where = " AND oms_id = {$user['oms_id']} ";
-            $query .= $where;
+        if (in_array($user['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) {
+            $query .= " AND oms_id = {$user['oms_id']} ";
         }
 
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([":dInit" => $mesPassado, ":dEnd" => $hoje]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $this->pdo
+                ->query($query)
+                ->fetch((\PDO::FETCH_ASSOC));
     }
 
     /**
