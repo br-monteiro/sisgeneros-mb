@@ -175,7 +175,7 @@ class SolicitacaoItemModel extends CRUD
             . "     AND `requests`.`biddings_id` = ?;");
         $stmt->execute([$itemnumber, $idLicitacao]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['quantity'] : false;
+        return $result ? $result['sum_quantity'] : false;
     }
 
     private function setAll($dados)

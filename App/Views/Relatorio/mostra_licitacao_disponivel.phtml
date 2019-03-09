@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) {
         return [
@@ -44,11 +45,11 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                 <td><?= $value['uasg_name']; ?></td>
                                 <td>
                                     <span class="label label-danger">
-                                        <?= date('d-m-Y', $value['validate']); ?>
+                                        <?= View::humanDate($value['validate']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
+                                    <a href="<?= $this->view->controller; ?>licitacao/idlista/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Rel. Demanda
                                     </a>
                                 </td>

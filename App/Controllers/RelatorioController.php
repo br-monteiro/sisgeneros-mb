@@ -93,7 +93,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $item->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $item->getResultadoPaginator();
         $this->view->btn = $item->getNavePaginator();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->idlista);
         $this->render('mostra_item_demanda');
     }
 

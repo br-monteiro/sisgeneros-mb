@@ -55,13 +55,13 @@ class RelatorioModel extends CRUD
         }
 
         // search by Fornecedor
-        if (isset($params['suppliers']) && intval($params['suppliers']) !== 0) {
+        if (isset($params['fornecedor']) && intval($params['fornecedor']) !== 0) {
             if (isset($dados['where'])) {
                 $dados['where'] .= ' AND req.suppliers_id = :suppId ';
             } else {
                 $dados['where'] = ' req.suppliers_id = :suppId ';
             }
-            $dados['bindValue'][':suppId'] = $params['suppliers'];
+            $dados['bindValue'][':suppId'] = $params['fornecedor'];
         }
 
         // search by Date Init

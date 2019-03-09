@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $idlista = $this->view->idlista;
 
@@ -52,29 +53,28 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idl
                                 <td style='font-size: 11px'><?= $value['number']; ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
                                 <td style='font-size: 11px'><?= $value['name']; ?></td>
-                                <td style='font-size: 11px'><?= $value['fornecedor']; ?></td>
+                                <td style='font-size: 11px'><?= $value['supplier']; ?></td>
                                 <td>
                                     <span class="label label-success">
-                                        <?= $value['quantity']; ?>
+                                        <?= View::normalizeFloat($value['quantity'], 3, true); ?>
                                     </span>
                                 </td>
                                 <td>
                                     <?php
-                                    $demanda = $this->demanda($value['number'], $this->view->resultLicitacao['id']);
-                                    $restante = $value['quantity'] - $demanda;
-                                    if ($demanda):
-
-                                        ?>
-                                        <span class="badge badge-danger">
-                                            <?= $demanda ?>
+                                        $demanda = $this->demanda($value['number'], $this->view->resultLicitacao['id']);
+                                        $restante = $value['quantity'] - $demanda;
+                                    ?>
+                                    <?php if ($demanda): ?>
+                                        <span class="badge badge-dark">
+                                            <?= View::normalizeFloat($demanda, 3, true); ?>
                                         </span>
                                     <?php else: ?>
                                         ---
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="label <?= $restante < 0 ? "label-danger" : "label-default"; ?>">
-                                        <?= $restante; ?>
+                                    <span class="badge <?= $restante < 0 ? "badge-danger" : "badge-success"; ?>">
+                                        <?= View::normalizeFloat($restante, 3, true); ?>
                                     </span>
                                 </td>
                             </tr>
