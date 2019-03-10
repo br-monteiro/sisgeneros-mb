@@ -187,7 +187,7 @@ new class {
                 $sqlFile = $this->loadFile(self::PATH_DUMP_SQL);
                 // connect into database and execute the SQL queries
                 $this->connectDatabase()->exec($sqlFile);
-                $this->message('> Arquivo de Sqlite criado com sucesso');
+                $this->message('> Banco de Dados criado com sucesso');
             } catch (\PDOException $ex) {
                 throw new \Exception(""
                 . "Não foi possível executar o dump.sql" . PHP_EOL
