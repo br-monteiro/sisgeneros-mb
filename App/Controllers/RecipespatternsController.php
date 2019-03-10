@@ -9,7 +9,7 @@ use App\Models\IngredientesModel;
 use App\Models\RecipesPatternsItemsModel;
 use App\Config\Configurations as cfg;
 
-class RecipesPatternsController extends Controller implements CtrlInterface
+class RecipespatternsController extends Controller implements CtrlInterface
 {
     private $access;
 
@@ -17,7 +17,7 @@ class RecipesPatternsController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = cfg::DEFAULT_URI . 'RecipesPatterns/';
+        $this->view->controller = cfg::DEFAULT_URI . 'recipespatterns/';
         $this->access = new Access();
     }
 
