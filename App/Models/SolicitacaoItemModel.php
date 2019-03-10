@@ -27,21 +27,18 @@ class SolicitacaoItemModel extends CRUD
 
     public function recebimento($dados)
     {
-        foreach ($dados as $key => $val) {
-            $val = is_array($val) ? $val['quantity'] : $val;
-            $update['delivered'] = $val;
-            parent::editar($update, $key);
+        foreach ($dados as $id => $quantity) {
+            parent::editar(['delivered' => $quantity], $id);
         }
-
-        return true;
     }
 
     public function recebimentoNaoLicitado()
     {
         $value = filter_input_array(INPUT_POST);
-        for ($i = 0; $i < count($value['id']); $i++) {
+
+        for ($i = 0; $i < count($value['ids']); $i++) {
             $dados['delivered'] = $value['quantity'][$i];
-            parent::editar($dados, $value['id'][$i]);
+            parent::editar($dados, $value['ids'][$i]);
         }
     }
 
@@ -69,34 +66,22 @@ class SolicitacaoItemModel extends CRUD
         return $this->paginator->getNaveBtn();
     }
 
-    public function novoRegistro($dados)
+    public function novoRegistro($dados, $requestsId)
     {
-        // Seta todos os dados
-        $this->setAll($dados);
         $item = new Item();
-        foreach ($this->getListaItens() as $idItem => $quantidade) {
+        foreach ($dados as $idItem => $quantity) {
             $value = $item->findById($idItem);
             $dados = [
-                'requests_id' => $this->getidlista(),
+                'requests_id' => $requestsId,
                 'number' => $value['number'],
                 'name' => $value['name'],
                 'uf' => $value['uf'],
-                'quantity' => $quantidade < 0 ? 0 : $quantidade,
+                'quantity' => $quantity,
+                'delivered' => 0,
                 'value' => $value['value']
             ];
-            if (!$value['number']) {
-                $this->error[] = [
-                    'number' => $this->getNumber(),
-                    'name' => $this->getNome()
-                ];
-            } else {
-                parent::novo($dados);
-            }
+            parent::novo($dados);
         }
-        if (empty($this->getError())) {
-            return true;
-        }
-        return $this->getError();
     }
 
     public function novoNaoLicitado($dados, $requestId)
@@ -190,7 +175,7 @@ class SolicitacaoItemModel extends CRUD
             . "     AND `requests`.`biddings_id` = ?;");
         $stmt->execute([$itemnumber, $idLicitacao]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['quantity'] : false;
+        return $result ? $result['sum_quantity'] : false;
     }
 
     private function setAll($dados)

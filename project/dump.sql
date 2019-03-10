@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`requests` (
   `delivery_date` DATE NOT NULL,
   `observation` VARCHAR(256) NULL,
   `created_at` DATE NOT NULL,
-  `updated_at` DATE NOT NULL,
+  `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `number_UNIQUE` (`number` ASC),
   INDEX `fk_requests_oms1_idx` (`oms_id` ASC),

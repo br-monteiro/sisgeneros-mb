@@ -7,7 +7,7 @@ $showMedia = false;
 if (isset($this->view->result) && $total = count($this->view->result)) {
     $showMedia = true;
     $sum = array_reduce($this->view->result, function ($acc, $item) {
-        return $acc + $item['nota'];
+        return $acc + $item['evaluation'];
     }, 0);
     $media = $sum / $total;
 }
@@ -128,7 +128,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <?= $value['requests_status']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['licitacao_number']; ?>
+                                    <?= $value['biddings_number']; ?>
                                     <i class="fa fa-info-circle text-info" title="<?= $value['biddings_uasg_name']; ?>"></i>
                                 </td>
                                 <td>
@@ -200,7 +200,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                 url += 'dateEnd/' + dateEnd + '/';
             }
             if (fornecedor) {
-                url += 'suppliers/' + fornecedor;
+                url += 'fornecedor/' + fornecedor;
             }
             window.location = url;
         });

@@ -21,6 +21,7 @@ class Configurations extends InternalConfigurations
         'ADMINISTRADOR'
     ];
     const DEFAULT_REQUEST_STATUS = [
+        '' => 'ABERTO',
         'ABERTO' => 'APROVADO',
         'APROVADO' => 'PROCESSADO',
         'PROCESSADO' => 'EMPENHADO',

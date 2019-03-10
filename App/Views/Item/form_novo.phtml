@@ -15,7 +15,7 @@
                     <div class="panel-body">
                         <div id="resultado"></div>
                         <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idlista; ?>" method="post" id="form">
-                            <input type="hidden" name="id_lista" value="<?= $this->view->idlista; ?>">
+                            <input type="hidden" name="biddings_id" value="<?= $this->view->idlista; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
@@ -37,15 +37,16 @@
                                                class="form-control"
                                                required>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label>Ingrediente</label>
-                                        <input type="text"
-                                               name="ingredients_id"
-                                               id="ingredients_id"
-                                               class="form-control"
-                                               value="<?= $this->view->result['ingredients_id']; ?>"
-                                               required>
+                                        <select name="ingredients_id" class="form-control" required>
+                                            <?php foreach ($this->view->resultIngredients as $value): ?>
+                                                <option value="<?= $value['id']; ?>">
+                                                    <?= $value['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -88,6 +89,8 @@
                                         <input type="text"
                                                name="value"
                                                id="value"
+                                               data-mask="000.000.000,00"
+                                               data-mask-reverse="true"
                                                placeholder="Valor do item"
                                                class="form-control"
                                                maxlength="12"
@@ -97,8 +100,8 @@
                                     <div class="form-group">
                                         <label>Habilitar Item para pedidos?</label>
                                         <input type="checkbox"
-                                               name="habilitacao"
-                                               id="habilitacao" checked> <span class='label label-danger'>SIM!</span>
+                                               name="active"
+                                               id="active" checked> <span class='label label-danger'>SIM!</span>
                                     </div>
 
                                     <div class="form-group">

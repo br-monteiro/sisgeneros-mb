@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
@@ -14,23 +13,15 @@ class AvaliacaoFornecedorModel extends CRUD
         return $this->findAll();
     }
 
-    public function novoRegistro($value)
+    public function novoRegistro($dados)
     {
-        $this->validaAll($value);
+        $result = $this->findByRequests_id($dados['requests_id'] ?? 0);
 
-        $dados = [
-            'evaluation' => $this->getEvaluation(),
-            'requests_id' => $this->getRequestsId()
-        ];
-
-        parent::novo($dados);
-    }
-
-    private function validaAll($value)
-    {
-        // Seta todos os valores
-        $this->setEvaluantion($value['evaluation'])
-            ->setRequestsId($value['requests_id']);
+        if ($result) {
+            parent::editar($dados, $result['id']);
+        } else {
+            parent::novo($dados);
+        }
     }
 
     public function findBestBadSuppliers()

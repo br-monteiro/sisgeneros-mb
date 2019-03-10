@@ -9,12 +9,6 @@ $idlista = $this->view->idlista;
 $relativePathUploadFiles = 'arquivos' . cfg::DS . $this->view->resultSolicitacao['number'] . cfg::DS;
 $fullPathUploadFiles = getcwd() . cfg::DS . $relativePathUploadFiles;
 
-$formatDate = function(string $value) {
-    $explodedDate = explode('-', $value);
-    $explodedDate = array_reverse($explodedDate);
-    return implode('-', $explodedDate);
-};
-
 $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
             'previous' => "{$controllerName}detalhar/idlista/{$idlista}/pagina/{$btn['previous']}",
@@ -193,7 +187,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idl
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['delivery_date']); ?></strong>
+                        Data para entrega: <strong><?= View::humanDate($this->view->resultSolicitacao['delivery_date']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];
@@ -227,7 +221,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idl
                             - <?= $this->view->resultSolicitacao['status']; ?>
                         </strong>
                         <br>
-                        Data para entrega: <strong><?= $formatDate($this->view->resultSolicitacao['delivery_date']); ?></strong>
+                        Data para entrega: <strong><?= View::humanDate($this->view->resultSolicitacao['delivery_date']); ?></strong>
                         <?php
                         if ($this->view->resultSolicitacao['status'] === 'ABERTO'):
                             $solicitacaoId = $this->view->resultSolicitacao['id'];
@@ -316,8 +310,8 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idl
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td><?= $value['number'] ?: ''; ?></td>
-                                <td><?= Utils::normalizeFloat($value['quantity']); ?></td>
-                                <td><?= Utils::normalizeFloat($value['delivered']); ?></td>
+                                <td><?= intval($value['quantity']); ?></td>
+                                <td><?= intval($value['delivered']); ?></td>
                                 <td><?= Utils::floatToMoney($value['value']); ?></td>
                                 <td><?= $value['uf']; ?></td>
                                 <td><?= $value['name']; ?></td>

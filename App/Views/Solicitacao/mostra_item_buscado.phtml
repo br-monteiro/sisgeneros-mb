@@ -43,7 +43,7 @@ use App\Helpers\View;
                                     <td><?= $value['name']; ?></td>
                                     <td><?= View::highlight(strtoupper($value['produtoNome']), strtoupper($this->view->busca)) ?></td>
                                     <td>
-                                        <a href="<?= $this->view->controller; ?>item/fornecedor/<?= $value['suppliers_id']; ?>/idlista/<?= $value['id_lista']; ?>" class="btn btn-success btn-sm">
+                                        <a href="<?= $this->view->controller; ?>item/fornecedor/<?= $value['suppliers_id']; ?>/idlista/<?= $value['biddings_id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-edit"></i> Ir para Fornecedor
                                         </a>
                                     </td>

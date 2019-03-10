@@ -67,9 +67,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $this->view->title = 'Lista dos Itens da Licitação';
         $item = new Item();
-        $this->view->result = $item->findByidlista($this->view->idlista, $this->getParametro('fornecedor'));
+        $this->view->result = $item->findByIdlista($this->view->idlista, $this->getParametro('fornecedor'));
         $licitacao = new Licitacao();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->idlista);
         $this->render('mostra_item');
     }
 
@@ -173,7 +173,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
         $this->view->title = 'Itens da Solicitação';
-        $this->view->resultSolicitacao = $model->findByidlista($this->view->idlista);
+        $this->view->resultSolicitacao = $model->findByIdlista($this->view->idlista);
         $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
         $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
@@ -275,10 +275,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $solicitacao = new SolicitacaoModel();
         $resultSolicitacao = $solicitacao->findById($this->getParametro('id'));
+
         if ($resultSolicitacao['biddings_id']) {
-            $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
+            $solicitacao->recebimento($resultSolicitacao['id']);
         } else {
-            $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
+            $solicitacao->recebimentoNaoLicitado($resultSolicitacao['id']);
         }
     }
 
@@ -298,7 +299,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             $solicitacao = (new SolicitacaoModel())->findById($id);
             header('location: '
                 . $this->view->controller
-                . 'detalhar/idlista/' . $solicitacao['id_lista']);
+                . 'detalhar/idlista/' . $solicitacao['id']);
         } else {
             header('location: ' . $this->view->controller);
         }
@@ -313,8 +314,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $model = new SolicitacaoModel();
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
-        $this->view->resultSolicitacao = $model->findByidlista($this->view->idlista);
-        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
+        $this->view->resultSolicitacao = $model->findByIdlista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
         $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
         $this->view->btn = $solicitacaoItem->getNavePaginator();
@@ -328,7 +329,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
 
         $file = $this->getParametro('file');
-        $solicitacao = (new SolicitacaoModel())->findByidlista($this->view->idlista);
+        $solicitacao = (new SolicitacaoModel())->findByIdlista($this->view->idlista);
         $number = $solicitacao['number'] ?? 'error';
         $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $number . cfg::DS . $file;
         if (file_exists($fullPath)) {
@@ -354,7 +355,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
 
         $solicitacaoModel = new SolicitacaoModel();
-        $solicitacao = $solicitacaoModel->findByidlista($this->view->idlista);
+        $solicitacao = $solicitacaoModel->findByIdlista($this->view->idlista);
         $number = $solicitacao['number'] ?? 'error';
         if ($number !== 'error') {
             $solicitacaoModel->saveOneFile(getcwd(), $number);

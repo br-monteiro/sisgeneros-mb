@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\View;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -6,18 +11,19 @@
                 <div class="alert alert-info" role="alert">
                     Númeno: <strong><?= $this->view->resultLicitacao['number']; ?></strong><br>
                     Descrição: <strong><?= $this->view->resultLicitacao['description']; ?></strong><br>
-                    UASG: <strong><?= $this->view->resultLicitacao['uasg']; ?></strong><br>
-                    Órgão: <strong><?= $this->view->resultLicitacao['uasg_name']; ?></strong><br>
-                    Fornecedor: <strong class="label label-success"><?= $this->view->result[0]['fornecedor']; ?></strong><br>
-                    CNPJ: <strong class="label label-success"><?= $this->view->result[0]['cnpj']; ?></strong>
+                    Órgão:
+                    <strong><?= $this->view->resultLicitacao['uasg']; ?></strong>
+                    -
+                    <strong><?= $this->view->resultLicitacao['uasg_name']; ?></strong><br>
+                    Fornecedor: <strong><?= $this->view->result[0]['supplier']; ?></strong><br>
+                    CNPJ: <strong><?= $this->view->result[0]['cnpj']; ?></strong>
                 </div>
                 <div id="resultado"></div>
-                <form action="<?= $this->view->controller; ?>registra/idlista/<?= $this->view->idlista; ?>" method="post" id="form">
-                    <input type="hidden" name="id_licitacao" value="<?= $this->view->resultLicitacao['id'] ?>">
+                <form action="<?= $this->view->controller; ?>registra" method="post" id="form">
+                    <input type="hidden" name="biddings_id" value="<?= $this->view->resultLicitacao['id'] ?>">
                     <input type="hidden" name="suppliers_id" value="<?= $this->view->result[0]['suppliers_id'] ?>">
-                    <input type="hidden" name="nao_licitado" value="0">
                     <input type="hidden" name="invoice" value="S/N">
-                    <input type="hidden" name="observacao" value="">
+                    <input type="hidden" name="observation" value="">
                     <button class="btn btn-success">
                         <i class="fa fa-check"></i> Confirmar Registro
                     </button>
@@ -48,18 +54,15 @@
                                 <tr>
                                     <td>
                                         <input type="hidden"
-                                               name="id[]"
+                                               name="ids[]"
                                                value="<?= $value['id']; ?>">
-                                        <input type="hidden"
-                                               name="fornecedor[]"
-                                               value="<?= $value['suppliers_id']; ?>">
                                         <input type="text"
                                                name="quantity[]"
                                                id="quantity"
                                                class="form-control">
                                     </td>
                                     <td><?= $value['number']; ?></td>
-                                    <td>R$ <?= number_format($value['value'], 2, ",", "."); ?></td>
+                                    <td><?= View::floatToMoney($value['value']) ?></td>
                                     <td><?= $value['uf']; ?></td>
                                     <td><?= $value['name']; ?></td>
                                 </tr>
