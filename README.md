@@ -2,8 +2,8 @@
 > Sistema de Gerenciamento de Gêneros Licitados e Não Licitados do **CeIMBe**
 
 #### Dependências
-- SQlite 3.11+
-- wkhtmltopdf 0.12.3
+- MySQL 5.7+ (para versões >= 3.0.0)
+- wkhtmltopdf 0.12.4
 - Apache Server 2.4+
   - mod_rewrite
   - libapache2-mod-php
@@ -12,6 +12,8 @@
   - PHP-Common
  
 > além das dependências de software, temos as dependências de módulos que devem estar disponíveis nestes softwares.
+
+Para versões anteriores à `3.0.0` [clique aqui](https://github.com/br-monteiro/sisgeneros-mb/tree/v2.x) e acompanhe a documentação correspondente.
 
 #### Instalação
 A instalação do sistema pode ser feita seguindo os seguintes passos:
@@ -25,12 +27,7 @@ Caso você tenha optado por baixar o arquivo zipado da ultima versão, descompac
 ```bash
 $ cd ~/sisgeneros-mb-master
 ```
-2. Após entrar no diretório do projeto, é necessário fornecer permissão de escrita ao diretório `~/sisgeneros-mb-master/App/Database/`.
-```bash
-$ sudo chgrp www-data -R ~/sisgeneros-mb-master/App/Database/
-$ sudo chmod 775 -R ~/sisgeneros-mb-master/App/Database/
-```
-3. Após dar permissão de escrita no diretório informado no passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
+2. Após executar passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
 ```php
 // código omitido
     const DOMAIN = 'www.ceimbe.mb';
@@ -41,7 +38,7 @@ A constante `DOMAIN` deve ser alterada para o domínio da sua OM. Quanto a const
 
 Também será necessário alterar as informações contidas no arquivo `~/sisgeneros-mb-master/htr.json`. Abra o arquivo `htr.json` e altere os valores de acordo com sua necessidade.
 
-4. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
+3. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
 ```bash
 $ php setup.php
 ```
@@ -51,13 +48,13 @@ $ php setup.php
 > Chave SALT alterada com sucesso
 > Path do Core alterado com sucesso
 > Path do autoload alterado com sucesso
-> Arquivo de Sqlite criado com sucesso
+> Banco de Dados criado com sucesso
 > Dados padrão inseridos com sucesso
 > Usuário Administrador alterado com sucesso
 > Permissões de acesso no diretório de upload setadas com sucesso
->> Configurações finalizadas.
+>> Configurações finalizadas
 ```
-5. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
+4. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
 
 Após realizar todas as configurações descritas acima, já é possível acessar o sistema no browser. O endereço deve parecer com [www.suaom.mb/app/sisgeneros](http://www.suaom.mb/app/sisgeneros).
 Por padrão o sistema tem uma conta com nível `ADMINISTRADOR` que pode ser acessada para dar início as edições dentro do sistema. Para acessar o sistema basta usar as seguintes credenciais:
