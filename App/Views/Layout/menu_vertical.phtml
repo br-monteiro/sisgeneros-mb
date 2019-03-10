@@ -240,6 +240,31 @@
                 </div>
             </div>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#RecipesPatterns"
+               aria-expanded="false"
+               aria-controls="RecipesPatterns">
+                <i class="fa fa-table fa-fw"></i> Receitas Padrões
+                <span class="fa arrow"></span>
+            </a>
+            <div id="RecipesPatterns"
+                 class="collapse"
+                 aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="RecipesPatterns/ver">
+                        <i class="fa fa-cog"></i> Gerenciar
+                    </a>
+                    <a class="collapse-item" href="RecipesPatterns/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
     <?php endif; ?>
 
     <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR') : ?>
