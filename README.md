@@ -3,7 +3,7 @@
 
 #### Dependências
 - MySQL 5.7+ (para versões >= 3.0.0)
-- wkhtmltopdf 0.12.4
+- wkhtmltopdf 0.12.4 ([saiba mais](#geração-de-pdf))
 - Apache Server 2.4+
   - mod_rewrite
   - libapache2-mod-php
