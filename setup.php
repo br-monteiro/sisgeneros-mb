@@ -42,7 +42,7 @@ new class {
         {
             try {
                 if (!$this->connection) {
-                    $this->connection = (new HTR\System\ModelCRUD())->pdo;
+                    $this->connection = (new HTR\System\ModelCRUD(true))->pdo;
                 }
                 return $this->connection;
             } catch (\Exception $ex) {

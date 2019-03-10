@@ -26,12 +26,12 @@ abstract class ModelAbstract
      */
     public $pdo;
 
-    public function __construct()
+    public function __construct(bool $forceConnection = false)
     {
         if (class_exists('\App\Config\DatabaseConfig')) {
             $configDb = new Config();
             $this->db = new DB($configDb->db);
-            $this->pdo = $this->db->conecta();
+            $this->pdo = $this->db->conecta($forceConnection);
         } else {
             throw new \Exception(''
             . 'Arquivo de configuração do banco de dados não encontrado '
