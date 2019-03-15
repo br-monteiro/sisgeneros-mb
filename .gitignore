@@ -4,3 +4,4 @@
 *.php~
 *.db
 *.bak
+*.DS_Store
