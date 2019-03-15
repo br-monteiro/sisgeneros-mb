@@ -2,14 +2,15 @@
 
 use App\Helpers\Pagination;
 use App\Helpers\View;
+use App\Helpers\Utils;
 
-$idLista = $this->view->idLista;
+$idlista = $this->view->idlista;
 
-$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
-            'previous' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['previous']}",
-            'next' => "{$controllerName}listar/idlista/{$idLista}/pagina/{$btn['next']}",
-            'current' => "{$controllerName}listar/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+            'previous' => "{$controllerName}listar/idlista/{$idlista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}listar/idlista/{$idlista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}listar/idlista/{$idlista}/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
 
@@ -20,16 +21,16 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
             <div class="col-lg-12">
                 <h5>Itens da Licitação</h5>
                 <div class="alert alert-info" role="alert">
-                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong><br>
+                    Númeno: <strong><?= $this->view->resultLicitacao['number']; ?></strong><br>
                     Órgão:
                     <strong>
                         <?= $this->view->resultLicitacao['uasg']; ?>
                         -
-                        <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                        <?= $this->view->resultLicitacao['uasg_name']; ?>
                     </strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?><br>
-                <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idLista; ?>" class="btn btn-info">
+                <a href="<?= $this->view->controller; ?>novo/idlista/<?= $this->view->idlista; ?>" class="btn btn-info">
                     <i class="fa fa-plus-circle"></i> Novo Registro
                 </a>
                 <div class="row">
@@ -53,25 +54,25 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td style='font-size: 11px'><?= $value['numero']; ?></td>
-                                <td style='font-size: 11px'><?= $value['quantidade']; ?></td>
-                                <td style='font-size: 11px'>R$ <?= number_format($value['valor'], 2, ',', '.'); ?></td>
+                                <td style='font-size: 11px'><?= $value['number']; ?></td>
+                                <td style='font-size: 11px'><?= intval($value['quantity']); ?></td>
+                                <td style='font-size: 11px'><?= Utils::floatToMoney($value['value']); ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
                                 <td style='font-size: 11px'>
-                                    <span class='label label-<?= $value['active'] ? 'success' : 'danger'; ?>'>
-                                        <?= $value['active'] ? 'Sim' : 'Não'; ?>
+                                    <span class='label label-<?= $value['active'] === 'yes' ? 'success' : 'danger'; ?>'>
+                                        <?= $value['active'] === 'yes' ? 'Sim' : 'Não'; ?>
                                     </span>
                                 </td>
-                                <td style='font-size: 11px'><?= $value['nome']; ?></td>
+                                <td style='font-size: 11px'><?= $value['name']; ?></td>
                                 <td style='font-size: 11px'>
-                                    <?= View::limitString($value['fornecedor'], 25); ?>
+                                    <?= View::limitString($value['supplier'], 25); ?>
                                 </td>
                                 <td>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>" class="btn btn-success btn-sm">
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idlista; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                     <a
-                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idLista; ?>')"
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/idlista/<?= $this->view->idlista; ?>')"
                                         class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>

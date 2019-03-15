@@ -5,7 +5,6 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\SolicitacaoModel as Solicitacao;
-use App\Models\FornecedorModel;
 use App\Models\AvaliacaoFornecedorModel as Avaliacao;
 use App\Models\AvisosModel;
 
@@ -31,7 +30,7 @@ class IndexController extends Controller implements CtrlInterface
         $this->view->pendAprov = $solicitacao->findQtdSolicitByStatus($this->view->userLoggedIn, 'ABERTO');
         $this->view->solicitacoesMensal = $solicitacao->findSolitacoesMensal($this->view->userLoggedIn);
         $this->view->solicitacoesAtrasadas = $solicitacao->findQtdSolicitAtrasadas($this->view->userLoggedIn);
-        $this->view->resultAvisos = (new AvisosModel())->fetchAllAvisosByOmId($this->view->userLoggedIn['om_id']);
+        $this->view->resultAvisos = (new AvisosModel())->fetchAllAvisosByOmId($this->view->userLoggedIn['oms_id']);
         $this->view->lastUpdated = $solicitacao->lastUpdated($this->view->userLoggedIn);
         $this->render('index');
     }

@@ -1,7 +1,9 @@
 <?php
 namespace App\Helpers;
 
-class View
+use App\Helpers\Utils;
+
+class View extends Utils
 {
 
     /**
@@ -50,16 +52,31 @@ class View
 
         return $result;
     }
-    
+
     /**
-     * Build the date in format DD-MM-YYYY from YYYY-MM-DD
+     * Build the date in format DD-MM-YYYY from YYYY-MM-DD HH:MM:SS
      * @param string $date The raw date
      * @param string $delimiter The separate number. By default is '-'
      * @return string
      */
-    public static function showDate(string $date, string $delimiter = '-'): string
+    public static function humanDate(string $date, string $delimiter = '-'): string
     {
+        $explodedDate = explode(' ', $date);
+        if (isset($explodedDate[0])) {
+            $date = $explodedDate[0];
+        }
         $dateEmplode = explode($delimiter, $date);
         return implode($delimiter, array_reverse($dateEmplode));
+    }
+
+    /**
+     * Check if the values A and B is equals and returns 'selected'
+     * @param mixed $a The input value
+     * @param type $b The comparison value
+     * @return string
+     */
+    public static function isSelected($a, $b): string
+    {
+        return $a === $b ? 'selected' : '';
     }
 }

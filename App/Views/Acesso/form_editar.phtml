@@ -1,3 +1,9 @@
+<?php
+
+use App\Helpers\View;
+use App\Config\Configurations as cfg;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -15,10 +21,10 @@
                     <div class="panel-body">
                         <div id="resultado"></div>
                         <form action="<?= $this->view->controller; ?>altera/" method="post" id="form">
-                            <?php if ($this->view->userLoggedIn['nivel'] != 'ADMINISTRADOR'): ?>
-                                <input type="hidden" name="om_id" value="<?= $this->view->result['om_id'] ?>">
+                            <?php if ($this->view->userLoggedIn['level'] != 'ADMINISTRADOR'): ?>
+                                <input type="hidden" name="oms_id" value="<?= $this->view->result['oms_id'] ?>">
                                 <input type="hidden" name="name" value="<?= $this->view->result['name'] ?>">
-                                <input type="hidden" name="nivel" value="<?= $this->view->result['nivel'] ?>">
+                                <input type="hidden" name="level" value="<?= $this->view->result['level'] ?>">
                             <?php endif; ?>
                             <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
                             <div class="row">
@@ -46,29 +52,22 @@
                                         <p class="help-block" style="color: red;">* Altere este campo apenas se for necessário.</p>
                                     </div>
 
-                                    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR'): ?>
+                                    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR'): ?>
                                         <div class="form-group">
                                             <label>Nível de Acesso</label>
-                                            <select name="nivel" id="nivel" class="form-control" required>
-                                                <option value="ADMINISTRADOR" <?= $this->view->result['nivel'] == 'ADMINISTRADOR' ? 'selected' : '' ?>>
-                                                    1 - Administrador
-                                                </option>
-                                                <option value="CONTROLADOR" <?= $this->view->result['nivel'] == 'CONTROLADOR' ? 'selected' : '' ?>>
-                                                    2 - Controlador
-                                                </option>
-                                                <option value="ENCARREGADO" <?= $this->view->result['nivel'] == 'ENCARREGADO' ? 'selected' : '' ?>>
-                                                    3 - Encarregado
-                                                </option>
-                                                <option value="NORMAL" <?= $this->view->result['nivel'] == 'NORMAL' ? 'selected' : '' ?>>
-                                                    4 - Normal
-                                                </option>
+                                            <select name="level" id="level" class="form-control" required>
+                                                <?php foreach (cfg::DEFAULT_USER_LEVELS as $level): ?>
+                                                    <option value="<?= $level ?>" <?= View::isSelected($this->view->result['level'], $level)?>>
+                                                        <?= $level; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     <?php endif; ?>
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR'): ?>
+                                    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR'): ?>
                                         <div class="form-group">
                                             <label>Nome do Usuário</label>
                                             <input type="text"
@@ -95,29 +94,29 @@
                                         <p class="help-block"></p>
                                     </div>
 
-                                    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR'): ?>
+                                    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR'): ?>
                                         <div class="form-group">
                                             <label>Usuário ativo?</label>
                                             <select name="active"
                                                     id="active"
                                                     class="form-control"
                                                     required>
-                                                <option value="1" <?= $this->view->result['active'] == 1 ? 'selected' : '' ?>>
+                                                <option value="yes" <?= $this->view->result['active'] == 'yes' ? 'selected' : '' ?>>
                                                     1 - Sim
                                                 </option>
-                                                <option value="2" <?= $this->view->result['active'] == 2 ? 'selected' : '' ?>>
+                                                <option value="no" <?= $this->view->result['active'] == 'yes' ? 'selected' : '' ?>>
                                                     2 - Não
                                                 </option>
                                             </select>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR'): ?>
+                                    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR'): ?>
                                         <div class="form-group">
                                             <label>OM</label>
-                                            <select name="om_id" id="om_id" class="form-control" required>
+                                            <select name="oms_id" id="oms_id" class="form-control" required>
                                                 <?php foreach ($this->view->resultOm as $value): ?>
-                                                    <option value="<?= $value['id']; ?>" <?= $this->view->result['om_id'] == $value['id'] ? 'selected' : '' ?>>
-                                                        <?= $value['indicativo_naval']; ?>
+                                                    <option value="<?= $value['id']; ?>" <?= $this->view->result['oms_id'] == $value['id'] ? 'selected' : '' ?>>
+                                                        <?= $value['naval_indicative']; ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>

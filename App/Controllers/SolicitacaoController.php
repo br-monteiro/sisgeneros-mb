@@ -22,7 +22,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
         parent::__construct($bootstrap);
         $this->view->controller = cfg::DEFAULT_URI . 'solicitacao/';
         $this->access = new Access();
-        $this->view->idLista = $this->getParametro('idlista');
+        $this->view->idlista = $this->getParametro('idlista');
     }
 
     public function indexAction()
@@ -52,9 +52,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $this->view->title = "Adicionar itens";
         $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($e) {
-            return $e->setaCampos(['id', 'nome', 'cnpj'])
+            return $e->setaCampos(['id', 'name', 'cnpj'])
                     ->setaFiltros()
-                    ->orderBy('fornecedor.nome ASC');
+                    ->orderBy('suppliers.name ASC');
         });
         $this->render('mostra_item_nao_licitado');
     }
@@ -67,9 +67,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $this->view->title = 'Lista dos Itens da Licitação';
         $item = new Item();
-        $this->view->result = $item->findByIdLista($this->view->idLista, $this->getParametro('fornecedor'));
+        $this->view->result = $item->findByIdlista($this->view->idlista, $this->getParametro('fornecedor'));
         $licitacao = new Licitacao();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->idlista);
         $this->render('mostra_item');
     }
 
@@ -93,7 +93,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
-        $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
+        $model->avaliaAcesso($this->view->idlista, $this->view->userLoggedIn);
         $this->view->title = 'Editando Registro';
         $this->view->result = $solicitacaoItem->findById($this->getParametro('id'));
         $this->render('form_editar');
@@ -106,9 +106,8 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $model = new SolicitacaoModel();
-        $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
         $this->view->title = 'Alterando data de entrega';
-        $this->view->result = $model->findById($this->getParametro('id'));
+        $this->view->result = $model->avaliaAcesso($this->getParametro('id'), $this->view->userLoggedIn);
         $this->render('form_alteracao_data');
     }
 
@@ -138,7 +137,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
-        $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
+        $model->avaliaAcesso($this->view->idlista, $this->view->userLoggedIn);
         if ($solicitacaoItem->removerRegistro($this->getParametro('id'))) {
             $model->removerRegistro($this->getParametro('id'));
         }
@@ -151,9 +150,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $model = new SolicitacaoModel();
-        $model->avaliaAcesso($this->view->idLista, $this->view->userLoggedIn);
+        $model->avaliaAcesso($this->view->idlista, $this->view->userLoggedIn);
         $solicitacaoItem = new SolicitacaoItem();
-        $solicitacaoItem->eliminarItem($this->getParametro('id'), $this->view->idLista);
+        $solicitacaoItem->eliminarItem($this->getParametro('id'), $this->view->idlista);
     }
 
     public function verAction()
@@ -174,9 +173,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
         $this->view->title = 'Itens da Solicitação';
-        $this->view->resultSolicitacao = $model->findByIdLista($this->view->idLista);
-        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
-        $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $this->view->resultSolicitacao = $model->findByIdlista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
+        $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
         $this->view->btn = $solicitacaoItem->getNavePaginator();
         $this->render('mostra_item_solicitacao');
@@ -189,7 +188,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $model = new SolicitacaoModel();
-        $model->novoRegistro($this->view->userLoggedIn['om_id']);
+        $model->novoRegistro($this->view->userLoggedIn['oms_id']);
     }
 
     public function registranaolicitadoAction()
@@ -198,7 +197,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->clearAccessList()
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
-        (new SolicitacaoModel())->novoNaoLicitado($this->view->userLoggedIn['om_id'], getcwd());
+        (new SolicitacaoModel())->novoNaoLicitado($this->view->userLoggedIn['oms_id'], getcwd());
     }
 
     public function alteraAction()
@@ -208,7 +207,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $solicitacaoItem = new SolicitacaoItem();
-        $solicitacaoItem->editarRegistro($this->view->idLista, $this->view->userLoggedIn);
+        $solicitacaoItem->editarRegistro($this->view->idlista, $this->view->userLoggedIn);
     }
 
     public function alterandodataAction()
@@ -218,7 +217,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
 
         $solicitacao = new SolicitacaoModel();
-        $solicitacao->alteraDataEntrega($this->view->idLista, $this->view->userLoggedIn);
+        $solicitacao->alteraDeliveryDate($this->getParametro('id'), $this->view->userLoggedIn);
     }
 
     public function aprovarAction()
@@ -237,7 +236,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $licitacao = new Licitacao;
 
-        $this->view->result = $licitacao->listaPorFornecedor($this->view->idLista);
+        $this->view->result = $licitacao->listaPorFornecedor($this->view->idlista);
 
         if (!$this->view->result) {
             header('Location: ' . $this->view->controller);
@@ -276,10 +275,11 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $solicitacao = new SolicitacaoModel();
         $resultSolicitacao = $solicitacao->findById($this->getParametro('id'));
-        if ($resultSolicitacao['nao_licitado'] == 1) {
-            $solicitacao->recbimentoNaoLicitado($this->getParametro('id'), $resultSolicitacao['id_lista']);
+
+        if ($resultSolicitacao['biddings_id']) {
+            $solicitacao->recebimento($resultSolicitacao['id']);
         } else {
-            $solicitacao->recebimento($this->getParametro('id'), $this->view->userLoggedIn);
+            $solicitacao->recebimentoNaoLicitado($resultSolicitacao['id']);
         }
     }
 
@@ -299,7 +299,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
             $solicitacao = (new SolicitacaoModel())->findById($id);
             header('location: '
                 . $this->view->controller
-                . 'detalhar/idlista/' . $solicitacao['id_lista']);
+                . 'detalhar/idlista/' . $solicitacao['id']);
         } else {
             header('location: ' . $this->view->controller);
         }
@@ -314,9 +314,9 @@ class SolicitacaoController extends Controller implements CtrlInterface
         $model = new SolicitacaoModel();
         $licitacao = new Licitacao();
         $solicitacaoItem = new SolicitacaoItem();
-        $this->view->resultSolicitacao = $model->findByIdLista($this->view->idLista);
-        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
-        $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $this->view->resultSolicitacao = $model->findByIdlista($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
+        $solicitacaoItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solicitacaoItem->getResultadoPaginator();
         $this->view->btn = $solicitacaoItem->getNavePaginator();
         $this->render('papeleta_presolemp', true, 'blank');
@@ -329,13 +329,13 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
 
         $file = $this->getParametro('file');
-        $solicitacao = (new SolicitacaoModel())->findByIdLista($this->view->idLista);
-        $numero = $solicitacao['numero'] ?? 'error';
-        $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $numero . cfg::DS . $file;
+        $solicitacao = (new SolicitacaoModel())->findByIdlista($this->view->idlista);
+        $number = $solicitacao['number'] ?? 'error';
+        $fullPath = getcwd() . cfg::DS . 'arquivos' . cfg::DS . $number . cfg::DS . $file;
         if (file_exists($fullPath)) {
             @unlink($fullPath);
         }
-        header("Location: {$this->view->controller}detalhar/idlista/{$this->view->idLista}");
+        header("Location: {$this->view->controller}detalhar/idlista/{$this->view->idlista}");
     }
 
     public function adicionararquivoAction()
@@ -355,10 +355,10 @@ class SolicitacaoController extends Controller implements CtrlInterface
             ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'NORMAL']);
 
         $solicitacaoModel = new SolicitacaoModel();
-        $solicitacao = $solicitacaoModel->findByIdLista($this->view->idLista);
-        $numero = $solicitacao['numero'] ?? 'error';
-        if ($numero !== 'error') {
-            $solicitacaoModel->saveOneFile(getcwd(), $numero);
+        $solicitacao = $solicitacaoModel->findByIdlista($this->view->idlista);
+        $number = $solicitacao['number'] ?? 'error';
+        if ($number !== 'error') {
+            $solicitacaoModel->saveOneFile(getcwd(), $number);
         }
     }
 

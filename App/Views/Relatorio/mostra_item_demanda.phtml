@@ -1,14 +1,15 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
-$idLista = $this->view->idLista;
+$idlista = $this->view->idlista;
 
-$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idLista) {
+$pagination = Pagination::make($this, function ($btn, $controllerName) use ($idlista) {
         return [
-            'previous' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/{$btn['previous']}",
-            'next' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/{$btn['next']}",
-            'current' => "{$controllerName}licitacao/idlista/{$idLista}/pagina/" . Pagination::CURRENT_PAGE
+            'previous' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/{$btn['previous']}",
+            'next' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/{$btn['next']}",
+            'current' => "{$controllerName}licitacao/idlista/{$idlista}/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
 
@@ -23,10 +24,10 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     Órgão:
                     <strong>
                         <?= $this->view->resultLicitacao['uasg']; ?> - 
-                        <?= $this->view->resultLicitacao['nome_uasg']; ?>
+                        <?= $this->view->resultLicitacao['uasg_name']; ?>
                     </strong><br>
-                    Númeno: <strong><?= $this->view->resultLicitacao['numero']; ?></strong> | 
-                    Descrição: <strong><?= $this->view->resultLicitacao['descricao']; ?></strong>
+                    Númeno: <strong><?= $this->view->resultLicitacao['number']; ?></strong> | 
+                    Descrição: <strong><?= $this->view->resultLicitacao['description']; ?></strong>
                 </div>
                 <i class="fa fa-list"></i> <?= $this->view->title; ?>
                 <div class="row">
@@ -49,32 +50,31 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) use ($idL
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td style='font-size: 11px'><?= $value['numero']; ?></td>
+                                <td style='font-size: 11px'><?= $value['number']; ?></td>
                                 <td style='font-size: 11px'><?= $value['uf']; ?></td>
-                                <td style='font-size: 11px'><?= $value['nome']; ?></td>
-                                <td style='font-size: 11px'><?= $value['fornecedor']; ?></td>
+                                <td style='font-size: 11px'><?= $value['name']; ?></td>
+                                <td style='font-size: 11px'><?= $value['supplier']; ?></td>
                                 <td>
                                     <span class="label label-success">
-                                        <?= $value['quantidade']; ?>
+                                        <?= View::normalizeFloat($value['quantity'], 3, true); ?>
                                     </span>
                                 </td>
                                 <td>
                                     <?php
-                                    $demanda = $this->demanda($value['numero'], $this->view->resultLicitacao['id']);
-                                    $restante = $value['quantidade'] - $demanda;
-                                    if ($demanda):
-
-                                        ?>
-                                        <span class="badge badge-danger">
-                                            <?= $demanda ?>
+                                        $demanda = $this->demanda($value['number'], $this->view->resultLicitacao['id']);
+                                        $restante = $value['quantity'] - $demanda;
+                                    ?>
+                                    <?php if ($demanda): ?>
+                                        <span class="badge badge-dark">
+                                            <?= View::normalizeFloat($demanda, 3, true); ?>
                                         </span>
                                     <?php else: ?>
                                         ---
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="label <?= $restante < 0 ? "label-danger" : "label-default"; ?>">
-                                        <?= $restante; ?>
+                                    <span class="badge <?= $restante < 0 ? "badge-danger" : "badge-success"; ?>">
+                                        <?= View::normalizeFloat($restante, 3, true); ?>
                                     </span>
                                 </td>
                             </tr>

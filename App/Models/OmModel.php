@@ -13,7 +13,7 @@ use App\Config\Configurations as cfg;
 class OmModel extends CRUD
 {
 
-    protected $entidade = 'om';
+    protected $entidade = 'oms';
     protected $id;
     protected $nome;
     protected $uasg;
@@ -37,9 +37,7 @@ class OmModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 10,
-            'orderBy' => 'nome ASC'
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
+            'orderBy' => 'name ASC'
         ];
 
         $paginator = new Paginator($dados);
@@ -65,17 +63,17 @@ class OmModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getNome(),
             'uasg' => $this->getUasg(),
-            'indicativo_naval' => $this->getIndicativoNaval(),
-            'agente_fiscal' => $this->getAgenteFiscal(),
-            'agente_fiscal_posto' => $this->getAgenteFiscalPosto(),
-            'gestor_municiamento' => $this->getGestorMuniciamento(),
-            'gestor_municiamento_posto' => $this->getGestorMuniciamentoPosto(),
-            'fiel_municiamento' => $this->getFielMuniciamento(),
-            'fiel_municiamento_posto' => $this->getFielMuniciamentoPosto(),
-            'created_at' => $this->getTime(),
-            'updated_at' => $this->getTime()
+            'naval_indicative' => $this->getIndicativoNaval(),
+            'fiscal_agent' => $this->getAgenteFiscal(),
+            'fiscal_agent_graduation' => $this->getAgenteFiscalPosto(),
+            'munition_manager' => $this->getGestorMuniciamento(),
+            'munition_manager_graduation' => $this->getGestorMuniciamentoPosto(),
+            'munition_fiel' => $this->getFielMuniciamento(),
+            'munition_fiel_graduation' => $this->getFielMuniciamentoPosto(),
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
         ];
         if (parent::novo($dados)) {
             msg::showMsg('111', 'success');
@@ -90,16 +88,16 @@ class OmModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'nome' => $this->getNome(),
+            'name' => $this->getNome(),
             'uasg' => $this->getUasg(),
-            'indicativo_naval' => $this->getIndicativoNaval(),
-            'agente_fiscal' => $this->getAgenteFiscal(),
-            'agente_fiscal_posto' => $this->getAgenteFiscalPosto(),
-            'gestor_municiamento' => $this->getGestorMuniciamento(),
-            'gestor_municiamento_posto' => $this->getGestorMuniciamentoPosto(),
-            'fiel_municiamento' => $this->getFielMuniciamento(),
-            'fiel_municiamento_posto' => $this->getFielMuniciamentoPosto(),
-            'updated_at' => $this->getTime()
+            'naval_indicative' => $this->getIndicativoNaval(),
+            'fiscal_agent' => $this->getAgenteFiscal(),
+            'fiscal_agent_graduation' => $this->getAgenteFiscalPosto(),
+            'munition_manager' => $this->getGestorMuniciamento(),
+            'munition_manager_graduation' => $this->getGestorMuniciamentoPosto(),
+            'munition_fiel' => $this->getFielMuniciamento(),
+            'munition_fiel_graduation' => $this->getFielMuniciamentoPosto(),
+            'updated_at' => date('Y-m-d')
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -117,12 +115,12 @@ class OmModel extends CRUD
     private function evitarDuplicidade()
     {
         /// Evita a duplicidade de registros
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND nome = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND name = ?");
         $stmt->bindValue(1, $this->getId());
         $stmt->bindValue(2, $this->getNome());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Nome.<script>focusOn("nome")</script>', 'warning');
+            msg::showMsg('Já existe um registro com este Nome.<script>focusOn("name")</script>', 'warning');
         }
 
         $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND uasg = ?");
@@ -133,12 +131,12 @@ class OmModel extends CRUD
             msg::showMsg('Já existe um registro com este número de UASG.<script>focusOn("uasg")</script>', 'warning');
         }
 
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND indicativo_naval = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND naval_indicative = ?");
         $stmt->bindValue(1, $this->getId());
         $stmt->bindValue(2, $this->getIndicativoNaval());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Indicativo Naval.<script>focusOn("indicativo_naval")</script>', 'warning');
+            msg::showMsg('Já existe um registro com este Indicativo Naval.<script>focusOn("naval_indicative")</script>', 'warning');
         }
     }
 
@@ -146,16 +144,16 @@ class OmModel extends CRUD
     {
         // Seta todos os valores
         $this->setTime(time())
-            ->setId()
+            ->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
-            ->setNome(filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setIndicativoNaval(filter_input(INPUT_POST, 'indicativo_naval'))
-            ->setAgenteFiscal(filter_input(INPUT_POST, 'agente_fiscal'))
-            ->setAgenteFiscalPosto(filter_input(INPUT_POST, 'agente_fiscal_posto'))
-            ->setGestorMuniciamento(filter_input(INPUT_POST, 'gestor_municiamento'))
-            ->setGestorMuniciamentoPosto(filter_input(INPUT_POST, 'gestor_municiamento_posto'))
-            ->setFielMuniciamento(filter_input(INPUT_POST, 'fiel_municiamento'))
-            ->setFielMuniciamentoPosto(filter_input(INPUT_POST, 'fiel_municiamento_posto'));
+            ->setNome(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setIndicativoNaval(filter_input(INPUT_POST, 'naval_indicative'))
+            ->setAgenteFiscal(filter_input(INPUT_POST, 'fiscal_agent'))
+            ->setAgenteFiscalPosto(filter_input(INPUT_POST, 'fiscal_agent_graduation'))
+            ->setGestorMuniciamento(filter_input(INPUT_POST, 'munition_manager'))
+            ->setGestorMuniciamentoPosto(filter_input(INPUT_POST, 'munition_manager_graduation'))
+            ->setFielMuniciamento(filter_input(INPUT_POST, 'munition_fiel'))
+            ->setFielMuniciamentoPosto(filter_input(INPUT_POST, 'munition_fiel_graduation'));
 
         // Inicia a Validação dos dados
         $this->validaId()
@@ -168,13 +166,6 @@ class OmModel extends CRUD
             ->validaGestorMuniciamentoPosto()
             ->validaFielMuniciamento()
             ->validaFielMuniciamentoPosto();
-    }
-
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
-        return $this;
     }
 
     private function validaId()
@@ -191,7 +182,7 @@ class OmModel extends CRUD
         $value = v::stringType()->notEmpty()->length(1, 60)->validate($this->getNome());
         if (!$value) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nome");</script>', 'danger');
+                . '<script>focusOn("name");</script>', 'danger');
         }
         return $this;
     }
@@ -211,9 +202,9 @@ class OmModel extends CRUD
     {
         $value = v::stringType()->notEmpty()->length(6, 6)->validate($this->getIndicativoNaval());
         if (!$value) {
-            msg::showMsg('O campo Indicativo Naval deve ser preenchido'
+            msg::showMsg('O campo Indicativo Naval deve ser preenchido '
                 . 'corretamente <strong>com 6 caracteres</strong>.'
-                . '<script>focusOn("indicativo_naval");</script>', 'danger');
+                . '<script>focusOn("naval_indicative");</script>', 'danger');
         }
         return $this;
     }
@@ -222,20 +213,20 @@ class OmModel extends CRUD
     {
         $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getAgenteFiscal());
         if (!$value) {
-            msg::showMsg('O campo Agente Fiscal deve ser preenchido'
+            msg::showMsg('O campo Agente Fiscal deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
-                . '<script>focusOn("agente_fiscal");</script>', 'danger');
+                . '<script>focusOn("fiscal_agent");</script>', 'danger');
         }
         return $this;
     }
 
     private function validaAgenteFiscalPosto()
     {
-        $value = v::stringType()->notEmpty()->length(10, 40)->validate($this->getAgenteFiscalPosto());
+        $value = v::stringType()->notEmpty()->length(2, 50)->validate($this->getAgenteFiscalPosto());
         if (!$value) {
-            msg::showMsg('O campo Agente Fiscal Posto deve ser preenchido'
-                . 'corretamente <strong>com no mínimo 10 e máximo 20 caracteres</strong>.'
-                . '<script>focusOn("agente_fiscal_posto");</script>', 'danger');
+            msg::showMsg('O campo Agente Fiscal Posto deve ser preenchido '
+                . 'corretamente <strong>com no mínimo 2 e máximo 50 caracteres</strong>.'
+                . '<script>focusOn("fiscal_agent_graduation");</script>', 'danger');
         }
         return $this;
     }
@@ -244,20 +235,20 @@ class OmModel extends CRUD
     {
         $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getGestorMuniciamento());
         if (!$value) {
-            msg::showMsg('O campo Gestor Municiamento deve ser preenchido'
+            msg::showMsg('O campo Gestor Municiamento deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
-                . '<script>focusOn("gestor_municiamento");</script>', 'danger');
+                . '<script>focusOn("munition_manager");</script>', 'danger');
         }
         return $this;
     }
 
     private function validaGestorMuniciamentoPosto()
     {
-        $value = v::stringType()->notEmpty()->length(10, 40)->validate($this->getGestorMuniciamentoPosto());
+        $value = v::stringType()->notEmpty()->length(2, 50)->validate($this->getGestorMuniciamentoPosto());
         if (!$value) {
-            msg::showMsg('O campo Gestor Municiamento Posto deve ser preenchido'
-                . 'corretamente <strong>com no mínimo 10 e máximo 20 caracteres</strong>.'
-                . '<script>focusOn("gestor_municiamento_posto");</script>', 'danger');
+            msg::showMsg('O campo Gestor Municiamento Posto deve ser preenchido '
+                . 'corretamente <strong>com no mínimo 2 e máximo 50 caracteres</strong>.'
+                . '<script>focusOn("munition_manager_graduation");</script>', 'danger');
         }
         return $this;
     }
@@ -266,20 +257,20 @@ class OmModel extends CRUD
     {
         $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getFielMuniciamento());
         if (!$value) {
-            msg::showMsg('O campo Fiel Municiamento deve ser preenchido'
+            msg::showMsg('O campo Fiel Municiamento deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
-                . '<script>focusOn("fiel_municiamento");</script>', 'danger');
+                . '<script>focusOn("munition_fiel");</script>', 'danger');
         }
         return $this;
     }
 
     private function validaFielMuniciamentoPosto()
     {
-        $value = v::stringType()->notEmpty()->length(10, 40)->validate($this->getFielMuniciamentoPosto());
+        $value = v::stringType()->notEmpty()->length(2, 50)->validate($this->getFielMuniciamentoPosto());
         if (!$value) {
-            msg::showMsg('O campo Fiel Municiamento Posto deve ser preenchido'
-                . 'corretamente <strong>com no mínimo 10 e máximo 20 caracteres</strong>.'
-                . '<script>focusOn("fiel_municiamento_posto");</script>', 'danger');
+            msg::showMsg('O campo Fiel Municiamento Posto deve ser preenchido '
+                . 'corretamente <strong>com no mínimo 10 e máximo 50 caracteres</strong>.'
+                . '<script>focusOn("munition_fiel_graduation");</script>', 'danger');
         }
         return $this;
     }

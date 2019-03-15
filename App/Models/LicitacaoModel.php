@@ -1,7 +1,4 @@
 <?php
-/**
- * @Model Licitacao
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
@@ -9,19 +6,17 @@ use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\View;
 
 class LicitacaoModel extends CRUD
 {
 
-    protected $entidade = 'licitacao';
-    protected $id;
-    protected $uasg;
-    protected $numero;
-    protected $nomeUasg;
-    protected $validade;
-    protected $idLista;
-    private $resultadoPaginator;
-    private $navPaginator;
+    protected $entidade = 'biddings';
+
+    /**
+     * @var \HTR\Helpers\Paginator\Paginator
+     */
+    protected $paginator;
 
     public function returnAll()
     {
@@ -34,13 +29,11 @@ class LicitacaoModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 20,
-            'orderBy' => 'criacao DESC'
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
+            'orderBy' => 'created_at DESC'
         ];
 
         if ($dateLimit) {
-            $dados['where'] = 'validade >= ?';
+            $dados['where'] = 'validate >= ?';
             $dados['bindValue'] = [0 => $dateLimit];
         }
 
@@ -63,20 +56,20 @@ class LicitacaoModel extends CRUD
     {
         $stmt = $this->pdo->prepare("
             SELECT
-                DISTINCT licitacao.numero AS numero,
-                    licitacao.id_lista,
-                    licitacao.uasg,
-                    licitacao.descricao,
-                    licitacao.nome_uasg,
-                    fornecedor.nome AS nome,
-                    fornecedor.id as fornecedor_id
-            FROM licitacao
-            INNER JOIN licitacao_item AS item
-                ON item.id_lista = licitacao.id_lista AND item.active = 1
-            INNER JOIN fornecedor
-                ON fornecedor.id = item.id_fornecedor
-            WHERE licitacao.id_lista = ?
-            ORDER BY fornecedor.nome");
+                DISTINCT biddings.number,
+                    biddings.id AS biddings_id,
+                    biddings.uasg,
+                    biddings.description,
+                    biddings.uasg_name,
+                    suppliers.name,
+                    suppliers.id as suppliers_id
+            FROM biddings
+            INNER JOIN biddings_items AS item
+                ON item.biddings_id = biddings.id AND item.active = 'yes'
+            INNER JOIN suppliers
+                ON suppliers.id = item.suppliers_id
+            WHERE biddings.id = ?
+            ORDER BY suppliers.name");
         $stmt->execute([$idLita]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -85,20 +78,20 @@ class LicitacaoModel extends CRUD
     {
         $stmt = $this->pdo->prepare("
             SELECT
-                DISTINCT licitacao.numero AS numero,
-                    licitacao.id_lista,
-                    licitacao.uasg,
-                    licitacao.nome_uasg,
-                    item.nome produtoNome,
-                    fornecedor.nome AS nome,
-                    fornecedor.id as fornecedor_id
-            FROM licitacao
-            INNER JOIN licitacao_item AS item
-                ON item.id_lista = licitacao.id_lista AND item.active = 1
-            INNER JOIN fornecedor
-                ON fornecedor.id = item.id_fornecedor
-            WHERE item.nome LIKE :search AND licitacao.validade >= strftime('%s','now')
-            ORDER BY item.nome");
+                DISTINCT biddings.number,
+                    biddings.id AS biddings_id,
+                    biddings.uasg,
+                    biddings.uasg_name,
+                    item.name produtoNome,
+                    suppliers.name AS name,
+                    suppliers.id as suppliers_id
+            FROM biddings
+            INNER JOIN biddings_items AS item
+                ON item.biddings_id = biddings.id AND item.active = 'yes'
+            INNER JOIN suppliers
+                ON suppliers.id = item.suppliers_id
+            WHERE item.name LIKE :search AND biddings.validate >= '" . date('Y-m-d') . "'
+            ORDER BY item.name");
         $stmt->execute([':search' => "%{$search}%"]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -111,19 +104,19 @@ class LicitacaoModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'numero' => $this->getNumero(),
+            'number' => $this->getNumber(),
             'uasg' => $this->getUasg(),
-            'descricao' => $this->getDescricao(),
-            'nome_uasg' => $this->getNomeUasg(),
-            'validade' => $this->getValidade(),
-            'id_lista' => $this->getIdLista(),
-            'criacao' => time()
+            'description' => $this->getDescription(),
+            'uasg_name' => $this->getUasgName(),
+            'validate' => $this->getValidate(),
+            'created_at' => date('Y-m-d')
         ];
 
         if (parent::novo($dados)) {
+            $lastId = $this->pdo->lastInsertId();
             msg::showMsg('Licitação Registrada com Sucesso. '
-                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $this->getIdLista() . "' class='btn btn-info'>"
-                . "<i class='fa fa-plus-circle'></i> Add Item</a>"
+                . "<a href='" . cfg::DEFAULT_URI . "item/novo/idlista/" . $lastId . "' class='btn btn-info'>"
+                . "<i class='fa fa-plus-circle'></i> Adicionar Item</a>"
                 . '<script>resetForm();</script>', 'success');
         }
     }
@@ -136,11 +129,11 @@ class LicitacaoModel extends CRUD
         $this->evitarDuplicidade();
 
         $dados = [
-            'numero' => $this->getNumero(),
+            'number' => $this->getnumber(),
             'uasg' => $this->getUasg(),
-            'descricao' => $this->getDescricao(),
-            'nome_uasg' => $this->getNomeUasg(),
-            'validade' => $this->getValidade()
+            'description' => $this->getDescription(),
+            'uasg_name' => $this->getUasgName(),
+            'validate' => $this->getValidate()
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -151,59 +144,42 @@ class LicitacaoModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'licitacao/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'biddings/ver/');
         }
     }
 
     private function evitarDuplicidade()
     {
         /// Evita a duplicidade de registros
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND numero = ? AND uasg = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->entidade} WHERE id != ? AND number = ? AND uasg = ?");
         $stmt->bindValue(1, $this->getId());
-        $stmt->bindValue(2, $this->getNumero());
+        $stmt->bindValue(2, $this->getnumber());
         $stmt->bindValue(3, $this->getUasg());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
             msg::showMsg('Já existe um registro com este Número de Licitação'
                 . 'para a UASG nº <strong>' . $this->getUasg() . '</strong>'
-                . '<script>focusOn("numero")</script>', 'warning');
+                . '<script>focusOn("number")</script>', 'warning');
         }
     }
 
     private function validaAll()
     {
         // Seta todos os valores
-        $this->setId()
-            ->setNumero(filter_input(INPUT_POST, 'numero', FILTER_SANITIZE_SPECIAL_CHARS))
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
+            ->setnumber(filter_input(INPUT_POST, 'number', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUasg(filter_input(INPUT_POST, 'uasg', FILTER_VALIDATE_INT))
-            ->setDescricao(filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setNomeUasg(filter_input(INPUT_POST, 'nome_uasg', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setValidade(filter_input(INPUT_POST, 'validade', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setIdLista();
+            ->setDescription(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setUasgName(filter_input(INPUT_POST, 'uasg_name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setValidate(filter_input(INPUT_POST, 'validate', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
         $this->validaId()
-            ->validaNumero()
+            ->validaNumber()
             ->validaUasg()
-            ->validaDescricao()
-            ->validaNomeUasg()
-            ->validaValidade()
-            ->validaIdLista();
-    }
-
-    /// Seters
-    private function setId()
-    {
-        $value = filter_input(INPUT_POST, 'id');
-        $this->id = $value ?: time();
-        return $this;
-    }
-
-    private function setIdLista()
-    {
-        $value = filter_input(INPUT_POST, 'id_lista');
-        $this->idLista = $value ?: time();
-        return $this;
+            ->validaDescription()
+            ->validaUasgName()
+            ->validaValidate();
     }
 
     // Validação
@@ -216,22 +192,13 @@ class LicitacaoModel extends CRUD
         return $this;
     }
 
-    private function validaIdLista()
+    private function validanumber()
     {
-        $value = v::intVal()->validate($this->getIdLista());
+        $value = v::stringType()->notEmpty()->noWhitespace()->length(10, 10)->validate($this->getNumber());
         if (!$value) {
-            msg::showMsg('O campo ID LISTA deve ser um número inteiro válido.', 'danger');
-        }
-        return $this;
-    }
-
-    private function validaNumero()
-    {
-        $value = v::stringType()->notEmpty()->noWhitespace()->length(10, 10)->validate($this->getNumero());
-        if (!$value) {
-            msg::showMsg('O campo Numero deve ser preenchido corretamente'
+            msg::showMsg('O campo number deve ser preenchido corretamente'
                 . ' com <strong>10 caracteres obrigatoriamente</strong>.'
-                . '<script>focusOn("numero");</script>', 'danger');
+                . '<script>focusOn("number");</script>', 'danger');
         }
         return $this;
     }
@@ -247,36 +214,35 @@ class LicitacaoModel extends CRUD
         return $this;
     }
 
-    private function validaNomeUasg()
+    private function validaUasgName()
     {
-        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getNomeUasg());
+        $value = v::stringType()->notEmpty()->length(1, 50)->validate($this->getUasgName());
         if (!$value) {
             msg::showMsg('O campo Nome da Uasg deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("nome_uasg");</script>', 'danger');
+                . '<script>focusOn("uasg_name");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaDescricao()
+    private function validadescription()
     {
-        $value = v::stringType()->notEmpty()->length(1, 30)->validate($this->getDescricao());
+        $value = v::stringType()->notEmpty()->length(1, 30)->validate($this->getDescription());
         if (!$value) {
             msg::showMsg('O campo Descrição da licitação deve ser deve ser preenchido corretamente.'
-                . '<script>focusOn("descricao");</script>', 'danger');
+                . '<script>focusOn("description");</script>', 'danger');
         }
         return $this;
     }
 
-    private function validaValidade()
+    private function validaValidate()
     {
-        $validade = explode('/', $this->validade);
-        $validade = $validade[2] . '-' . $validade[1] . '-' . $validade[0];
-        $value = v::date()->validate($validade);
+        $validate = View::dateDatabaseFormate($this->getValidate());
+        $value = v::date()->validate($validate);
         if (!$value) {
             msg::showMsg('O campo Validade deve ser preenchido corretamente.'
-                . '<script>focusOn("validade");</script>', 'danger');
+                . '<script>focusOn("validate");</script>', 'danger');
         }
-        $this->validade = strtotime($validade) + 79199; // fix the validate request
+        $this->setValidate($validate);
         return $this;
     }
 }
