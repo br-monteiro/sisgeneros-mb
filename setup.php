@@ -237,6 +237,13 @@ new class {
                     . "    '', 'yes', "
                     . "    'yes', '{$currentDate}', "
                     . "    '{$currentDate}' "
+                    . " ); "
+                    . ""
+                    . " INSERT INTO `sisgeneros`.`ingredients` ( "
+                    . "    `id`, `name` "
+                    . " ) "
+                    . " VALUES ( "
+                    . "    1, 'DESCONHECIDO' "
                     . " ); ";
 
                 $this->connectDatabase()->exec($sql);
