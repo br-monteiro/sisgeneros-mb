@@ -25,7 +25,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->view->controller = cfg::DEFAULT_URI . 'relatorio/';
         $this->access = new Access();
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $this->view->idLista = $this->getParametro('idlista');
+        $this->view->idlista = $this->getParametro('idlista');
         $this->solItem = new SolItem();
     }
 
@@ -41,7 +41,7 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->view->title = 'Relatório de Solicitações';
         $this->view->oms = $modelOms->findAll();
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
-            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+            $db->setaFiltros()->orderBy('oms.naval_indicative ASC');
         });
         $model->paginatorSolicitacoes($this);
         $this->view->result = $model->getResultadoPaginator();
@@ -67,9 +67,9 @@ class RelatorioController extends Controller implements CtrlInterface
         $licitacao = new Licitacao();
         $solItem = new SolItem();
         $this->view->title = 'Itens da Solicitação';
-        $this->view->resultSolicitacao = $model->recuperaDadosRelatorioSolicitacao($this->view->idLista);
-        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['id_licitacao']);
-        $solItem->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $this->view->resultSolicitacao = $model->recuperaDadosRelatorioSolicitacao($this->view->idlista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->resultSolicitacao['biddings_id']);
+        $solItem->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $solItem->getResultadoPaginator();
         $this->view->btn = $solItem->getNavePaginator();
         $this->render('mostra_item_solicitacao');
@@ -90,10 +90,10 @@ class RelatorioController extends Controller implements CtrlInterface
         $item = new Item();
         $licitacao = new Licitacao();
         $this->view->title = 'Lista de Itens da Licitação';
-        $item->paginator($this->getParametro('pagina'), $this->view->idLista);
+        $item->paginator($this->getParametro('pagina'), $this->view->idlista);
         $this->view->result = $item->getResultadoPaginator();
         $this->view->btn = $item->getNavePaginator();
-        $this->view->resultLicitacao = $licitacao->findById_lista($this->view->idLista);
+        $this->view->resultLicitacao = $licitacao->findById($this->view->idlista);
         $this->render('mostra_item_demanda');
     }
 
@@ -101,11 +101,11 @@ class RelatorioController extends Controller implements CtrlInterface
     {
         $this->view->title = 'Avaliação de Entrega dos Fornecedores';
         $this->view->resultOms = (new OmModel())->findAll(function($db) {
-            $db->setaFiltros()->orderBy('om.indicativo_naval ASC');
+            $db->setaFiltros()->orderBy('oms.naval_indicative ASC');
         });
 
         $this->view->resultFornecedor = (new FornecedorModel())->findAll(function($db) {
-            $db->setaFiltros()->orderBy('fornecedor.nome ASC');
+            $db->setaFiltros()->orderBy('suppliers.name ASC');
         });
 
         $model = (new RelatorioModel())->paginatorDeliveryReport($this);
@@ -115,8 +115,8 @@ class RelatorioController extends Controller implements CtrlInterface
         $this->render('mostra_avalicao_entrega');
     }
 
-    protected function demanda($itemNumero, $idLicitacao)
+    protected function demanda($itemnumber, $idLicitacao)
     {
-        return $this->solItem->quantidadeDemanda($itemNumero, $idLicitacao);
+        return $this->solItem->quantidadeDemanda($itemnumber, $idLicitacao);
     }
 }

@@ -1,9 +1,6 @@
 <?php
-$formatDate = function(string $value) {
-    $explodedDate = explode('-', $value);
-    $explodedDate = array_reverse($explodedDate);
-    return implode('-', $explodedDate);
-};
+
+use App\Helpers\View;
 
 ?>
 <div id="page-wrapper">
@@ -28,11 +25,11 @@ $formatDate = function(string $value) {
                                     <div class="form-group">
                                         <label>Título</label>
                                         <input type="text"
-                                               id="titulo"
-                                               name="titulo"
+                                               id="title"
+                                               name="title"
                                                placeholder="Título do aviso"
                                                class="form-control"
-                                               value="<?= $this->view->result['titulo']; ?>"
+                                               value="<?= $this->view->result['title']; ?>"
                                                required>
                                     </div>
                                 </div>
@@ -40,11 +37,11 @@ $formatDate = function(string $value) {
                                     <div class="form-group">
                                         <label>Data de Início</label>
                                         <input type="text"
-                                               id="data_inicio"
-                                               name="data_inicio"
+                                               id="beginning_date"
+                                               name="beginning_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
-                                               value="<?= $formatDate($this->view->result['data_inicio']); ?>"
+                                               value="<?= View::humanDate($this->view->result['beginning_date']); ?>"
                                                data-mask="00-00-0000"
                                                required>
                                     </div>
@@ -53,11 +50,11 @@ $formatDate = function(string $value) {
                                     <div class="form-group">
                                         <label>Data de Final</label>
                                         <input type="text"
-                                               id="data_fim"
-                                               name="data_fim"
+                                               id="ending_date"
+                                               name="ending_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
-                                               value="<?= $formatDate($this->view->result['data_fim']); ?>"
+                                               value="<?= View::humanDate($this->view->result['ending_date']); ?>"
                                                data-mask="00-00-0000"
                                                required>
                                     </div>
@@ -67,10 +64,10 @@ $formatDate = function(string $value) {
                                         <label>Mensagem</label>
                                         <textarea
                                             maxlength="256"
-                                            name="corpo"
-                                            id="corpo"
+                                            name="content"
+                                            id="content"
                                             class="form-control"
-                                            required><?= $this->view->result['corpo']; ?></textarea>
+                                            required><?= $this->view->result['content']; ?></textarea>
                                         <p class="help-block">
                                             <i class="fa fa-info-circle"></i> Mensagem com
                                             <span class="text-danger">
@@ -117,8 +114,8 @@ $formatDate = function(string $value) {
                                 <tbody>
                                     <?php foreach ($this->view->resultOms as $value): ?>
                                         <tr>
-                                            <td><?= $value['indicativo_naval'] ?? ''; ?></td>
-                                            <td><?= $value['nome'] ?? ''; ?></td>
+                                            <td><?= $value['naval_indicative'] ?? ''; ?></td>
+                                            <td><?= $value['name'] ?? ''; ?></td>
                                             <td>
                                                 <a
                                                     onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminarom/id/<?= $value['id']; ?>/avisoid/<?= $this->view->result['id']; ?>')"

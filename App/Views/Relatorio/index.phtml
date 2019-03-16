@@ -2,6 +2,7 @@
 
 use App\Helpers\Pagination;
 use App\Helpers\View;
+use App\Config\Configurations as cfg;
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) {
         return [
@@ -10,18 +11,6 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
             'current' => "{$controllerName}solicitacao/pagina/" . Pagination::CURRENT_PAGE
         ];
     });
-
-$statusPatterns = [
-    'ABERTO',
-    'APROVADO',
-    'PROCESSADO',
-    'EMPENHADO',
-    'SOLICITADO',
-    'RECEBIDO',
-    'NF-ENTREGUE',
-    'NF-FINANCAS',
-    'NF-PAGA'
-];
 
 ?>
 <div id="page-wrapper">
@@ -44,8 +33,8 @@ $statusPatterns = [
                                 id="om">
                                 <option value="">OM</option>
                                 <?php foreach ($this->view->resultOms as $value): ?>
-                                    <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
-                                        <?= $value['indicativo_naval'] ?>
+                                    <option value="<?= $value['id'] ?>" <?= View::isSelected($value['id'], $this->getParametro('om')); ?>>
+                                        <?= $value['naval_indicative'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -58,8 +47,8 @@ $statusPatterns = [
                                 name="status"
                                 id="status">
                                 <option value="">Status</option>
-                                <?php foreach ($statusPatterns as $value): ?>
-                                    <option value="<?= $value ?>" <?= $value == $this->getParametro('status') ? 'selected' : '' ?>><?= $value ?></option>
+                                <?php foreach (cfg::DEFAULT_REQUEST_STATUS as $value): ?>
+                                    <option value="<?= $value ?>" <?= View::isSelected($value, $this->getParametro('status')); ?>><?= $value ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -107,16 +96,24 @@ $statusPatterns = [
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['solicitacao_numero']; ?></td>
-                                <td><?= $value['indicativo_naval']; ?></td>
-                                <td><?= $value['nota_fiscal'] ?: ''; ?></td>
-                                <td><?= !$value['nao_licitado'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?></td>
                                 <td>
-                                    <?= $value['solicitacao_status'] ?>
+                                    <?= $value['requests_number']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['naval_indicative']; ?>
+                                </td>
+                                <td>
+                                    <?= $value['invoice'] ?: ''; ?>
+                                </td>
+                                <td>
+                                    <?= $value['biddings_id'] ? '<i class="fa fa-group"></i> Lic.' : '<i class="fa fa-shopping-cart"></i> NL'; ?>
+                                </td>
+                                <td>
+                                    <?= $value['requests_status'] ?>
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= View::showDate($value['data_entrega']); ?>
+                                        <?= View::humanDate($value['delivery_date']); ?>
                                     </span>
                                 </td>
                             </tr>

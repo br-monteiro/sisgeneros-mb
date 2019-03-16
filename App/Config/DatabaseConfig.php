@@ -14,14 +14,13 @@ class DatabaseConfig
 {
 
     public $db = [
-        // Critografia base64_encode;
-        'servidor' => '',
-        'banco' => '',
-        'usuario' => '',
-        'senha' => '',
-        'opcoes' => [],
+        'servidor' => 'localhost',
+        'banco' => 'sisgeneros',
+        'usuario' => 'webapp',
+        'senha' => 'webapp',
+        'opcoes' => [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"],
         // Altere este campo apenas se for usar a Base de Dados Sqlite
-        'sqlite' => 'sisgeneros.db'
+        'sqlite' => null
     ];
 
 }

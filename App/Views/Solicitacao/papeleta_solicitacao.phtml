@@ -1,118 +1,15 @@
-<style>
-    body {
-        font-size: 12px !important;
-        background-color: #fff !important;
-    }
-    .table-striped > tbody > tr:nth-of-type(2n+1) {
-        background-color: #ccc;
-    }
-    .table-print {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0px auto;
-        text-align: center;
-    }
-    .recebedor {
-        text-align: left !important;
-        padding-bottom: 10px;
-        padding-top: 10px;
-        font-weight: bold;
-    }
-    .cabecalho {
-        font-weight: bold;
-        font-size: 14px;
-    }
-    .tipo-documento, .numero, .data {
-        text-align: right;
-        padding-right: 50px;
-    }
-    .tipo-documento {
-        font-size: 14px;
-    }
-    .numero {
-        font-size: 18px;
-    }
-    .data {
-        font-size: 16px;
-    }
-    .assinaturas {
-        padding-top: 36px;
-        width: 33%;
-    }
-    .fornecedor {
-        padding: 10px;
-        text-align: left;
-        padding-left: 50px;
-        font-weight: bold;
-        font-size: 16px;
-        padding-top: 25px;
-    }
-    .obs, .data_entrega {
-        text-align: left;
-        padding-left: 50px;
-    }
-    .data_entrega {
-        font-size: 14px;
-    }
-    .agente-fiscal {
-        text-align: left;
-        padding-left: 100px;
-        padding-top: 25px;
-    }
-    .content-assinatura {
-        width: 100%;
-        display: block;
-        text-align: center;
-    }
-    .agente-fiscal .content-assinatura{
-        width: 45% !important;
-    }
-    .linha-assinatura {
-        border-top: 2px solid;
-        width: 75%;
-        margin: 0px auto;
-    }
-    .discricao {
-        text-align: left !important;
-    }
-    .td-table, .table {
-        margin: 0px !important;
-        padding: 0px !important;
-    }
-    .table-condensed > tfoot > tr > td {
-        padding: 2px !important;
-    }
-</style>
 <?php
+
+use App\Helpers\View;
+use App\Config\Configurations as cfg;
+
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+date_default_timezone_set(cfg::TIMEZONE);
+
 $mes = function($data) {
-    $m = date('m', $data);
-    switch ($m) {
-        case '01':
-            return 'janeiro';
-        case '02':
-            return 'fevereiro';
-        case '03':
-            return 'março';
-        case '04':
-            return 'abril';
-        case '05':
-            return 'maio';
-        case '06':
-            return 'junho';
-        case '07':
-            return 'julho';
-        case '08':
-            return 'agosto';
-        case '09':
-            return 'setembro';
-        case '10':
-            return 'outubro';
-        case '11':
-            return 'novembro';
-        case '12':
-            return 'dezembro';
-    }
+    return 'aquii';
 };
+
 // valida para que as informações sejam geradas apenas quando o status for igual a APROVADO
 if (!isset($this->view->result[0])) {
     die("<i class='fa fa-info-circle'></i> A papeleta não pode ser gerada..");
@@ -123,32 +20,32 @@ if (!isset($this->view->result[0])) {
     <tr>
         <td colspan="3" class="cabecalho">
             MARINHA DO BRASIL<br />
-            <?= ($this->view->result[0]['nome']); ?><br />
+            <?= ($this->view->result[0]['oms_name']); ?><br />
             DIVISÃO DE MUNICIAMENTO
         </td>
     </tr>
     <tr>
         <td colspan="2" class="agente-fiscal">
             <div class="content-assinatura">
-                <?= ($this->view->result[0]['agente_fiscal']); ?><br />
-                <?= ($this->view->result[0]['agente_fiscal_posto']); ?><br />
+                <?= ($this->view->result[0]['fiscal_agent']); ?><br />
+                <?= ($this->view->result[0]['fiscal_agent_graduation']); ?><br />
                 Agente Fiscal
             </div>
         </td>
-        <td class="numero">
+        <td class="number">
             Solicitação Nº
             <strong>
-                <?= ($this->view->result[0]['numero']); ?>
+                <?= ($this->view->result[0]['requests_number']); ?>
             </strong>
         </td>
     </tr>
     <tr>
         <td colspan="2" class="fornecedor">
-            FORNECEDOR: <?= ($this->view->result[0]['cnpj']); ?> - <?= ($this->view->result[0]['fornecedor_nome']); ?>
+            FORNECEDOR: <?= ($this->view->result[0]['cnpj']); ?> - <?= ($this->view->result[0]['suppliers_name']); ?>
         </td>
         <td class="tipo-documento">
             <?=
-            $this->view->result[0]['nao_licitado'] == 0 ?
+            $this->view->result[0]['biddings_id'] != '0' ?
                 '(X) LICITADO  | (&nbsp;&nbsp;) NÃO LICITADO' : '(&nbsp;&nbsp;) LICITADO  | (X) NÃO LICITADO';
 
             ?>
@@ -195,12 +92,12 @@ if (!isset($this->view->result[0])) {
                         ?>
                         <tr>
                             <td><?= $i++; ?></td>
-                            <td class='discricao'><?= $value['item_nome']; ?></td>
-                            <td><?= isset($value['licitacao_numero']) ? $value['licitacao_numero'] : 'NL'; ?></td>
-                            <td><?= $value['item_uf']; ?></td>
-                            <td><?= $q = $value['item_quantidade']; ?></td>
-                            <td><?= $q2 = $value['item_quantidade_atendida'] > 0 ? $value['item_quantidade_atendida'] : ''; ?></td>
-                            <td><?= number_format($v = $value['item_valor'], 2, ',', '.'); ?></td>
+                            <td class='discricao'><?= $value['name']; ?></td>
+                            <td><?= $value['biddings_number'] ?? 'NL'; ?></td>
+                            <td><?= $value['uf']; ?></td>
+                            <td><?= $q = intval($value['quantity']); ?></td>
+                            <td><?= $q2 = intval($value['delivered']) > 0 ? intval($value['delivered']) : ''; ?></td>
+                            <td><?= number_format($v = $value['value'], 2, ',', '.'); ?></td>
                             <td>
                                 <?php
                                     $acc = 0;
@@ -228,30 +125,28 @@ if (!isset($this->view->result[0])) {
         </td>
     </tr>
     <tr>
-        <td class="data_entrega">
-            Data de entrega: <strong><?= $value['data_entrega']; ?></strong>
+        <td class="delivery_date">
+            Data de entrega: <strong><?= View::humanDate($value['delivery_date']); ?></strong>
         </td>
         <td class="recebedor">
             RECEBIDO EM ________/________/________<br />
             RECEBEDOR:
         </td>
         <td class="data">
-            Belém, <?= date('d', $this->view->result[0]['alteracao']); ?>
-            de <?= $mes($this->view->result[0]['alteracao']); ?>
-            de <?= date('Y', $this->view->result[0]['alteracao']); ?>.
+            <?= cfg::htrFileConfigs()->papeleta->cidade ?? '' ?>, <?= strftime('%d de %B de %Y', strtotime('today')); ?>.
         </td>
     </tr>
     <tr>
         <td colspan="8" class="obs">
             OBSERVAÇÃO: O material deve ser entregue junto com a NFE, com os dados bancários na mesma.<br>
-            Nota Fiscal Nº: <?= $this->view->result[0]['numero_nota_fiscal']; ?>
+            Nota Fiscal Nº: <?= $this->view->result[0]['invoice']; ?>
         </td>
     </tr>
     <tr>
         <td class="assinaturas">
             <div class="content-assinatura">
-                <?= $this->view->result[0]['gestor_municiamento']; ?><br />
-                <?= $this->view->result[0]['gestor_municiamento_posto']; ?><br />
+                <?= $this->view->result[0]['munition_manager']; ?><br />
+                <?= $this->view->result[0]['munition_manager_graduation']; ?><br />
                 Gestor(a) de Municiamento
             </div>
         </td>
@@ -264,10 +159,95 @@ if (!isset($this->view->result[0])) {
         </td>
         <td class="assinaturas">
             <div class="content-assinatura">
-                <?= $this->view->result[0]['fiel_municiamento']; ?><br />
-                <?= $this->view->result[0]['fiel_municiamento_posto']; ?><br />
+                <?= $this->view->result[0]['munition_fiel']; ?><br />
+                <?= $this->view->result[0]['munition_fiel_graduation']; ?><br />
                 Fiel de Municiamento
             </div>
         </td>
     </tr>
 </table>
+<style>
+    body {
+        font-size: 12px !important;
+        background-color: #fff !important;
+    }
+    .table-striped > tbody > tr:nth-of-type(2n+1) {
+        background-color: #ccc;
+    }
+    .table-print {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .recebedor {
+        text-align: left !important;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        font-weight: bold;
+    }
+    .cabecalho {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .tipo-documento, .number, .data {
+        text-align: right;
+        padding-right: 50px;
+    }
+    .tipo-documento {
+        font-size: 14px;
+    }
+    .number {
+        font-size: 18px;
+    }
+    .data {
+        font-size: 16px;
+    }
+    .assinaturas {
+        padding-top: 36px;
+        width: 33%;
+    }
+    .fornecedor {
+        padding: 10px;
+        text-align: left;
+        padding-left: 50px;
+        font-weight: bold;
+        font-size: 16px;
+        padding-top: 25px;
+    }
+    .obs, .delivery_date {
+        text-align: left;
+        padding-left: 50px;
+    }
+    .delivery_date {
+        font-size: 14px;
+    }
+    .agente-fiscal {
+        text-align: left;
+        padding-left: 100px;
+        padding-top: 25px;
+    }
+    .content-assinatura {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+    .agente-fiscal .content-assinatura{
+        width: 45% !important;
+    }
+    .linha-assinatura {
+        border-top: 2px solid;
+        width: 75%;
+        margin: 0px auto;
+    }
+    .discricao {
+        text-align: left !important;
+    }
+    .td-table, .table {
+        margin: 0px !important;
+        padding: 0px !important;
+    }
+    .table-condensed > tfoot > tr > td {
+        padding: 2px !important;
+    }
+</style>

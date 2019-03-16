@@ -43,13 +43,13 @@ foreach ($this->view->resultOms as $index => $value) {
                                     <div class="col-md-6">
                                         <label>
                                             <input type="checkbox"
-                                                   name="om[]"
+                                                   name="oms[]"
                                                    value="<?= $value['id']; ?>"
                                                    class="oms"
                                                    checked="">
-                                                   <?= $value['indicativo_naval']; ?>
+                                                   <?= $value['naval_indicative']; ?>
                                             -
-                                            <?= $value['nome']; ?>
+                                            <?= $value['name']; ?>
                                         </label>
                                     </div>
                                 <?php endforeach; ?>
@@ -57,13 +57,13 @@ foreach ($this->view->resultOms as $index => $value) {
                                     <div class="col-md-6">
                                         <label>
                                             <input type="checkbox"
-                                                   name="om[]"
+                                                   name="oms[]"
                                                    value="<?= $value['id']; ?>"
                                                    class="oms"
                                                    checked="">
-                                                   <?= $value['indicativo_naval']; ?>
+                                                   <?= $value['naval_indicative']; ?>
                                             -
-                                            <?= $value['nome']; ?>
+                                            <?= $value['name']; ?>
                                         </label>
                                     </div>
                                 <?php endforeach; ?>
@@ -84,8 +84,8 @@ foreach ($this->view->resultOms as $index => $value) {
                                     <div class="form-group">
                                         <label>Título</label>
                                         <input type="text"
-                                               id="titulo"
-                                               name="titulo"
+                                               id="title"
+                                               name="title"
                                                placeholder="Título do aviso"
                                                class="form-control"
                                                required>
@@ -95,8 +95,8 @@ foreach ($this->view->resultOms as $index => $value) {
                                     <div class="form-group">
                                         <label>Data de Início</label>
                                         <input type="text"
-                                               id="data_inicio"
-                                               name="data_inicio"
+                                               id="beginning_date"
+                                               name="beginning_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
                                                data-mask="00-00-0000"
@@ -107,8 +107,8 @@ foreach ($this->view->resultOms as $index => $value) {
                                     <div class="form-group">
                                         <label>Data de Final</label>
                                         <input type="text"
-                                               id="data_fim"
-                                               name="data_fim"
+                                               id="ending_date"
+                                               name="ending_date"
                                                placeholder="Data no formato DD-MM-YYYY"
                                                class="form-control"
                                                data-mask="00-00-0000"
@@ -120,8 +120,8 @@ foreach ($this->view->resultOms as $index => $value) {
                                         <label>Mensagem</label>
                                         <textarea
                                             maxlength="256"
-                                            name="corpo"
-                                            id="corpo"
+                                            name="content"
+                                            id="content"
                                             class="form-control"
                                             required></textarea>
                                         <p class="help-block">
