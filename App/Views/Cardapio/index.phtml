@@ -1,0 +1,63 @@
+<?php
+
+use App\Helpers\Pagination;
+use App\Helpers\View;
+
+$pagination = Pagination::make($this);
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5>Lista de cardápios</h5>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
+                            <i class="fa fa-plus-circle"></i> Novo Registro
+                        </a>
+                    </div>
+                </div>
+                <?= $pagination; ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Início</th>
+                            <th>Fim</th>
+                            <th>Status</th>
+                            <th>Solicitante</th>
+                            <th>Autorizador</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td><?= $value['beginning']; ?></td>
+                                <td><?= $value['ending']; ?></td>
+                                <td><?= $value['status']; ?></td>
+                                <td><?= $value['requesterUser']; ?></td>
+                                <td><?= $value['authorizerUser']; ?></td>
+                                <td>
+                                    <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                        <i class="fa fa-calendar"></i>
+                                    </a>
+                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-info btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?= $pagination; ?>
+            </div>
+        </div>
+    </div>
+</div>

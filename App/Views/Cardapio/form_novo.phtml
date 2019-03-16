@@ -1,0 +1,241 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                    </div>
+                    <div class="card-body">
+                        <div id="resultado"></div>
+                        <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label>Organização militar</label>
+                                        <select
+                                            class="form-control"
+                                            name="om"
+                                            id="om">
+                                            <option value="">OM</option>
+                                            <?php foreach ($this->view->resultOms as $value): ?>
+                                                <option value="<?= $value['id'] ?>">
+                                                    <?= $value['naval_indicative'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Início</label>
+                                        <input type="text"
+                                               id="beginning_date"
+                                               name="beginning_date"
+                                               placeholder="Data no formato DD-MM-YYYY"
+                                               class="form-control"
+                                               data-mask="00-00-0000"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Final</label>
+                                        <input type="text"
+                                               id="ending_date"
+                                               name="ending_date"
+                                               placeholder="Data no formato DD-MM-YYYY"
+                                               class="form-control"
+                                               data-mask="00-00-0000"
+                                               disabled
+                                               required>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <br>
+                                        <button class="btn btn-primary"><i class="fa fa-check"></i> Próximo</button>
+                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de dias do cardápio
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3">
+                                <div class="form-group">
+                                    <label>Dia</label>
+                                    <input type="text"
+                                            id="date"
+                                            name="date"
+                                            placeholder="Data no formato DD-MM-YYYY"
+                                            class="form-control"
+                                            data-mask="00-00-0000"
+                                            required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Refeição</label>
+                                    <select
+                                        class="form-control"
+                                        name="meals"
+                                        id="meals">
+                                        <option value="">Refeição</option>
+                                        <?php foreach ($this->view->resultMeals as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Receitas</label>
+                                    <select
+                                        class="form-control"
+                                        name="recipes"
+                                        id="recipes">
+                                        <option value="">Receitas</option>
+                                        <?php foreach ($this->view->resultRecipes as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantidade de pessoas</label>
+                                    <input type="number"
+                                            id="quantity_people"
+                                            name="quantity_people"
+                                            placeholder="Quantidade de pessoas"
+                                            class="form-control"
+                                            required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-primary"><i class="fa fa-check"></i> Próximo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de receitas
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right">
+                                    <button class="btn btn-info" type="button">
+                                        <i class="fa fa-plus"></i> Adicionar Item
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ingrediente</th>
+                                            <th width="15%">Sugestão</th>
+                                            <th width="15%">Quantidade</th>
+                                            <th width="8%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="row-list">
+                                        <tr>
+                                            <td>
+                                                <select
+                                                    name="ingredients_id[]"
+                                                    class="form-control"
+                                                    tabindex="1"
+                                                    required>
+                                                    <option value="">---</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text"
+                                                    name="suggested_quantity[]"
+                                                    class="form-control"
+                                                    data-mask="#.##0,00"
+                                                    required
+                                                    maxlength="10">
+                                            </td>
+                                            <td>
+                                                <input type="text"
+                                                    name="quantity[]"
+                                                    class="form-control"
+                                                    data-mask="#.##0,00"
+                                                    required
+                                                    maxlength="10">
+                                            </td>
+                                            <td>
+                                                <a class="remove btn btn-danger btn-sm" data-reference="-X-">
+                                                    <i class="fa fa-times"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-success"><i class="fa fa-check"></i> Confirmar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Cardápio de 28-03 à 24-03
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Refeição</th>
+                                    <th>receita</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{day.date | date}}</td>
+                                    <td>{{day.meal.name}}</td>
+                                    <td>{{day.recipe || range()}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
