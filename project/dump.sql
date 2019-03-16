@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`requests` (
   `status` VARCHAR(20) NOT NULL DEFAULT 'ABERTO',
   `invoice` VARCHAR(20) NOT NULL DEFAULT 'S/N',
   `delivery_date` DATE NOT NULL,
-  `observation` VARCHAR(256) NULL,
+  `observation` VARCHAR(512) NULL,
   `created_at` DATE NOT NULL,
   `updated_at` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
