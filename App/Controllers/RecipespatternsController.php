@@ -76,4 +76,11 @@ class RecipespatternsController extends Controller implements CtrlInterface
         $model = new RecipesPatternsModel();
         $model->editarRegistro();
     }
+
+    public function findRecipeItemsByRecipesIdAction()
+    {
+        $model = new RecipesPatternsModel();
+        $result = $model->findRecipeItemsByRecipesId($this->getParametro('id'));
+        echo json_encode($result);
+    }
 }
