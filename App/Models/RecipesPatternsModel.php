@@ -78,6 +78,20 @@ class RecipesPatternsModel extends CRUD
         return $result;
     }
 
+    public function findRecipeItemsByRecipesId($id)
+    {
+        $query = ""
+            . " SELECT "
+            . " rpi.id, ing.name, quantity "
+            . " FROM recipes_patterns_items AS rpi"
+            . " INNER JOIN ingredients AS ing "
+            . "     ON ing.id = rpi.ingredients_id "
+            . " WHERE rpi.recipes_patterns_id = :recipesId ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':recipesId' => $id]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     private function validaAll()
     {
         $value = filter_input_array(INPUT_POST);
