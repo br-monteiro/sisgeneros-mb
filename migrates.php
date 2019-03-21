@@ -5,6 +5,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Config\Configurations as cfg;
+use App\Config\DatabaseConfig;
 
 ini_set('max_execution_time', 300);
 
@@ -16,18 +17,6 @@ try {
              * The command to able the migration
              */
             const RUN_COMMAND = '--executar';
-
-            /**
-             * Databse connections configurations
-             */
-            const DATABASE = [
-                'host' => 'localhost',
-                'dbname' => 'sisgeneros',
-                'username' => 'webapp',
-                'password' => 'webapp',
-                'options' => [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"],
-                'sqlite' => 'sisgeneros.db'
-            ];
 
             /**
              * This array is filled with INDEX as Sqlite tables name, and VALUE is the MySQL table name
@@ -54,6 +43,11 @@ try {
              * @var \PDO The PDO instance
              */
             private $connectionSqlite;
+            
+            /**
+             * @var App\Config\DatabaseConfig
+             */
+            private $databaseConfig;
 
             /**
              * @var array The temporary cache SQL queries
@@ -65,6 +59,7 @@ try {
              */
             public function __construct(array $args)
             {
+                $this->databaseConfig = new DatabaseConfig();
                 $this->setUp($args);
                 $this->migrateTableOms();
                 $this->migrateTableUsers();
@@ -129,9 +124,10 @@ try {
             {
                 try {
                     if (!$this->connectionMySQL) {
-                        $dns = 'mysql:host=' . self::DATABASE['host'] . ';dbname=' . self::DATABASE['dbname'];
+                        $config = $this->databaseConfig->db;
+                        $dns = 'mysql:host=' . $config['servidor'] . ';dbname=' . $config['banco'];
                         $this->connectionMySQL = new \PDO(
-                            $dns, self::DATABASE['username'], self::DATABASE['password'], self::DATABASE['options']
+                            $dns, $config['usuario'], $config['senha'], $config['opcoes']
                         );
                         $this->connectionMySQL->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                     }
@@ -156,7 +152,7 @@ try {
             {
                 try {
                     if (!$this->connectionSqlite) {
-                        $this->connectionSqlite = new \PDO('sqlite:' . cfg::DIR_DATABASE . self::DATABASE['sqlite']);
+                        $this->connectionSqlite = new \PDO('sqlite:' . cfg::DIR_DATABASE . 'sisgeneros.db');
                         $this->connectionSqlite->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                         $this->connectionSqlite->exec('PRAGMA encoding = "UTF-8";');
                     }
@@ -555,6 +551,7 @@ try {
                 $sqliteTable = 'users';
                 $table = self::TABLE_MAP[$sqliteTable];
                 $this->showMessageBeginningAndEndExecution($sqliteTable);
+                $this->clearTable($table);
                 $oldDate = $this->fetchData($sqliteTable);
                 $this->connectMySQL()->beginTransaction();
 
