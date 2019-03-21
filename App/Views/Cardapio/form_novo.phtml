@@ -95,8 +95,8 @@
                                     <label>Refeição</label>
                                     <select
                                         class="form-control"
-                                        name="meals"
-                                        id="meals">
+                                        name="mealsId"
+                                        id="mealsId">
                                         <option value="">Refeição</option>
                                         <?php foreach ($this->view->resultMeals as $value): ?>
                                             <option value="<?= $value['id'] ?>">
@@ -132,7 +132,7 @@
                             <div class="col-lg-12">
                                 <div class="form-group pull-right btn-next-recipes">
                                     <br>
-                                    <button class="btn btn-primary"><i class="fa fa-check"></i> Próximo</button>
+                                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar ingredientes</button>
                                 </div>
                             </div>
                         </div>
@@ -188,17 +188,23 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Refeição</th>
-                                    <th>Receita</th>
-                                    <th>Quantidade de pessoas</th>
-                                </tr>
-                            </thead>
-                            <tbody id="row-menu-resume"></tbody>
-                        </table>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Refeição</th>
+                                        <th>Receita</th>
+                                        <th>Quantidade de pessoas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="row-menu-resume"></tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group pull-right">
+                                <br>
+                                <button class="btn btn-success btn-checkout-menu"><i class="fa fa-check"></i> Concluir cardápio</button>                                
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -214,6 +220,7 @@ $(document).ready(function () {
     var btnNextRecipes = $(".btn-next-recipes");
     var btnNextIngredients = $(".btn-next-ingredients");
     var btnPreviousIngredients = $(".btn-previous-ingredients");
+    var btnCheckoutMenu = $("btn-checkout-menu");
     var menuJson = [];
     var itemsMap = [];
     var x = 1;
@@ -269,7 +276,7 @@ $(document).ready(function () {
         getValuesIngredients();
         var recipes = {
             "recipes" : {
-                "mealsId" : $("#meals").val(),
+                "mealsIdId" : $("#mealsId").val(),
                 "recipesPatternsId" : $("#recipes").val(),
                 "quantity_people" : $("#quantity_people").val(),
                 "date" : $("#date").val(),
@@ -291,6 +298,17 @@ $(document).ready(function () {
         showFormCard("recipes", true);
     });
 
+    btnCheckoutMenu.on("click", function() {
+        $.ajax({
+            type: "POST",
+            url: "/app/sisgeneros/Cardapio/registra/",
+            data: menuJson,
+            success: function (data) {
+                $("#resultado").html(data);
+            }
+        });
+    });
+
     $("#recipes").on("change", function() {
         $.get("/app/sisgeneros/Recipespatterns/findRecipeItemsByRecipesId/id/"+this.value, function( data ) {
             buildTableIngredients(data);
@@ -310,7 +328,7 @@ $(document).ready(function () {
         strHTML = "<tr>";
         strHTML += "<td><input type='hidden' name='biddings_items_id[]'>";
         strHTML += "<input type='text' name='name[]' class='form-control'></td>";
-        strHTML += "<td><input type='text' name='suggested_quantity[]' class='form-control'></td>";
+        strHTML += "<td><input type='text' name='suggested_quantity[]' disabled class='form-control'></td>";
         strHTML += "<td><input type='text' name='quantity[]' value='1' class='form-control'></td>";
         strHTML += "<td><button class='delete-row btn btn-danger btn-sm' data-reference='-X-'><i class='fa fa-times'></i></button></td>";
         strHTML += "</tr>";
@@ -351,7 +369,7 @@ $(document).ready(function () {
     }
 
     function cleanFormRecipes() {
-        $("#meals").val("");
+        $("#mealsId").val("");
         $("#recipes").val("");
         $("#quantity_people").val("");
         $("#date").val("");
@@ -378,7 +396,7 @@ $(document).ready(function () {
         var strHTML = "";
         strHTML = "<tr>";
         strHTML += "<td>" + $("#date").val() + "</td>";
-        strHTML += "<td>" + $("#meals option:selected").text() + "</td>";
+        strHTML += "<td>" + $("#mealsId option:selected").text() + "</td>";
         strHTML += "<td>" + $("#recipes option:selected").text() + "</td>";
         strHTML += "<td>" + $("#quantity_people").val() + "</td>";
         strHTML += "</tr>";

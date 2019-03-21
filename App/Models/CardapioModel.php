@@ -86,6 +86,7 @@ class CardapioModel extends CRUD
 
     private function validaAll()
     {
+        $this->writeLog(filter_input(INPUT_POST));
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
             ->setOmsId(filter_input(INPUT_POST, 'oms_id', FILTER_VALIDATE_INT))
@@ -98,6 +99,13 @@ class CardapioModel extends CRUD
             ->validaOmsId()
             ->validaBeginningDate()
             ->validaEndingDate();
+    }
+
+    public function writeLog($value)
+    {
+        $fp = fopen(cfg::PATH_CORE .'requestLog.txt', 'w+');
+        fwrite($fp, $value);
+        fclose($fp);
     }
 
     // Validação

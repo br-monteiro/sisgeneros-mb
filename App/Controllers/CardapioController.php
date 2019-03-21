@@ -62,7 +62,7 @@ class CardapioController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new CardapioModel();
-        $this->view->title = 'Lista de Todos os Cárdapios';
+        $this->view->title = 'Lista de Todos os Cardápios';
         $model->paginator($this->getParametro('pagina'));
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
