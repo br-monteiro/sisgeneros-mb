@@ -15,6 +15,8 @@
 
 Para versões anteriores à `3.0.0` [clique aqui](https://github.com/br-monteiro/sisgeneros-mb/tree/v2.x) e acompanhe a documentação correspondente.
 
+Caso você queira migrar de da versão `2.x` para `3.x`, [clique aqui](docs/migrations/README.md) antes de prosseguir nesta documentação.
+
 #### Instalação
 A instalação do sistema pode ser feita seguindo os seguintes passos:
 > ATENÇÃO: Os passos para instalação descritos nesta documentação, assumem que a aplicação rodará em uma máquina Linux (preferencialmente Ubuntu 16.04 LTS) e que todas a dependências já foram instaladas e configuradas.
@@ -27,7 +29,7 @@ Caso você tenha optado por baixar o arquivo zipado da ultima versão, descompac
 ```bash
 $ cd ~/sisgeneros-mb-master
 ```
-2. Após executar passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
+2. Após executar o passo anterior, será necessário alterar os valores que correspondem a sua OM no arquivo `~/sisgeneros-mb-master/App/Config/Configurations.php`:
 ```php
 // código omitido
     const DOMAIN = 'www.ceimbe.mb';
@@ -38,13 +40,38 @@ A constante `DOMAIN` deve ser alterada para o domínio da sua OM. Quanto a const
 
 Também será necessário alterar as informações contidas no arquivo `~/sisgeneros-mb-master/htr.json`. Abra o arquivo `htr.json` e altere os valores de acordo com sua necessidade.
 
-3. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
+3. Configuração das credenciais de acesso ao Banco de Dados MySQL
+Da versão `3.x` em diante, o SGDB usado é o `MySQL`, e para que o sistema possa usá-lo, é necessário alterar algumas entradas no arquivo `App/Config/DatabaseConfig.php`, de acordo com as suas credenciais de acesso.
+Os valores que devem ser alterados são `servidor`, `usuario` e `senha`. Por exemplo, considerando que temos o seguinte cenário:
+- sevidor: servermydb.om.mb
+- usuario: adminbanco
+- senha: \$%uPhB#$Sys%*9i3iHTR
+
+então o arquivo `App/Config/DatabaseConfig.php` ficaria da seguinte forma:
+
+```php
+// código omitido
+    public $db = [
+        'servidor' => 'servermydb.om.mb',
+        'banco' => 'sisgeneros',
+        'usuario' => 'adminbanco',
+        'senha' => '$%uPhB#$Sys%*9i3iHTR',
+        'opcoes' => [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"],
+        // Altere este campo apenas se for usar a Base de Dados Sqlite
+        'sqlite' => null
+    ];
+// código omitido
+```
+
+4. Com as constantes alteradas e o arquivo salvo (e fechado), agora será necessário executar o arquivo `setup.php`:
 ```bash
 $ php setup.php
 ```
 Se tudo ocorrer com sucesso, a seguinte saída deve ser observada no terminal:
 ```bash
 $ php setup.php
+> Permissões de acesso no diretório de backup de tokens setadas com sucesso
+> Token salvo com sucesso
 > Chave SALT alterada com sucesso
 > Path do Core alterado com sucesso
 > Path do autoload alterado com sucesso
@@ -54,7 +81,7 @@ $ php setup.php
 > Permissões de acesso no diretório de upload setadas com sucesso
 >> Configurações finalizadas
 ```
-4. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro do diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
+5. Após realizar a execução do `setup.php`, crie um diretório com o nome `app` na raiz do seu site (**DocumentRoot** do Apache) e copie o diretório `public` da raiz do projeto (`~/sisgeneros-mb-master/public`) para dentro deste diretório `app`. Após realizar a cópia para dentro de `app`, renomeie `public` dentro de `app` para `sisgeneros`.
 
 Após realizar todas as configurações descritas acima, já é possível acessar o sistema no browser. O endereço deve parecer com [www.suaom.mb/app/sisgeneros](http://www.suaom.mb/app/sisgeneros).
 Por padrão o sistema tem uma conta com nível `ADMINISTRADOR` que pode ser acessada para dar início as edições dentro do sistema. Para acessar o sistema basta usar as seguintes credenciais:
