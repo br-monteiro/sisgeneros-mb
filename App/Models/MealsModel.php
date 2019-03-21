@@ -28,7 +28,7 @@ class MealsModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'order ASC'
+            'orderBy' => ''
         ];
 
         $this->paginator = new Paginator($dados);
@@ -76,7 +76,7 @@ class MealsModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'suppliers/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'meals/ver/');
         }
     }
 
