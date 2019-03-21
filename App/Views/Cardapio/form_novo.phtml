@@ -85,12 +85,13 @@
                                             placeholder="Data no formato DD-MM-YYYY"
                                             class="form-control"
                                             data-mask="00-00-0000"
+                                            disabled
                                             required>
                                 </div>
-                                <!--div class="form-group">
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i> Anterior</button>
-                                    <button class="btn btn-primary btn-sm">Próximo <i class="fa fa-arrow-right"></i> </button>
-                                </div-->
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-sm btn-previous-day"><i class="fa fa-arrow-left"></i> Anterior</button>
+                                    <button class="btn btn-primary btn-sm btn-next-day">Próximo <i class="fa fa-arrow-right"></i> </button>
+                                </div>
                                 <div class="form-group">
                                     <label>Refeição</label>
                                     <select
@@ -216,42 +217,72 @@
 $(document).ready(function () {
     var beginning_date = $("#beginning_date");
     var ending_date = $("#ending_date");
-    var btnNextMenu = $(".btn-next-menu");
     var btnNextRecipes = $(".btn-next-recipes");
     var btnNextIngredients = $(".btn-next-ingredients");
     var btnPreviousIngredients = $(".btn-previous-ingredients");
-    var btnCheckoutMenu = $("btn-checkout-menu");
+    var btnCheckoutMenu = $(".btn-checkout-menu");
     var menuJson = [];
     var itemsMap = [];
+    var menuMap = [];
+    var currentDay = 1;
+    var currentDayObj = {};
     var x = 1;
 
     initView();
 
     beginning_date.on("blur", function() {
-        var res = beginning_date.val().split("-");
-        if(typeof res !== "undefined") {
-            ending_date.val( formatDate(res[2] + "-" + res[1] + "-" + res[0]) );
+        var reverseDate = beginning_date.val().split("-").reverse().join("-");
+        var day = new Date(reverseDate);
+        var nextWeek = new Date(day.getTime() + 7 * 86400000);
+        ending_date.val( formatDate(nextWeek) );
+    });
+
+    $(".btn-next-menu").on("click", function() {
+        if (!validateDate(ending_date.val())) {
+            var reverseDate = beginning_date.val().split("-").reverse().join("-");
+
+            var date = new Date(reverseDate);
+            
+            for (i = 1; i <= 7; i++) {
+                var day = new Date(date.getTime() + i * 86400000);
+                var obj = {
+                    "date": formatDate(day),
+                    "order": i,
+                    "data": []
+                };
+
+                menuMap.push(obj);
+            }
+
+            showFormCard("menu", false);
+            showFormCard("recipes", true);
+            $("#date").val(getFirstDay());
+        } else {
+            alert("Data inválida!");
         }
     });
 
-    /**
-        @HACK
-        check this function
-    */
-    btnNextMenu.on("click", function() {
-        if (!validateDate(ending_date.val())) {
-            showFormCard("menu", false);
-            showFormCard("recipes", true);
-            
-            var menu = {
-                "omsId" : $("#om").val(),
-                "beginning_date" : beginning_date.val(),
-                "ending_date" : ending_date.val()
-            };
-            populateMenuObj(menu);
-            $(".title-menu").html( "Cardápio de " + beginning_date.val() + " à "+ ending_date.val() );
-        } else {
-            alert("Data inválida!");
+    $(".btn-next-day").on("click", function() {
+        if (currentDay < 7) {
+            var order = currentDay + 1;
+            var day = getObjDay(order);
+            if (day) {
+                currentDayObj = day;
+                currentDay = order;
+                $("#date").val( day.date );
+            }
+        }
+    });
+
+    $(".btn-previous-day").on("click", function() {
+        if (currentDay > 1) {
+            var order = currentDay - 1;
+            var day = getObjDay(order);
+            if (day) {
+                currentDayObj = day;
+                currentDay = order;
+                $("#date").val( day.date );
+            }
         }
     });
 
@@ -335,17 +366,26 @@ $(document).ready(function () {
         $('#row-list').append( strHTML );
     });
 
-    function formatDate(dateVal) {
-        var date = new Date(dateVal);
-        var nextWeek = new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+    function getFirstDay() {
+        return menuMap.find(function(item) {
+            return item.order === 1;
+        }).date;
+    }
 
-        var month = nextWeek.getMonth()+1;
-        var day = nextWeek.getDate();
+    function getObjDay(order) {
+        return menuMap.find(function(item) {
+            return item.order === order;
+        });
+    }
+
+    function formatDate(dateVal) {
+        var month = dateVal.getMonth() + 1;
+        var day = dateVal.getDate();
 
         var output =
             (day < 10 ? '0' : '') + day + '-' +
             (month < 10 ? '0' : '') + month + '-' +
-            nextWeek.getFullYear();
+            dateVal.getFullYear();
 
         return output;
     }
