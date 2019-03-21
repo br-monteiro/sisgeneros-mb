@@ -1,6 +1,7 @@
 /nbproject
 /public/app
 /public/arquivos
+/App/Config/keys/*.txt
 *.php~
 *.db
 *.bak
