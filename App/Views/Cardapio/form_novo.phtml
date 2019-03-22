@@ -14,56 +14,38 @@
                     </div>
                     <div class="card-body">
                         <div id="resultado"></div>
-                        <!--form action="<?= $this->view->controller; ?>registra/" method="post" id="form"-->
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label>Organização militar</label>
-                                        <select
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Início</label>
+                                    <input type="text"
+                                            id="beginning_date"
+                                            name="beginning_date"
+                                            placeholder="Data no formato DD-MM-YYYY"
                                             class="form-control"
-                                            name="om"
-                                            id="om">
-                                            <option value="">OM</option>
-                                            <?php foreach ($this->view->resultOms as $value): ?>
-                                                <option value="<?= $value['id'] ?>">
-                                                    <?= $value['naval_indicative'] ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Data de Início</label>
-                                        <input type="text"
-                                               id="beginning_date"
-                                               name="beginning_date"
-                                               placeholder="Data no formato DD-MM-YYYY"
-                                               class="form-control"
-                                               data-mask="00-00-0000"
-                                               required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Data de Final</label>
-                                        <input type="text"
-                                               id="ending_date"
-                                               name="ending_date"
-                                               placeholder="Data no formato DD-MM-YYYY"
-                                               class="form-control"
-                                               data-mask="00-00-0000"
-                                               disabled
-                                               required>
-                                    </div>
-                                    <div class="form-group pull-right">
-                                        <br>
-                                        <button class="btn btn-primary btn-next-menu"><i class="fa fa-check"></i> Próximo</button>
-                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
-                                    </div>
+                                            data-mask="00-00-0000"
+                                            required>
                                 </div>
                             </div>
-                        <!--/form-->
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Final</label>
+                                    <input type="text"
+                                            id="ending_date"
+                                            name="ending_date"
+                                            placeholder="Data no formato DD-MM-YYYY"
+                                            class="form-control"
+                                            data-mask="00-00-0000"
+                                            disabled
+                                            required>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-primary btn-next-menu"><i class="fa fa-check"></i> Próximo</button>
+                                    <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,7 +65,7 @@
                                             id="date"
                                             name="date"
                                             placeholder="Data no formato DD-MM-YYYY"
-                                            class="form-control"
+                                            class="form-control text-center"
                                             data-mask="00-00-0000"
                                             disabled
                                             required>
@@ -150,13 +132,6 @@
                     <div class="card-body text-center">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="form-group pull-right">
-                                    <button class="btn btn-info addIngredients" type="button">
-                                        <i class="fa fa-plus"></i> Adicionar Item
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -217,8 +192,6 @@
 $(document).ready(function () {
     var beginning_date = $("#beginning_date");
     var ending_date = $("#ending_date");
-    var btnNextRecipes = $(".btn-next-recipes");
-    var btnNextIngredients = $(".btn-next-ingredients");
     var btnPreviousIngredients = $(".btn-previous-ingredients");
     var btnCheckoutMenu = $(".btn-checkout-menu");
     var menuJson = [];
@@ -286,11 +259,7 @@ $(document).ready(function () {
         }
     });
 
-    /**
-    @HACK
-    trocar a apresentacao da mensagem
-    */
-    btnNextRecipes.on("click", function() {
+    $(".btn-next-recipes").on("click", function() {
         if( !validateDate($("#date").val()) ) {
             if( !validateRangeDate($("#date").val()) ) {
                 alert("Data fora do período informado!");
@@ -303,28 +272,33 @@ $(document).ready(function () {
         }
     });
 
-    btnNextIngredients.on("click", function() {
+    $(".btn-next-ingredients").on("click", function() {
         getValuesIngredients();
         var recipes = {
             "recipes" : {
-                "mealsIdId" : $("#mealsId").val(),
+                "meals" : {
+                    "id" : $("#mealsId").val(),
+                    "name" : $("#mealsId option:selected").text(),
+                },
                 "recipesPatternsId" : $("#recipes").val(),
-                "quantity_people" : $("#quantity_people").val(),
-                "date" : $("#date").val(),
-                "recipes_items" : itemsMap
+                "name" : $("#recipes option:selected").text(),
+                "quantity" : $("#quantity_people").val(),
+                "items" : itemsMap
             }
         };
-        populateMenuObj(recipes);
+        //console.log(recipes)
+        //var objDay = getObjDay(currentDay);
+        //objDay.push(recipes);
 
-        showFormCard("ingredients", false);
-        showFormCard("recipes", true);
-        showFormCard("resume-menu", true);
-        buildTableResume();
-        cleanFormRecipes();
-        $('#row-list').html("");
+        // showFormCard("ingredients", false);
+        // showFormCard("recipes", true);
+        // showFormCard("resume-menu", true);
+        // buildTableResume();
+        // cleanFormRecipes();
+        // $('#row-list').html("");
     });
 
-    btnPreviousIngredients.on("click", function() {
+    $(".btn-previous-ingredients").on("click", function() {
         showFormCard("ingredients", false);
         showFormCard("recipes", true);
     });
@@ -333,7 +307,7 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             url: "/app/sisgeneros/Cardapio/registra/",
-            data: menuJson,
+            data: menuMap,
             success: function (data) {
                 $("#resultado").html(data);
             }
@@ -346,24 +320,8 @@ $(document).ready(function () {
         });
     });
 
-    /**
-        @HACK
-        Validar método para excluir linha da tabela de ingredientes
-    */
     $(".delete-row").on('click', function() {
         $(this).closest('tr').remove();
-    });
-
-    $(".addIngredients").on('click',function () {
-        var strHTML = "";
-        strHTML = "<tr>";
-        strHTML += "<td><input type='hidden' name='biddings_items_id[]'>";
-        strHTML += "<input type='text' name='name[]' class='form-control'></td>";
-        strHTML += "<td><input type='text' name='suggested_quantity[]' disabled class='form-control'></td>";
-        strHTML += "<td><input type='text' name='quantity[]' value='1' class='form-control'></td>";
-        strHTML += "<td><button class='delete-row btn btn-danger btn-sm' data-reference='-X-'><i class='fa fa-times'></i></button></td>";
-        strHTML += "</tr>";
-        $('#row-list').append( strHTML );
     });
 
     function getFirstDay() {
@@ -445,29 +403,24 @@ $(document).ready(function () {
     }
 
     function getValuesIngredients() {
-        var recipe_item = [];
-        var ingredients = [];
-        var ingredientsName = [];
-        var quantity = [];
-        var arr = $('input[name="biddings_items_id[]"]').map(function () {
-            ingredients.push(this.value);
-        }).get();
-        var arr = $('input[name="name[]"]').map(function () {
-            ingredientsName.push(this.value);
-        }).get();
-        var arr = $('input[name="quantity[]"]').map(function () {
-            quantity.push(this.value);
-        }).get();
-        recipe_item.push({"ingredients_id" : ingredients});
-        recipe_item.push({"ingredients_name" : ingredientsName});
-        recipe_item.push({"quantity" : quantity});
+        $('td input').each(function() {
+            var recipe_item = {};
 
-        itemsMap.push({"recipes_items" : recipe_item});
-    }
-
-    function populateMenuObj(itemObject) {
-        menuJson.push(itemObject);
-        console.log(menuJson);
+            if ("biddings_items_id[]" == $(this).attr('name')) {
+                //console.log({ "id" : $(this).val() });
+                recipe_item = { "id" : $(this).val() };
+            } else if ("name[]" == $(this).attr('name')) {
+                //console.log({ "name" : $(this).val() });
+                recipe_item = { "name" : $(this).val() };
+            } else if ("quantity[]" == $(this).attr('name')) {
+                //console.log({ "quantity" : $(this).val() });
+                recipe_item = { "quantity" : $(this).val() };
+            }
+            //console.log(recipe_item);
+            itemsMap.push(recipe_item);
+        });
+        
+        console.log(itemsMap);
     }
 
     function validateDate(dateVal) {
