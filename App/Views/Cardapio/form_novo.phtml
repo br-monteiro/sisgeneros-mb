@@ -261,7 +261,7 @@ $(document).ready(function () {
 
     $(".btn-next-recipes").on("click", function() {
         if( !validateDate($("#date").val()) ) {
-            if( !validateRangeDate($("#date").val()) ) {
+            if( validateRangeDate($("#date").val()) ) {
                 alert("Data fora do período informado!");
             } else {
                 showFormCard("recipes", false);
@@ -286,16 +286,13 @@ $(document).ready(function () {
                 "items" : itemsMap
             }
         };
-        //console.log(recipes)
-        //var objDay = getObjDay(currentDay);
-        //objDay.push(recipes);
 
-        // showFormCard("ingredients", false);
-        // showFormCard("recipes", true);
-        // showFormCard("resume-menu", true);
-        // buildTableResume();
-        // cleanFormRecipes();
-        // $('#row-list').html("");
+        showFormCard("ingredients", false);
+        showFormCard("recipes", true);
+        showFormCard("resume-menu", true);
+        buildTableResume();
+        cleanFormRecipes();
+        $('#row-list').html("");
     });
 
     $(".btn-previous-ingredients").on("click", function() {
@@ -380,7 +377,7 @@ $(document).ready(function () {
 
         for(i = 0; i < obj.length; i++) {
             strHTML = "<tr>";
-            strHTML += "<td><input type='hidden' name='biddings_items_id[]' value='" + obj[i].id + "'>";
+            strHTML += "<td><input type='hidden' name='id[]' value='" + obj[i].id + "'>";
             strHTML += "<input type='text' name='name[]' value='" + obj[i].name + "' class='form-control'></td>";
             strHTML += "<td><input type='text' name='suggested_quantity[]' value='" + obj[i].quantity + "' class='form-control'></td>";
             strHTML += "<td><input type='text' name='quantity[]' value='1' class='form-control'></td>";
@@ -403,24 +400,18 @@ $(document).ready(function () {
     }
 
     function getValuesIngredients() {
-        $('td input').each(function() {
-            var recipe_item = {};
+        var item = [];
 
-            if ("biddings_items_id[]" == $(this).attr('name')) {
-                //console.log({ "id" : $(this).val() });
-                recipe_item = { "id" : $(this).val() };
-            } else if ("name[]" == $(this).attr('name')) {
-                //console.log({ "name" : $(this).val() });
-                recipe_item = { "name" : $(this).val() };
-            } else if ("quantity[]" == $(this).attr('name')) {
-                //console.log({ "quantity" : $(this).val() });
-                recipe_item = { "quantity" : $(this).val() };
-            }
-            //console.log(recipe_item);
-            itemsMap.push(recipe_item);
+        $("#row-list tr").each(function() {
+            var recipe_item = {};
+            recipe_item["id"] = $(this).find("input[name='id[]']").val();
+            recipe_item["name"] = $(this).find("input[name='name[]']").val();
+            recipe_item["quantity"] = $(this).find("input[name='quantity[]']").val();
+
+            item.push(recipe_item);
         });
         
-        console.log(itemsMap);
+        itemsMap.push(item);
     }
 
     function validateDate(dateVal) {
