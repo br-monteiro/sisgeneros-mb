@@ -160,7 +160,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header title-menu">
-                        Cardápio de 18-03 à 24-03
+                        Cardápio do dia {dia}
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -286,6 +286,9 @@ $(document).ready(function () {
                 "items" : itemsMap
             }
         };
+        var day = getObjDay(currentDay);
+        day.data.push(recipes);
+        console.log(menuMap)
 
         showFormCard("ingredients", false);
         showFormCard("recipes", true);
@@ -367,7 +370,6 @@ $(document).ready(function () {
         $("#mealsId").val("");
         $("#recipes").val("");
         $("#quantity_people").val("");
-        $("#date").val("");
     }
 
     function buildTableIngredients(data) {
@@ -389,12 +391,18 @@ $(document).ready(function () {
 
     function buildTableResume() {
         var strHTML = "";
-        strHTML = "<tr>";
-        strHTML += "<td>" + $("#date").val() + "</td>";
-        strHTML += "<td>" + $("#mealsId option:selected").text() + "</td>";
-        strHTML += "<td>" + $("#recipes option:selected").text() + "</td>";
-        strHTML += "<td>" + $("#quantity_people").val() + "</td>";
-        strHTML += "</tr>";
+        $("#row-menu-resume").append( strHTML );
+        var objDay = getObjDay(currentDay);
+        $(".title-menu").html("Cardápio do dia " + objDay.date);
+
+        for(i = 0; i < objDay.data.length; i++) {
+            strHTML = "<tr>";
+            strHTML += "<td>" + objDay.date + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.meals.name + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.name + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.quantity + "</td>";
+            strHTML += "</tr>";
+        }
 
         $("#row-menu-resume").append( strHTML );
     }
