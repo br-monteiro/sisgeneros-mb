@@ -31,9 +31,9 @@ $buildUrlBtnAction = function (array $value, string $action = 'proximo'): string
 
 $pagination = Pagination::make($this, function ($btn, $controllerName) use ($busca) {
         return [
-            'previous' => "{$controllerName}solicitacao/pagina/{$btn['previous']}" . $busca,
-            'next' => "{$controllerName}solicitacao/pagina/{$btn['next']}" . $busca,
-            'current' => "{$controllerName}solicitacao/pagina/" . Pagination::CURRENT_PAGE . $busca
+            'previous' => "{$controllerName}ver/pagina/{$btn['previous']}" . $busca,
+            'next' => "{$controllerName}ver/pagina/{$btn['next']}" . $busca,
+            'current' => "{$controllerName}ver/pagina/" . Pagination::CURRENT_PAGE . $busca
         ];
     });
 
