@@ -19,9 +19,8 @@ class CardapioController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = cfg::DEFAULT_URI . 'Cardapio/'; 
+        $this->view->controller = cfg::DEFAULT_URI . 'cardapio/';
         $this->access = new Access();
-        
     }
 
     public function indexAction()
@@ -31,7 +30,7 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function novoAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $this->view->title = 'Novo Registro';
         $modelOms = new OmModel();
         $modelMeals = new MealsModel();
@@ -44,7 +43,7 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function editarAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
         $this->view->title = 'Editando Registro';
         $this->view->result = $model->findById($this->getParametro('id'));
@@ -53,14 +52,14 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function eliminarAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
         $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
         $this->view->title = 'Lista de Todos os Cardápios';
         $model->paginator($this->getParametro('pagina'));
@@ -71,15 +70,23 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function registraAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
         $model->novoRegistro();
     }
 
     public function alteraAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
         $model->editarRegistro();
+    }
+
+    public function checkdateAction()
+    {
+        $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $omId = intval($user['oms_id'] ?? 0);
+        $result = (new CardapioModel())->checkDate($this->getParametro('value'), $omId);
+        echo json_encode($result);
     }
 }
