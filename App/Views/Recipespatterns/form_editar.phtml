@@ -29,6 +29,7 @@
                             <div id="resultado"></div>
                             <div class="row">
                                 <div class="col-lg-6">
+                                    <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text"
@@ -59,6 +60,7 @@
                             <?php foreach ($this->view->resultIngredientsPatterns as $values): ?>
                             <tr>
                                 <td>
+                                    <input type='hidden' name='recipesPatternsId[]' value="<?= $values['id']; ?>">
                                     <select name="ingredients_id[]" class="form-control" required>
                                         <option value="">---</option>
                                         <?php foreach ($this->view->resultIngredients as $value) : ?>

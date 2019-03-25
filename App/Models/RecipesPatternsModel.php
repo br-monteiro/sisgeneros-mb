@@ -62,6 +62,24 @@ class RecipesPatternsModel extends CRUD
         }
     }
 
+    public function editarRegistro()
+    {
+        // Valida dados
+        $this->validaAll();
+
+        $dados = [
+            'name' => $this->getName(),
+        ];
+
+        if (parent::editar($dados, $this->getId())) {
+
+            $itens = new RecipesPatternsItemsModel();
+            $itens->editarRegistro($this->getItemsList(), $this->getId());
+
+            msg::showMsg('001', 'success');
+        }
+    }
+
     private function buildItemsIngredients(array $values): array
     {
         $result = [];
@@ -69,8 +87,9 @@ class RecipesPatternsModel extends CRUD
         if (isset($values['ingredients_id']) && is_array($values['ingredients_id'])) {
             foreach ($values['ingredients_id'] as $index => $value) {
                 $result[] = [
-                    'ingredients_id' => $value,
-                    'quantity' => $values['quantity'][$index]
+                    "id" => isset($values['recipesPatternsId'][$index]) ? $values['recipesPatternsId'][$index] : "",
+                    "ingredients_id" => $value,
+                    "quantity" => $values['quantity'][$index]
                 ];
             }
         }
