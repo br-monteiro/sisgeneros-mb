@@ -64,7 +64,7 @@ class CardapioModel extends CRUD
     {
         // Valida dados
         $this->validaAll();
-        
+
         $dados = [
             'oms_id' => $this->getOmsId(),
             'status' => $this->getStatus(),
@@ -103,9 +103,37 @@ class CardapioModel extends CRUD
 
     public function writeLog($value)
     {
-        $fp = fopen(cfg::PATH_CORE .'requestLog.txt', 'w+');
+        $fp = fopen(cfg::PATH_CORE . 'requestLog.txt', 'w+');
         fwrite($fp, $value);
         fclose($fp);
+    }
+
+    /**
+     * Check if the date has menu registred
+     * @param string $date
+     * @param int $omId
+     * @return \stdClass
+     */
+    public function checkDate(string $date = '', int $omId): \stdClass
+    {
+        $result = new \stdClass;
+        $result->inputDate = $date;
+        $result->menusId = 0;
+
+        if (preg_match('/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|1\d|2\d|3[01])$/', $date)) {
+            $query = "SELECT id FROM {$this->entidade} WHERE oms_id = :omId AND (beginning_date >= :date OR ending_date <= :date)";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                ':omId' => $omId,
+                ':date' => $date
+            ]);
+            $resultQuery = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($resultQuery) {
+                $result->menusId = $resultQuery['id'];
+            }
+        }
+
+        return $result;
     }
 
     // Validação
