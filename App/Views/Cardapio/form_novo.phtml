@@ -320,7 +320,7 @@
             $.ajax({
                 type: "POST",
                 url: "cardapio/registra/",
-                data: menuMap,
+                data: {menuMap},
                 success: function (data) {
                     $("#resultado").html(data);
                 }

@@ -44,19 +44,24 @@ class CardapioModel extends CRUD
         return $this->paginator->getNaveBtn();
     }
 
-    public function novoRegistro()
+    public function novoRegistro($omId)
     {
         // Valida dados
-        $this->validaAll();
+        $this->validaAll($omId);
 
+        // inserindo o cardápio
         $dados = [
             'oms_id' => $this->getOmsId(),
-            'status' => $this->getStatus(),
             'beginning_date' => $this->getBeginningDate(),
             'ending_date' => $this->getEndingDate()
         ];
-        if (parent::novo($dados)) {
-            msg::showMsg('111', 'success');
+
+        if ($dados) {
+            $menusId = 10;//$this->pdo->lastInsertId();
+            foreach ($this->getRecipes() as $values) {
+                // inserindo as receitas
+                $recipeId = (new RecipesModel())->novoRegistro($values['data'], $menusId);
+            }
         }
     }
 
@@ -84,28 +89,19 @@ class CardapioModel extends CRUD
         }
     }
 
-    private function validaAll()
+    private function validaAll($oms)
     {
-        $this->writeLog(filter_input(INPUT_POST));
         // Seta todos os valores
-        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setOmsId(filter_input(INPUT_POST, 'oms_id', FILTER_VALIDATE_INT))
-            ->setStatus(filter_input(INPUT_POST, 'status', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setBeginningDate(filter_input(INPUT_POST, 'beginning_date', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setEndingDate(filter_input(INPUT_POST, 'ending_date', FILTER_SANITIZE_SPECIAL_CHARS));
+        $menuMap = filter_input_array(INPUT_POST);
+        $data = $menuMap["menuMap"];
 
-        // Inicia a Validação dos dados
-        $this->validaId()
-            ->validaOmsId()
-            ->validaBeginningDate()
-            ->validaEndingDate();
-    }
+        $beginningDate = date("Y-m-d", strtotime($data[0]["date"]));
+        $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +7 day"));
 
-    public function writeLog($value)
-    {
-        $fp = fopen(cfg::PATH_CORE . 'requestLog.txt', 'w+');
-        fwrite($fp, $value);
-        fclose($fp);
+        $this->setOmsId(filter_var($oms, FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setBeginningDate($beginningDate)
+            ->setEndingDate($endingDate)
+            ->setRecipes($data);
     }
 
     /**
