@@ -48,20 +48,19 @@ class CardapioModel extends CRUD
     {
         // Valida dados
         $this->validaAll($omId);
-
         // inserindo o cardápio
         $dados = [
             'oms_id' => $this->getOmsId(),
             'beginning_date' => $this->getBeginningDate(),
             'ending_date' => $this->getEndingDate()
         ];
-
-        if ($dados) {
-            $menusId = 10;//$this->pdo->lastInsertId();
+        if (parent::novo($dados)) {
+            $menusId = $this->pdo->lastInsertId();
             foreach ($this->getRecipes() as $values) {
                 // inserindo as receitas
-                $recipeId = (new RecipesModel())->novoRegistro($values['data'], $menusId);
+                (new RecipesModel())->novoRegistro($values, $menusId);
             }
+            msg::showMsg('111', 'success');
         }
     }
 
@@ -94,10 +93,8 @@ class CardapioModel extends CRUD
         // Seta todos os valores
         $menuMap = filter_input_array(INPUT_POST);
         $data = $menuMap["menuMap"];
-
         $beginningDate = date("Y-m-d", strtotime($data[0]["date"]));
         $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +7 day"));
-
         $this->setOmsId(filter_var($oms, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setBeginningDate($beginningDate)
             ->setEndingDate($endingDate)

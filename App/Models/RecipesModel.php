@@ -45,43 +45,60 @@ class RecipesModel extends CRUD
 
     public function novoRegistro($values, $menusId)
     {
-        foreach ($values as $value) {
-            d($values);
+        $date = $values["date"];
+        $recipes = $this->buildRecipes($values["data"]);
+
+        foreach ($recipes as $value) {
             $dados = [
-                'meals_id' => $value['meals']['id'],
+                'meals_id' => $value['mealsId'],
                 'menus_id' => $menusId,
-                'recipes_patterns_id' => $value['recipes']['id'],
+                'recipes_patterns_id' => $value['recipesPatternsId'],
                 'name' => $value['name'],
-                'quantity' => $value['quantity'],
-                'date' => date("Y-m-d", strtotime($value['date']))
+                'quantity_people' => $value['quantity'],
+                'date' => date("Y-m-d", strtotime($date))
             ];
-            d($dados);
             if (parent::novo($dados)) {
                 $recipeId = $this->pdo->lastInsertId();
-
                 if ($recipeId) {
-                    $items = $this->buildItemsRecipes($values['recipes']['items']);
-                    (new RecipesItemsModel())->novoRegistro($items, $recipeId);
+                    (new RecipesItemsModel())->novoRegistro($value['items'], $recipeId);
                 }
             }
         }
     }
 
-    private function buildItemsRecipes(array $values): array
+    private function buildRecipes(array $values) : array
     {
         $result = [];
 
         if (isset($values) && is_array($values)) {
             foreach ($values as $value) {
+                $recipes = $value["recipes"];
                 $result[] = [
-                    "biddings_items" => $value['id'],
-                    "name" => $value['name'],
-                    "suggested_quantity" => $value['quantity'],
-                    "quantity" => $value['quantity']
+                    'mealsId' => $recipes['meals']['id'],
+                    'recipesPatternsId' => $recipes['recipesPatternsId'],
+                    'name' => trim($recipes['name']),
+                    'quantity' => $recipes['quantity'],
+                    'items' => $this->buildItemsRecipes($recipes['items'])
                 ];
             }
         }
 
+        return $result;
+    }
+
+    private function buildItemsRecipes(array $values): array
+    {
+        $result = [];
+        if (isset($values) && is_array($values)) {
+            foreach($values as $value) {
+                $result[] = [
+                    "biddingsItems" => $value['id'],
+                    "name" => $value['name'],
+                    "suggestedQuantity" => $value['quantity'],
+                    "quantity" => $value['quantity']
+                ];
+            }
+        }
         return $result;
     }
 }

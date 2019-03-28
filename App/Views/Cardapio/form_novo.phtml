@@ -286,7 +286,7 @@
         });
 
         $(".btn-next-ingredients").on("click", function () {
-            getValuesIngredients();
+            var items = getValuesIngredients();
             var recipes = {
                 "recipes": {
                     "meals": {
@@ -296,7 +296,7 @@
                     "recipesPatternsId": $("#recipes").val(),
                     "name": $("#recipes option:selected").text(),
                     "quantity": $("#quantity_people").val(),
-                    "items": itemsMap
+                    "items": items
                 }
             };
             var day = getObjDay(currentDay);
@@ -451,8 +451,7 @@
 
                 item.push(recipe_item);
             });
-
-            itemsMap.push(item);
+            return item;
         }
 
         /**

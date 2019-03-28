@@ -9,7 +9,7 @@ use Respect\Validation\Validator as v;
 
 class RecipesItemsModel extends CRUD
 {
-    protected $entidade = 'recipes';
+    protected $entidade = 'recipes_items';
 
     /**
      * @var \HTR\Helpers\Paginator\Paginator
@@ -48,9 +48,9 @@ class RecipesItemsModel extends CRUD
         foreach ($dados as $value) {
             parent::novo([
                 "recipes_id" => $recipeId,
-                "biddings_items_id" => $value['biddings_items'],
+                "biddings_items_id" => $value['biddingsItems'],
                 "name" => $value['name'],
-                "suggested_quantity" => $value['suggested_quantity'],
+                "suggested_quantity" => $value['suggestedQuantity'],
                 "quantity" => $value['quantity']
             ]);
         }
