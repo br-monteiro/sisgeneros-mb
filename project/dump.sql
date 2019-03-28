@@ -327,14 +327,29 @@ DROP TABLE IF EXISTS `sisgeneros`.`menus` ;
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `oms_id` INT NOT NULL,
+  `users_id_resquesters` INT NOT NULL,
+  `users_id_authorizers` INT NOT NULL,
   `beginning_date` DATE NOT NULL,
   `ending_date` DATE NOT NULL,
   `status` VARCHAR(20) NOT NULL DEFAULT 'ABERTO',
+  `raw_menus_object` TEXT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_menus_oms1_idx` (`oms_id` ASC),
+  INDEX `fk_menus_users1_idx` (`users_id_resquesters` ASC),
+  INDEX `fk_menus_users2_idx` (`users_id_authorizers` ASC),
   CONSTRAINT `fk_menus_oms1`
     FOREIGN KEY (`oms_id`)
     REFERENCES `sisgeneros`.`oms` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_menus_users1`
+    FOREIGN KEY (`users_id_resquesters`)
+    REFERENCES `sisgeneros`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_menus_users2`
+    FOREIGN KEY (`users_id_authorizers`)
+    REFERENCES `sisgeneros`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB

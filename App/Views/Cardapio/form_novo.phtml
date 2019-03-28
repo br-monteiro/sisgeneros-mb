@@ -277,6 +277,9 @@
                 if (validateRangeDate($("#date").val())) {
                     alert("Data fora do período informado!");
                 } else {
+                    $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
+                        buildTableIngredients(data);
+                    });
                     hideFormCard("recipes");
                     showFormCard("ingredients");
                 }
@@ -327,11 +330,9 @@
             });
         });
 
-        $("#recipes").on("change", function () {
-            $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + this.value, function (data) {
-                buildTableIngredients(data);
-            });
-        });
+        /* $("#recipes").on("change", function () {
+           
+        }); */
 
         $(".delete-row").on('click', function () {
             $(this).closest('tr').remove();
@@ -393,6 +394,10 @@
             }
         }
 
+        function intParse(value) {
+            return parseInt(value, 10);
+        }
+
         function initView() {
             hideFormCard("recipes");
             hideFormCard("ingredients");
@@ -411,11 +416,12 @@
             $('#row-list').html("");
 
             for (i = 0; i < obj.length; i++) {
+                var calcQuantity = intParse($("#quantity_people").val()) * intParse(obj[i].quantity);
                 strHTML = "<tr>";
                 strHTML += "<td><input type='hidden' name='id[]' value='" + obj[i].id + "'>";
-                strHTML += "<input type='text' name='name[]' value='" + obj[i].name + "' class='form-control'></td>";
-                strHTML += "<td><input type='text' name='suggested_quantity[]' value='" + obj[i].quantity + "' class='form-control'></td>";
-                strHTML += "<td><input type='text' name='quantity[]' value='1' class='form-control'></td>";
+                strHTML += "<input type='text' name='name[]' value='" + obj[i].name + "' class='form-control' disabled></td>";
+                strHTML += "<td><input type='text' name='suggested_quantity[]' value='" + calcQuantity + "' class='form-control' disabled></td>";
+                strHTML += "<td><input type='text' name='quantity[]' value='" + calcQuantity + "' class='form-control'></td>";
                 strHTML += "<td><button class='delete-row btn btn-danger btn-sm' data-reference='-X-'><i class='fa fa-times'></i></button></td>";
                 strHTML += "</tr>";
                 $('#row-list').append(strHTML);
