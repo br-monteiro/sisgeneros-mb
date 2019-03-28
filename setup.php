@@ -6,22 +6,26 @@ use App\Config\Configurations as cfg;
 
 ini_set('max_execution_time', 300);
 
-new class {
+new class($argv) {
 
         const PATH_CONSTANTS = __DIR__ . '/App/Config/Configurations.php';
         const PATH_INDEX_FILE = __DIR__ . '/public/index.php';
         const PATH_DUMP_SQL = __DIR__ . '/dump.sql';
+        const PATH_BACKUP_KEYS = __DIR__ . '/App/Config/keys';
+        const DS = DIRECTORY_SEPARATOR;
 
         /**
          * @var \PDO The PDO instance
          */
         private $connection;
+        private $args = [];
 
-        public function __construct()
+        public function __construct($args)
         {
             try {
+                $this->buildCommands($args);
                 // init the flow execution
-                $this->changeConstants();
+                $this->changeConstants($this->commandGenerateKey(), $this->commandWithKey());
                 $this->changePathAutoload();
                 $this->createDataBase();
                 $this->insertDataDefault();
@@ -148,13 +152,25 @@ new class {
          * Try changes the content of configuration constants
          * @throws \Exception
          */
-        private function changeConstants()
+        private function changeConstants(bool $generateKey = true, string $withKey = null)
         {
             $fileRawContent = $this->loadFile(self::PATH_CONSTANTS);
             $newSaltKey = $this->makeSaltKey();
             // init all replaces
+            $rawKey = 'H' . $newSaltKey;
             $newSaltKey = 'H' . preg_quote($newSaltKey); // the letter H is just to fix the RegEx group
-            $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1{$newSaltKey}$3", $fileRawContent);
+
+            if ($generateKey) {
+                if ($withKey) {
+                    $rawKey = $withKey;
+                    $newSaltKey = preg_quote($withKey);
+                }
+                $this->saveKey($rawKey);
+                $fileNewContent = preg_replace("/(const STR_SALT = ')(.+)(';)/", "$1{$newSaltKey}$3", $fileRawContent);
+            } else {
+                $fileNewContent = $fileRawContent;
+            }
+
             $fileNewContent = preg_replace("/(const PATH_CORE = ')(.+)(';)/", '$1' . getcwd() . '/$3', $fileNewContent);
             // init the written changes
             $this->writeFile(self::PATH_CONSTANTS, $fileNewContent);
@@ -237,7 +253,38 @@ new class {
                     . "    '', 'yes', "
                     . "    'yes', '{$currentDate}', "
                     . "    '{$currentDate}' "
-                    . " ); ";
+                    . " ); "
+                    . ""
+                    . " INSERT INTO `sisgeneros`.`ingredients` ( "
+                    . "    `id`, `name` "
+                    . " ) "
+                    . " VALUES ( "
+                    . "    1, 'DESCONHECIDO' "
+                    . " ); "
+                    . ""
+                    . " INSERT INTO `sisgeneros`.`meals` ( "
+                    . "    `id`, `order`, `name` "
+                    . " ) "
+                    . " VALUES "
+                    . " ( "
+                    . "    1, 1, 'CAFE DA MANHA' "
+                    . " ), "
+                    . " ( "
+                    . "    2, 2, 'ALMOCO' "
+                    . " ), "
+                    . " ( "
+                    . "    3, 3, 'JANTAR' "
+                    . " ), "
+                    . " ( "
+                    . "    3, 3, 'JANTAR' "
+                    . " ), "
+                    . " ( "
+                    . "    4, 4, 'CEIA' "
+                    . " ), "
+                    . " ( "
+                    . "    5, 5, 'DIETA' "
+                    . " ); "
+                    . "";
 
                 $this->connectDatabase()->exec($sql);
                 $this->message('> Dados padrão inseridos com sucesso');
@@ -288,5 +335,61 @@ new class {
                 . "Path:" . $fullPath
                 . "" . PHP_EOL);
             }
+        }
+
+        /**
+         * Save the SALT KEY
+         * @param string $key
+         * @throws \Exception
+         */
+        private function saveKey(string $key)
+        {
+            if (file_exists(self::PATH_BACKUP_KEYS) && chmod(self::PATH_BACKUP_KEYS, 0777)) {
+                $file = self::PATH_BACKUP_KEYS . self::DS . date('Y-m-d_H-m-s') . '.txt';
+                $this->writeFile($file, $key);
+                $this->message('> Permissões de acesso no diretório de backup de tokens setadas com sucesso');
+                $this->message('> Token salvo com sucesso');
+            } else {
+                throw new \Exception(""
+                . "Não foi possível configurar as permissões de acesso do diretório de backup do token do sistema." . PHP_EOL
+                . "Path:" . self::PATH_BACKUP_KEYS
+                . "" . PHP_EOL);
+            }
+        }
+
+        /**
+         * Build the commands passed by CLI
+         * @param array $args
+         */
+        private function buildCommands(array $args)
+        {
+            foreach ($args as $value) {
+                $explodedCommand = explode('=', $value);
+                $this->args[$explodedCommand[0]] = $explodedCommand[1] ?? null;
+            }
+
+            if (isset($this->args['gerar-chave'])) {
+                $this->args['gerar-chave'] = $this->args['gerar-chave'] === 'true';
+            } else {
+                $this->args['gerar-chave'] = true;
+            }
+        }
+
+        /**
+         * Returns the value of command 'gerar-chave'
+         * @return bool
+         */
+        private function commandGenerateKey(): bool
+        {
+            return $this->args['gerar-chave'];
+        }
+
+        /**
+         * Returns the value of command 'com-cahve'
+         * @return string
+         */
+        private function commandWithKey(): string
+        {
+            return $this->args['com-chave'] ?? '';
         }
     };
