@@ -327,7 +327,7 @@ DROP TABLE IF EXISTS `sisgeneros`.`menus` ;
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `oms_id` INT NOT NULL,
-  `users_id_resquesters` INT NOT NULL,
+  `users_id_requesters` INT NOT NULL,
   `users_id_authorizers` INT NOT NULL,
   `beginning_date` DATE NOT NULL,
   `ending_date` DATE NOT NULL,
@@ -335,7 +335,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
   `raw_menus_object` TEXT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_menus_oms1_idx` (`oms_id` ASC),
-  INDEX `fk_menus_users1_idx` (`users_id_resquesters` ASC),
+  INDEX `fk_menus_users1_idx` (`users_id_requesters` ASC),
   INDEX `fk_menus_users2_idx` (`users_id_authorizers` ASC),
   CONSTRAINT `fk_menus_oms1`
     FOREIGN KEY (`oms_id`)
@@ -343,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_menus_users1`
-    FOREIGN KEY (`users_id_resquesters`)
+    FOREIGN KEY (`users_id_requesters`)
     REFERENCES `sisgeneros`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -363,7 +363,7 @@ DROP TABLE IF EXISTS `sisgeneros`.`meals` ;
 
 CREATE TABLE IF NOT EXISTS `sisgeneros`.`meals` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `order` INT(1) NOT NULL DEFAULT 1,
+  `sort` INT(1) NOT NULL DEFAULT 1,
   `name` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
