@@ -32,7 +32,7 @@ $pagination = Pagination::make($this);
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td><?= View::limitString($value['name'], 35); ?></td>
-                                <td><?= $value['order']; ?></td>
+                                <td><?= $value['sort']; ?></td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-edit"></i>

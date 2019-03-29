@@ -16,7 +16,7 @@ class MealsController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = cfg::DEFAULT_URI . 'Meals/'; 
+        $this->view->controller = cfg::DEFAULT_URI . 'meals/'; 
         $this->access = new Access();
     }
 

@@ -51,7 +51,7 @@ class MealsModel extends CRUD
 
         $dados = [
             'name' => $this->getName(),
-            'order' => $this->getOrder()
+            'sort' => $this->getSort()
         ];
         if (parent::novo($dados)) {
             msg::showMsg('111', 'success');
@@ -65,7 +65,7 @@ class MealsModel extends CRUD
 
         $dados = [
             'name' => $this->getName(),
-            'order' => $this->getOrder()
+            'sort' => $this->getSort()
         ];
 
         if (parent::editar($dados, $this->getId())) {
@@ -84,7 +84,7 @@ class MealsModel extends CRUD
     {
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setOrder(filter_input(INPUT_POST, 'order', FILTER_VALIDATE_INT))
+            ->setSort(filter_input(INPUT_POST, 'sort', FILTER_VALIDATE_INT))
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
