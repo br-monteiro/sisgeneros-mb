@@ -85,7 +85,7 @@ class Session
         } else {
             /// Caso a Sessão não seja iniciada, inicia o processo de criação da sessão
             session_set_cookie_params( 
-                1800, // Tempo de vida da sessão. Padrão 30min
+                5400, // Tempo de vida da sessão. Padrão 1:30min
                 cfg::DEFAULT_URI, // Path da Sessão
                 cfg::DOMAIN, // Nome no Domínio
                 false, // SSL
