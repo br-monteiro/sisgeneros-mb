@@ -101,7 +101,7 @@ class RecipesPatternsModel extends CRUD
     {
         $query = ""
             . " SELECT "
-            . " rpi.id, ing.name, quantity "
+            . " rpi.id, rpi.ingredients_id, ing.name, quantity "
             . " FROM recipes_patterns_items AS rpi"
             . " INNER JOIN ingredients AS ing "
             . "     ON ing.id = rpi.ingredients_id "

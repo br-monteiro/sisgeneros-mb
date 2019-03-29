@@ -138,6 +138,7 @@
                                             <th>Ingrediente</th>
                                             <th width="15%">Sugestão</th>
                                             <th width="15%">Quantidade</th>
+                                            <th width="15%">Origem</th>
                                             <th width="8%"></th>
                                         </tr>
                                     </thead>
@@ -187,6 +188,31 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="hide">
+    <table>
+        <tr class="quantity-ingredients">
+            <td>
+                <input type='hidden' name='id[]'>
+                <input type='text' name='name[]' class='form-control' disabled>
+            </td>
+            <td>
+                <input type='text' name='suggested_quantity[]' class='form-control' disabled>
+            </td>
+            <td>
+                <input type='text' name='quantity[]' class='form-control'>
+            </td>
+            <td>
+                <select name="biddings_items_id[]" class="items"></select>
+            </td>
+            <td>
+                <button class='delete-row btn btn-danger btn-sm'>
+                    <i class='fa fa-times'></i>
+                </button>
+            </td>
+        </tr>
+    </table>
 </div>
 <script>
     $(document).ready(function () {
@@ -274,15 +300,11 @@
 
         $(".btn-next-recipes").on("click", function () {
             if (validateDate($("#date").val())) {
-                if (validateRangeDate($("#date").val())) {
-                    alert("Data fora do período informado!");
-                } else {
-                    $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
-                        buildTableIngredients(data);
-                    });
-                    hideFormCard("recipes");
-                    showFormCard("ingredients");
-                }
+                $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
+                    buildTableIngredients(data);
+                });
+                hideFormCard("recipes");
+                showFormCard("ingredients");
             } else {
                 alert("Data inválida!");
             }
@@ -329,15 +351,6 @@
                 }
             });
         });
-
-        /* $("#recipes").on("change", function () {
-           
-        }); */
-
-        $(".delete-row").on('click', function () {
-            $(this).closest('tr').remove();
-        });
-
         function getFirstDay() {
             return menuMap.find(function (item) {
                 return item.order === 1;
@@ -398,6 +411,19 @@
             return parseInt(value, 10);
         }
 
+        /**
+         * Parse the string to float
+         * @param { String } value
+         * @return { Number }
+         */
+        function floatParse(value) {
+            var valueParsed = parseFloat(value);
+            if (!isNaN(valueParsed)) {
+                valueParsed = valueParsed.toFixed(3);
+            }
+            return valueParsed;
+        }
+
         function initView() {
             hideFormCard("recipes");
             hideFormCard("ingredients");
@@ -410,21 +436,64 @@
             $("#quantity_people").val("");
         }
 
-        function buildTableIngredients(data) {
-            var strHTML = "";
-            var obj = JSON.parse(data);
-            $('#row-list').html("");
+        /**
+         * Get the elements from DOM according selector
+         * @param { String } selector
+         * @return { Object }
+         */
+        function extractElementsPatterns (selector) {
+            return $(selector).clone();
+        }
 
-            for (i = 0; i < obj.length; i++) {
-                var calcQuantity = intParse($("#quantity_people").val()) * intParse(obj[i].quantity);
-                strHTML = "<tr>";
-                strHTML += "<td><input type='hidden' name='id[]' value='" + obj[i].id + "'>";
-                strHTML += "<input type='text' name='name[]' value='" + obj[i].name + "' class='form-control' disabled></td>";
-                strHTML += "<td><input type='text' name='suggested_quantity[]' value='" + calcQuantity + "' class='form-control' disabled></td>";
-                strHTML += "<td><input type='text' name='quantity[]' value='" + calcQuantity + "' class='form-control'></td>";
-                strHTML += "<td><button class='delete-row btn btn-danger btn-sm' data-reference='-X-'><i class='fa fa-times'></i></button></td>";
-                strHTML += "</tr>";
-                $('#row-list').append(strHTML);
+        /**
+         * Returns all elements from database according Igrendients Id
+         * @param { Number } elementId
+         * @param { Function } callback
+         * @return { Void }
+         */
+        function fetchBiddingsByIngredientsId (elementId, callback) {
+            $.get("licitacao/ingrendientes/id/" + elementId, function (data) {
+                if (typeof callback === 'function') {
+                    callback(jsonParse(data, []));
+                }
+            });
+        }
+
+        function buildTableIngredients(data) {
+            var element = extractElementsPatterns('.quantity-ingredients');
+            var obj = jsonParse(data, []);
+
+            if (element.length && obj.length) {
+                $('#row-list').html("");
+                var quantityPeople = intParse($("#quantity_people").val());
+                obj.forEach(function (item) {
+                    var quantity = floatParse(item.quantity);
+                    var calc = floatParse(quantityPeople * quantity);
+                    var elementTemp = element.clone();
+                    elementTemp.find("input[name='id[]']").val(item.id);
+                    elementTemp.find("input[name='name[]']").val(item.name);
+                    elementTemp.find("input[name='suggested_quantity[]']").val(calc);
+                    elementTemp.find("input[name='quantity[]']").val(calc);
+                    elementTemp.find("select[name='biddings_items_id[]']").attr('data-reference', item.ingredients_id);
+                    $('#row-list').append(elementTemp);
+                    $(".delete-row").on('click', function () {
+                        $(this).closest('tr').remove();
+                    });
+                });
+
+                $('select.items').each(function(i, value) {
+                    var reference = value.getAttribute('data-reference');
+                    if (reference) {
+                        fetchBiddingsByIngredientsId(reference, function (result) {
+                            result.forEach(function (item) {
+                                var option = document.createElement('option');
+                                option.id = item.id;
+                                option.innerText = item.biddings_number + ' - ' + item.name;
+                                value.appendChild(option);
+                            });
+                        });
+                    }
+                });
             }
         }
 

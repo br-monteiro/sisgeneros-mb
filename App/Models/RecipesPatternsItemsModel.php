@@ -3,7 +3,6 @@ namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
-use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 
 

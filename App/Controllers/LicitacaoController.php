@@ -17,7 +17,6 @@ class LicitacaoController extends Controller implements CtrlInterface
         parent::__construct($bootstrap);
         $this->view->controller = cfg::DEFAULT_URI . 'licitacao/';
         $this->access = new Access();
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
     }
 
     public function indexAction()
@@ -27,12 +26,14 @@ class LicitacaoController extends Controller implements CtrlInterface
 
     public function novoAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $this->view->title = 'Novo Registro';
         $this->render('form_novo');
     }
 
     public function editarAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new LicitacaoModel();
         $this->view->title = 'Editando Registro';
         $this->view->result = $model->findById($this->getParametro('id'));
@@ -41,12 +42,14 @@ class LicitacaoController extends Controller implements CtrlInterface
 
     public function eliminarAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new LicitacaoModel();
         $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new LicitacaoModel();
         $this->view->title = 'Lista de Todas as Licitações';
         $model->paginator($this->getParametro('pagina'));
@@ -57,13 +60,21 @@ class LicitacaoController extends Controller implements CtrlInterface
 
     public function registraAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new LicitacaoModel();
         $model->novoRegistro();
     }
 
     public function alteraAction()
     {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new LicitacaoModel();
         $model->editarRegistro();
+    }
+
+    public function ingrendientesAction()
+    {
+        $result = (new LicitacaoModel())->findAllByIngredientsId(intval($this->getParametro('id')));
+        echo json_encode($result);
     }
 }
