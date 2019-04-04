@@ -3,6 +3,8 @@
 use App\Helpers\Pagination;
 use App\Helpers\View;
 
+$userNivel = $this->view->userLoggedIn['level'];
+
 $pagination = Pagination::make($this);
 
 ?>
@@ -40,6 +42,11 @@ $pagination = Pagination::make($this);
                                 <td><?= $value['requester']; ?></td>
                                 <td><?= $value['authorizers']; ?></td>
                                 <td>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO']) && $value['status'] == 'ABERTO'): ?>
+                                        <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-check-circle"></i> Aprovar
+                                        </a>
+                                    <?php endif; ?>
                                     <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-calendar"></i>
                                     </a>

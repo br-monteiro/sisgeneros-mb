@@ -90,6 +90,26 @@ class CardapioModel extends CRUD
         }
     }
 
+    public function aprovar($id, $user)
+    {
+        $dados = [
+            'status' => 'APROVADO',
+            'users_id_authorizers' => $user['id']
+        ];
+
+        if (parent::editar($dados, $id)) {
+            $recipes = $this->findById($id);
+            $recipes = json_decode($recipes['raw_menus_object']);
+            
+            foreach ($recipes as $values) {
+                // inserindo as receitas
+                (new RecipesModel())->novoRegistro($values, $id);
+            }
+
+            header('Location: ' . cfg::DEFAULT_URI . 'cardapio/');
+        }
+    }
+
     private function validaAll($user)
     {
         $omId = intval($user['oms_id'] ?? 0);
