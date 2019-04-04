@@ -25,10 +25,13 @@ class CardapioModel extends CRUD
     public function paginator($pagina)
     {
         $dados = [
-            'entidade' => $this->entidade,
+            'entidade' => 'menus 
+            INNER JOIN users requester ON requester.id = menus.users_id_resquesters
+            INNER JOIN users authorizers ON authorizers.id = menus.users_id_authorizers',
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'beginning_date ASC'
+            'orderBy' => 'beginning_date ASC',
+            'select' => 'menus.*, requester.name requester, authorizers.name authorizers'
         ];
 
         $this->paginator = new Paginator($dados);
@@ -44,22 +47,21 @@ class CardapioModel extends CRUD
         return $this->paginator->getNaveBtn();
     }
 
-    public function novoRegistro($omId)
+    public function novoRegistro($user)
     {
         // Valida dados
-        $this->validaAll($omId);
+        $this->validaAll($user);
         // inserindo o cardápio
         $dados = [
             'oms_id' => $this->getOmsId(),
+            'users_id_resquesters' => $this->getUserRequesters(),
+            'users_id_authorizers' => $this->getUserAuthorizers(),
             'beginning_date' => $this->getBeginningDate(),
-            'ending_date' => $this->getEndingDate()
+            'ending_date' => $this->getEndingDate(),
+            'raw_menus_object' => json_encode($this->getRecipes())
         ];
+
         if (parent::novo($dados)) {
-            $menusId = $this->pdo->lastInsertId();
-            foreach ($this->getRecipes() as $values) {
-                // inserindo as receitas
-                (new RecipesModel())->novoRegistro($values, $menusId);
-            }
             msg::showMsg('111', 'success');
         }
     }
@@ -88,14 +90,18 @@ class CardapioModel extends CRUD
         }
     }
 
-    private function validaAll($oms)
+    private function validaAll($user)
     {
+        $omId = intval($user['oms_id'] ?? 0);
+        $userId = intval($user['id'] ?? 0);
         // Seta todos os valores
         $menuMap = filter_input_array(INPUT_POST);
         $data = $menuMap["menuMap"];
         $beginningDate = date("Y-m-d", strtotime($data[0]["date"]));
         $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +7 day"));
-        $this->setOmsId(filter_var($oms, FILTER_SANITIZE_SPECIAL_CHARS))
+        $this->setOmsId(filter_var($omId, FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setUserRequesters(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setUserAuthorizers(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setBeginningDate($beginningDate)
             ->setEndingDate($endingDate)
             ->setRecipes($data);

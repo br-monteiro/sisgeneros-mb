@@ -92,7 +92,7 @@ class RecipesModel extends CRUD
         if (isset($values) && is_array($values)) {
             foreach($values as $value) {
                 $result[] = [
-                    "biddingsItems" => $value['id'],
+                    "biddingsItems" => $value['biddings_items_id'],
                     "name" => $value['name'],
                     "suggestedQuantity" => $value['quantity'],
                     "quantity" => $value['quantity']

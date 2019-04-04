@@ -34,11 +34,11 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['beginning']; ?></td>
-                                <td><?= $value['ending']; ?></td>
+                                <td><?= $value['beginning_date']; ?></td>
+                                <td><?= $value['ending_date']; ?></td>
                                 <td><?= $value['status']; ?></td>
-                                <td><?= $value['requesterUser']; ?></td>
-                                <td><?= $value['authorizerUser']; ?></td>
+                                <td><?= $value['requester']; ?></td>
+                                <td><?= $value['authorizers']; ?></td>
                                 <td>
                                     <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                         <i class="fa fa-calendar"></i>

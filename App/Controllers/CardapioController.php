@@ -71,9 +71,8 @@ class CardapioController extends Controller implements CtrlInterface
     public function registraAction()
     {
         $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $omId = intval($user['oms_id'] ?? 0);
         $model = new CardapioModel();
-        $model->novoRegistro($omId);
+        $model->novoRegistro($user);
     }
 
     public function alteraAction()
