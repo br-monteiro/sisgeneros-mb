@@ -46,18 +46,18 @@ $pagination = Pagination::make($this);
                                         <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Aprovar
                                         </a>
+                                        <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-calendar"></i>
+                                        </a>
+                                        <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-info btn-sm">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a
+                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                            class="btn btn-danger btn-sm">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
                                     <?php endif; ?>
-                                    <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
-                                        <i class="fa fa-calendar"></i>
-                                    </a>
-                                    <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-info btn-sm">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                    <a
-                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
-                                        class="btn btn-danger btn-sm">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
