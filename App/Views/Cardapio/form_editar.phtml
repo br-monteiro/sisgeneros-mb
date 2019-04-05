@@ -4,6 +4,7 @@
             <div class="col-lg-12">
                 <h5 class="page-header"><?= $this->view->title ?></h5>
             </div>
+            <div class="resultado"></div>
         </div>
 
         <div class="row">
@@ -14,34 +15,175 @@
                     </div>
                     <div class="card-body">
                         <div id="resultado"></div>
-                        <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Data de Início</label>
-                                        <input type="text"
-                                               id="beginning_date"
-                                               name="beginning_date"
-                                               placeholder="Data no formato DD-MM-YYYY"
-                                               class="form-control"
-                                               data-mask="00-00-0000"
-                                               required>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label>Data de Final</label>
-                                        <input type="text"
-                                               id="ending_date"
-                                               name="ending_date"
-                                               placeholder="Data no formato DD-MM-YYYY"
-                                               class="form-control"
-                                               data-mask="00-00-0000"
-                                               required>
-                                    </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Início</label>
+                                    <input type="text"
+                                           id="beginningDate"
+                                           name="beginningDate"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control"
+                                           data-mask="00-00-0000"
+                                           required>
                                 </div>
                             </div>
-                        </form>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Final</label>
+                                    <input type="text"
+                                           id="endingDate"
+                                           name="endingDate"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control"
+                                           data-mask="00-00-0000"
+                                           disabled
+                                           required>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-primary btn-next-menu"><i class="fa fa-check"></i> Próximo</button>
+                                    <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de dias do cardápio
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3">
+                                <div class="form-group">
+                                    <label>Dia</label>
+                                    <input type="text"
+                                           id="date"
+                                           name="date"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control text-center"
+                                           data-mask="00-00-0000"
+                                           disabled
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-sm btn-previous-day"><i class="fa fa-arrow-left"></i> Anterior</button>
+                                    <button class="btn btn-primary btn-sm btn-next-day">Próximo <i class="fa fa-arrow-right"></i> </button>
+                                </div>
+                                <div class="form-group">
+                                    <label>Refeição</label>
+                                    <select
+                                        class="form-control"
+                                        name="mealsId"
+                                        id="mealsId">
+                                        <option value="">Refeição</option>
+                                        <?php foreach ($this->view->resultMeals as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Receitas</label>
+                                    <select
+                                        class="form-control"
+                                        name="recipes"
+                                        id="recipes">
+                                        <option value="">Receitas</option>
+                                        <?php foreach ($this->view->resultRecipes as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantidade de pessoas</label>
+                                    <input type="number"
+                                           id="quantity_people"
+                                           name="quantity_people"
+                                           placeholder="Quantidade de pessoas"
+                                           class="form-control"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right btn-next-recipes">
+                                    <br>
+                                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar ingredientes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de receitas
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ingrediente</th>
+                                            <th width="15%">Sugestão</th>
+                                            <th width="15%">Quantidade</th>
+                                            <th width="15%">Origem</th>
+                                            <th width="8%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="row-list"></tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-success btn-next-ingredients"><i class="fa fa-check"></i> Confirmar</button>
+                                    <button class="btn btn-warning btn-previous-ingredients"><i class="fa fa-arrow-left"></i> Voltar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header title-menu">
+                        Cardápio do dia {dia}
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Refeição</th>
+                                        <th>Receita</th>
+                                        <th>Quantidade de pessoas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="row-menu-resume"></tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group pull-right">
+                                <br>
+                                <button class="btn btn-success btn-checkout-menu"><i class="fa fa-check"></i> Concluir cardápio</button>                                
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

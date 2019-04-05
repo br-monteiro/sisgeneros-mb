@@ -50,6 +50,22 @@ class CardapioController extends Controller implements CtrlInterface
         $this->render('form_editar');
     }
 
+    public function editarMenuDaysAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new CardapioModel();
+        $this->view->title = 'Editar data do cardápio';
+        $this->view->result = $model->findById($this->getParametro('id'));
+        $this->render('form_menu_day');
+    }
+
+    public function alteraMenuDaysAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new CardapioModel();
+        $model->atualizaDataCardapio();
+    }
+
     public function eliminarAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);

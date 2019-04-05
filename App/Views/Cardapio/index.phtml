@@ -36,8 +36,8 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['beginning_date']; ?></td>
-                                <td><?= $value['ending_date']; ?></td>
+                                <td><?= View::humanDate($value['beginning_date']); ?></td>
+                                <td><?= View::humanDate($value['ending_date']); ?></td>
                                 <td><?= $value['status']; ?></td>
                                 <td><?= $value['requester']; ?></td>
                                 <td><?= $value['authorizers']; ?></td>

@@ -6,6 +6,7 @@ use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\Utils;
 
 class CardapioModel extends CRUD
 {
@@ -86,7 +87,7 @@ class CardapioModel extends CRUD
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'suppliers/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'cardapio/ver/');
         }
     }
 
@@ -107,6 +108,21 @@ class CardapioModel extends CRUD
             }
 
             header('Location: ' . cfg::DEFAULT_URI . 'cardapio/');
+        }
+    }
+
+    public function atualizaDataCardapio()
+    {
+        $beginningDate = filter_input(INPUT_POST, 'beginningDate');
+        $endingDate = date("Y-m-d", strtotime("".Utils::dateDatabaseFormate($beginningDate)." +6 day"));
+        $id = filter_input(INPUT_POST, 'id');
+
+        $dados = [
+            'beginning_date' => Utils::dateDatabaseFormate($beginningDate),
+            'ending_date' => $endingDate
+        ];
+        if (parent::editar($dados, $id)) {
+            msg::showMsg('001', 'success');
         }
     }
 
