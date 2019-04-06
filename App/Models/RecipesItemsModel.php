@@ -59,9 +59,13 @@ class RecipesItemsModel extends CRUD
     public function findByRecipe($recipesId)
     {
         $query = ""
-            . " SELECT * "
-            . " FROM {$this->entidade} "
-            . " WHERE recipes_id = :recipesId ";
+            . " SELECT A.name AS item, A.quantity, B.name AS biddings, C.name AS suppliers "
+            . " FROM {$this->entidade} AS A "
+            . " LEFT JOIN biddings_items AS B "
+            . "     ON B.id = A.biddings_items_id "
+            . " LEFT JOIN suppliers AS C "
+            . "     ON C.id = B.suppliers_id "
+            . " WHERE A.recipes_id = :recipesId ";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':recipesId' => $recipesId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

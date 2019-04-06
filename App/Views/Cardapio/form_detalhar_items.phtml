@@ -17,16 +17,20 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Nome</th>
+                                        <th>Solicitado</th>
                                         <th>Quantidade</th>
+                                        <th>Licitado</th>
+                                        <th>Fornecedor</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach($this->view->result as $value): ?>
                                     <tr>
-                                        <td><?= $value['name'] ?></td>
+                                        <td><?= $value['item'] ?></td>
                                         <td><?= $value['quantity'] ?></td>
+                                        <td><?= ($value['biddings'])??"NÃO LICITADO"  ?></td>
+                                        <td><?= ($value['suppliers'])??"NÃO LICITADO" ?></td>
                                         <td>
                                             <a href="<?= $this->view->controller; ?>editarRecipes/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                                 <i class="fa fa-edit"></i>

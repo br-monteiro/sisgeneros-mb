@@ -62,6 +62,18 @@ class CardapioController extends Controller implements CtrlInterface
         $this->render('form_detalhar_items');
     }
 
+    public function editarRecipesAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $this->view->title = 'Editar receita';
+        $modelMeals = new MealsModel();
+        $modelRecipes = new RecipesPatternsModel();
+        $this->view->result = (new RecipesModel())->findById($this->getParametro('idRecipes'));
+        $this->view->resultMeals = $modelMeals->findAll();
+        $this->view->resultRecipes = $modelRecipes->findAll();
+        $this->render('form_editar_recipe');
+    }
+
     public function alteraMenuDaysAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
