@@ -45,8 +45,8 @@ class RecipesModel extends CRUD
 
     public function novoRegistro($values, $menusId)
     {
-        $date = $values->date;
-        $recipes = $this->buildRecipes($values->data);
+        $date = $values["date"];
+        $recipes = $this->buildRecipes($values["data"]);
 
         foreach ($recipes as $value) {
             $dados = [
@@ -72,13 +72,13 @@ class RecipesModel extends CRUD
 
         if (isset($values) && is_array($values)) {
             foreach ($values as $value) {
-                $recipes = $value->recipes;
+                $recipes = $value["recipes"];
                 $result[] = [
-                    'mealsId' => $recipes->meals->id,
-                    'recipesPatternsId' => $recipes->recipesPatternsId,
-                    'name' => trim($recipes->name),
-                    'quantity' => $recipes->quantity,
-                    'items' => $this->buildItemsRecipes($recipes->items)
+                    'mealsId' => $recipes['meals']['id'],
+                    'recipesPatternsId' => $recipes['recipesPatternsId'],
+                    'name' => trim($recipes['name']),
+                    'quantity' => $recipes['quantity'],
+                    'items' => $this->buildItemsRecipes($recipes['items'])
                 ];
             }
         }
@@ -92,13 +92,30 @@ class RecipesModel extends CRUD
         if (isset($values) && is_array($values)) {
             foreach($values as $value) {
                 $result[] = [
-                    "biddingsItems" => $value->biddings_items_id,
-                    "name" => $value->name,
-                    "suggestedQuantity" => $value->quantity,
-                    "quantity" => $value->quantity
+                    "biddingsItems" => $value['biddings_items_id'],
+                    "name" => $value['name'],
+                    "suggestedQuantity" => $value['quantity'],
+                    "quantity" => $value['quantity']
                 ];
             }
         }
         return $result;
+    }
+
+    public function findByRecipeByMenuId($menusId)
+    {
+        $query = ""
+            . " SELECT "
+            . " A.id, A.date, "
+            . " B.name AS meals, C.name AS recipes, A.quantity_people "
+            . " FROM {$this->entidade} AS A "
+            . " INNER JOIN meals AS B "
+            . "     ON B.id = A.meals_id "
+            . " INNER JOIN recipes_patterns AS C "
+            . "     ON C.id = A.recipes_patterns_id "
+            . " WHERE A.menus_id = :menusId ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':menusId' => $menusId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

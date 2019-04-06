@@ -63,6 +63,12 @@ class CardapioModel extends CRUD
         ];
 
         if (parent::novo($dados)) {
+            $menusId = $this->pdo->lastInsertId();
+            foreach ($this->getRecipes() as $values) {
+                // inserindo as receitas
+                (new RecipesModel())->novoRegistro($values, $menusId);
+            }
+
             msg::showMsg('111', 'success');
         }
     }

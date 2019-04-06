@@ -7,6 +7,8 @@ use HTR\Helpers\Access\Access;
 use App\Models\CardapioModel;
 use App\Models\OmModel;
 use App\Models\MealsModel;
+use App\Models\RecipesModel;
+use App\Models\RecipesItemsModel;
 use App\Models\RecipesPatternsModel;
 use App\Config\Configurations as cfg;
 
@@ -41,22 +43,23 @@ class CardapioController extends Controller implements CtrlInterface
         $this->render('form_novo');
     }
 
-    public function editarAction()
+    public function detalharAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
-        $this->view->title = 'Editando Registro';
+        $this->view->title = 'Detalhes do cardápio';
         $this->view->result = $model->findById($this->getParametro('id'));
+        $this->view->recipes = (new RecipesModel())->findByRecipeByMenuId($this->getParametro('id'));
         $this->render('form_editar');
     }
 
-    public function editarMenuDaysAction()
+    public function detalharItemsAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
-        $model = new CardapioModel();
-        $this->view->title = 'Editar data do cardápio';
-        $this->view->result = $model->findById($this->getParametro('id'));
-        $this->render('form_menu_day');
+        $model = new RecipesItemsModel();
+        $this->view->title = 'Detalhes dos ingredientes';
+        $this->view->result = $model->findByRecipe($this->getParametro('idRecipes'));
+        $this->render('form_detalhar_items');
     }
 
     public function alteraMenuDaysAction()

@@ -1,3 +1,8 @@
+<?php
+
+use App\Helpers\View;
+
+?>
 <div id="page-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -6,154 +11,62 @@
             </div>
             <div class="resultado"></div>
         </div>
-
+        <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
+            <i class="fa fa-arrow-left"></i> Voltar
+        </a>
+        <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="<?= $this->view->controller ?>aprovar/id/<?= $this->view->result['id'] ?>" class="btn btn-success">
+                        <i class="fa fa-check"></i> Aprovar cardápio
+                    </a>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div id="resultado"></div>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                        <i class="fa fa-table fa-fw"></i> Data do cardápio
                     </div>
                     <div class="card-body">
-                        <div id="resultado"></div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label>Data de Início</label>
-                                    <input type="text"
-                                           id="beginningDate"
-                                           name="beginningDate"
-                                           placeholder="Data no formato DD-MM-AAAA"
-                                           class="form-control"
-                                           data-mask="00-00-0000"
-                                           required>
+                        <form action="<?= $this->view->controller; ?>alteraMenuDays/" method="post" id="form">
+                        <input type="hidden" name="id" id="menusId" value="<?= $this->view->result['id']; ?>">                            
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Início</label>
+                                        <input type="text"
+                                            id="beginningDate"
+                                            name="beginningDate"
+                                            placeholder="Data no formato DD-MM-AAAA"
+                                            class="form-control"
+                                            data-mask="00-00-0000"
+                                            value="<?= date("d-m-Y", strtotime($this->view->result['beginning_date'])) ?>"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Data de Final</label>
+                                        <input type="text"
+                                            id="endingDate"
+                                            name="endingDate"
+                                            placeholder="Data no formato DD-MM-AAAA"
+                                            class="form-control"
+                                            data-mask="00-00-0000"
+                                            value="<?= date("d-m-Y", strtotime($this->view->result['ending_date'])) ?>"
+                                            disabled
+                                            required>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <br>
+                                        <button class="btn btn-info"><i class="fa fa-refresh"></i> Atualizar data</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label>Data de Final</label>
-                                    <input type="text"
-                                           id="endingDate"
-                                           name="endingDate"
-                                           placeholder="Data no formato DD-MM-AAAA"
-                                           class="form-control"
-                                           data-mask="00-00-0000"
-                                           disabled
-                                           required>
-                                </div>
-                                <div class="form-group pull-right">
-                                    <br>
-                                    <button class="btn btn-primary btn-next-menu"><i class="fa fa-check"></i> Próximo</button>
-                                    <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fa fa-table fa-fw"></i> Formulário de dias do cardápio
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="row">
-                            <div class="col-md-6 offset-md-3">
-                                <div class="form-group">
-                                    <label>Dia</label>
-                                    <input type="text"
-                                           id="date"
-                                           name="date"
-                                           placeholder="Data no formato DD-MM-AAAA"
-                                           class="form-control text-center"
-                                           data-mask="00-00-0000"
-                                           disabled
-                                           required>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary btn-sm btn-previous-day"><i class="fa fa-arrow-left"></i> Anterior</button>
-                                    <button class="btn btn-primary btn-sm btn-next-day">Próximo <i class="fa fa-arrow-right"></i> </button>
-                                </div>
-                                <div class="form-group">
-                                    <label>Refeição</label>
-                                    <select
-                                        class="form-control"
-                                        name="mealsId"
-                                        id="mealsId">
-                                        <option value="">Refeição</option>
-                                        <?php foreach ($this->view->resultMeals as $value): ?>
-                                            <option value="<?= $value['id'] ?>">
-                                                <?= $value['name'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Receitas</label>
-                                    <select
-                                        class="form-control"
-                                        name="recipes"
-                                        id="recipes">
-                                        <option value="">Receitas</option>
-                                        <?php foreach ($this->view->resultRecipes as $value): ?>
-                                            <option value="<?= $value['id'] ?>">
-                                                <?= $value['name'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Quantidade de pessoas</label>
-                                    <input type="number"
-                                           id="quantity_people"
-                                           name="quantity_people"
-                                           placeholder="Quantidade de pessoas"
-                                           class="form-control"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group pull-right btn-next-recipes">
-                                    <br>
-                                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar ingredientes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fa fa-table fa-fw"></i> Formulário de receitas
-                    </div>
-                    <div class="card-body text-center">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Ingrediente</th>
-                                            <th width="15%">Sugestão</th>
-                                            <th width="15%">Quantidade</th>
-                                            <th width="15%">Origem</th>
-                                            <th width="8%"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="row-list"></tbody>
-                                </table>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group pull-right">
-                                    <br>
-                                    <button class="btn btn-success btn-next-ingredients"><i class="fa fa-check"></i> Confirmar</button>
-                                    <button class="btn btn-warning btn-previous-ingredients"><i class="fa fa-arrow-left"></i> Voltar</button>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -162,7 +75,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header title-menu">
-                        Cardápio do dia {dia}
+                        Receitas do cardápio
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -173,15 +86,38 @@
                                         <th>Refeição</th>
                                         <th>Receita</th>
                                         <th>Quantidade de pessoas</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
-                                <tbody id="row-menu-resume"></tbody>
+                                <tbody>
+                                    <?php foreach($this->view->recipes as $value): ?>
+                                    <tr>
+                                        <td><?= View::humanDate($value['date']); ?></td>
+                                        <td><?= $value['meals'] ?></td>
+                                        <td><?= $value['recipes'] ?></td>
+                                        <td><?= $value['quantity_people'] ?></td>
+                                        <td>
+                                            <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-list"></i> Ingredientes
+                                            </a>
+                                            <a href="<?= $this->view->controller; ?>editarRecipes/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a
+                                                onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
                             </table>
                         </div>
                         <div class="col-lg-12">
                             <div class="form-group pull-right">
                                 <br>
-                                <button class="btn btn-success btn-checkout-menu"><i class="fa fa-check"></i> Concluir cardápio</button>                                
+                                <button class="btn btn-success"><i class="fa fa-check"></i> Gerar solicitações</button>                                
                             </div>
                         </div>
                     </div>
@@ -190,3 +126,54 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function () {
+    var beginningDate = $("#beginningDate");
+    var endingDate = $("#endingDate");
+    var menuJson = [];
+    var itemsMap = [];
+    var menuMap = [];
+    var currentDay = 1;
+    var currentDayObj = {};
+    var x = 1;
+
+    /**
+     * Reverse the Date in portuguese format to english format
+     * @param { String } Value
+     * @return { String }
+     */
+    var reverseDate = function rverseDate(value) {
+        return value && value.split("-").reverse().join("-");
+    };
+
+    beginningDate.on("blur", function () {
+        if (validateDate(beginningDate.val())) {
+            var day = new Date(reverseDate(beginningDate.val()));
+            var nextWeek = new Date(day.getTime() + 7 * 86400000);
+            endingDate.val(formatDate(nextWeek));
+        }
+    });
+
+    function formatDate(dateVal) {
+        var month = dateVal.getMonth() + 1;
+        var day = dateVal.getDate();
+
+        var output =
+                (day < 10 ? '0' : '') + day + '-' +
+                (month < 10 ? '0' : '') + month + '-' +
+                dateVal.getFullYear();
+
+        return output;
+    }
+
+    /**
+     * Teste if the date is DD-MM-AAAA
+     * @param { String } date
+     * @return { Boolean }
+     */
+    function validateDate(date) {
+        var regexDate = /^(0[1-9]|1\d|2\d|3[01])-(0[1-9]|1[0-2])-(19|20)\d{2}$/;
+        return regexDate.test(date);
+    }
+});
+</script>

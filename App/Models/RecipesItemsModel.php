@@ -55,4 +55,15 @@ class RecipesItemsModel extends CRUD
             ]);
         }
     }
+
+    public function findByRecipe($recipesId)
+    {
+        $query = ""
+            . " SELECT * "
+            . " FROM {$this->entidade} "
+            . " WHERE recipes_id = :recipesId ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':recipesId' => $recipesId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

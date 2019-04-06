@@ -36,8 +36,16 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= View::humanDate($value['beginning_date']); ?></td>
-                                <td><?= View::humanDate($value['ending_date']); ?></td>
+                                <td>
+                                    <span class="badge badge-danger">
+                                        <?= View::humanDate($value['beginning_date']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-danger">
+                                        <?= View::humanDate($value['ending_date']); ?>
+                                    </span>
+                                </td>
                                 <td><?= $value['status']; ?></td>
                                 <td><?= $value['requester']; ?></td>
                                 <td><?= $value['authorizers']; ?></td>
@@ -46,11 +54,8 @@ $pagination = Pagination::make($this);
                                         <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                             <i class="fa fa-check-circle"></i> Aprovar
                                         </a>
-                                        <a href="<?= $this->view->controller; ?>editarMenuDays/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
-                                            <i class="fa fa-calendar"></i>
-                                        </a>
-                                        <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-info btn-sm">
-                                            <i class="fa fa-edit"></i>
+                                        <a href="<?= $this->view->controller; ?>detalhar/id/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-list"></i> Cardápio
                                         </a>
                                         <a
                                             onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
