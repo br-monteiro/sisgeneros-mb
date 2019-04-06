@@ -11,18 +11,20 @@ use App\Helpers\View;
             </div>
             <div class="resultado"></div>
         </div>
-        <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
-            <i class="fa fa-arrow-left"></i> Voltar
-        </a>
-        <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <a href="<?= $this->view->controller ?>aprovar/id/<?= $this->view->result['id'] ?>" class="btn btn-success">
-                        <i class="fa fa-check"></i> Aprovar cardápio
-                    </a>
-                </div>
+        <div class="row">
+            <div class="col-md-6">
+            <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
+                <a href="<?= $this->view->controller ?>aprovar/id/<?= $this->view->result['id'] ?>" class="btn btn-success">
+                    <i class="fa fa-check"></i> Aprovar cardápio
+                </a>
+            <?php endif; ?>
             </div>
-        <?php endif; ?>
+            <div class="col-md-6">
+                <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
+                    <i class="fa fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
         <div id="resultado"></div>
         <div class="row">
             <div class="col-lg-12">
@@ -60,10 +62,12 @@ use App\Helpers\View;
                                             disabled
                                             required>
                                     </div>
+                                    <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
                                     <div class="form-group pull-right">
                                         <br>
                                         <button class="btn btn-info"><i class="fa fa-refresh"></i> Atualizar data</button>
                                     </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </form>
@@ -97,29 +101,35 @@ use App\Helpers\View;
                                         <td><?= $value['recipes'] ?></td>
                                         <td><?= $value['quantity_people'] ?></td>
                                         <td>
-                                            <a href="<?= $this->view->controller; ?>editarRecipes/idRecipes/<?= $value['id']; ?>" class="btn btn-success btn-sm">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
                                             <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-list"></i> Ingredientes
+                                            </a>
+                                            <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
+                                            <a href="<?= $this->view->controller; ?>editarRecipes/idRecipes/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                                <i class="fa fa-edit"></i>
                                             </a>
                                             <a
                                                 onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
                                                 class="btn btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
+                        <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
                         <div class="col-lg-12">
                             <div class="form-group pull-right">
                                 <br>
-                                <button class="btn btn-success"><i class="fa fa-check"></i> Gerar solicitações</button>                                
+                                <a href="<?= $this->view->controller; ?>gerarSolicitacoes/id/<?= $this->view->result['id']; ?>" class="btn btn-success">
+                                    <i class="fa fa-check"></i> Gerar solicitações
+                                </a>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

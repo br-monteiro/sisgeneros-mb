@@ -70,4 +70,35 @@ class RecipesItemsModel extends CRUD
         $stmt->execute([':recipesId' => $recipesId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
+    public function editarRegistro()
+    {
+        $this->validaAll();
+
+        $dados = [
+            'quantity' => $this->getQuantity()
+        ];
+        if (parent::editar($dados, $this->getId())) {
+            msg::showMsg('001', 'success');
+        }
+    }
+
+    private function validaAll()
+    {
+        // Seta todos os valores
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
+            ->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT));
+
+        // Inicia a Validação dos dados
+        $this->validaId();
+    }
+
+    private function validaId()
+    {
+        $value = v::intVal()->validate($this->getId());
+        if (!$value) {
+            msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
+        }
+        return $this;
+    }
 }

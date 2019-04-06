@@ -5,7 +5,7 @@ use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
-
+use App\Helpers\Utils;
 
 class RecipesModel extends CRUD
 {
@@ -117,5 +117,60 @@ class RecipesModel extends CRUD
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':menusId' => $menusId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function editarRegistro()
+    {
+        $this->validaAll();
+
+        $dados = [
+            'meals_id' => $this->getMealsId(),
+            'recipes_patterns_id' => $this->getRecipesPatternsId(),
+            'quantity_people' => $this->getQuantity(),
+            'date' => $this->getDate()
+        ];
+        if (parent::editar($dados, $this->getId())) {
+            msg::showMsg('001', 'success');
+        }
+    }
+
+    private function validaAll()
+    {
+        // Seta todos os valores
+        $this->setId(filter_input(INPUT_POST, 'id') ?? time())
+            ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
+            ->setRecipesPatternsId(filter_input(INPUT_POST, 'recipes', FILTER_VALIDATE_INT))
+            ->setMealsId(filter_input(INPUT_POST, 'mealsId', FILTER_VALIDATE_INT))
+            ->setQuantity(filter_input(INPUT_POST, 'quantity_people', FILTER_VALIDATE_INT))
+            ->setDate(filter_input(INPUT_POST, 'date', FILTER_SANITIZE_SPECIAL_CHARS));
+
+        // Inicia a Validação dos dados
+        $this->validaId()
+            ->validaDate();
+    }
+
+    private function validaId()
+    {
+        $value = v::intVal()->validate($this->getId());
+        if (!$value) {
+            msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
+        }
+        return $this;
+    }
+
+    private function validaDate()
+    {
+        $this->setDate($this->abstractDateValidate($this->getDate(), 'date', 'Data do cardápio'));
+        return $this;
+    }
+
+    private function abstractDateValidate(string $value, string $fieldName, string $labelName)
+    {
+        $date = Utils::dateDatabaseFormate($value);
+        if (!v::date()->validate($date)) {
+            msg::showMsg('O campo ' . $labelName . ' deve ser preenchido corretamente.'
+                . '<script>focusOn("' . $fieldName . '");</script>', 'danger');
+        }
+        return $date;
     }
 }
