@@ -97,11 +97,11 @@ use App\Helpers\View;
                                         <td><?= $value['recipes'] ?></td>
                                         <td><?= $value['quantity_people'] ?></td>
                                         <td>
-                                            <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
-                                                <i class="fa fa-list"></i> Ingredientes
-                                            </a>
                                             <a href="<?= $this->view->controller; ?>editarRecipes/idRecipes/<?= $value['id']; ?>" class="btn btn-success btn-sm">
                                                 <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-list"></i> Ingredientes
                                             </a>
                                             <a
                                                 onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"

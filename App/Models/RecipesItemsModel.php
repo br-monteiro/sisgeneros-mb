@@ -59,7 +59,7 @@ class RecipesItemsModel extends CRUD
     public function findByRecipe($recipesId)
     {
         $query = ""
-            . " SELECT A.name AS item, A.quantity, B.name AS biddings, C.name AS suppliers "
+            . " SELECT A.id, A.name AS item, A.quantity, B.name AS biddings, C.name AS suppliers "
             . " FROM {$this->entidade} AS A "
             . " LEFT JOIN biddings_items AS B "
             . "     ON B.id = A.biddings_items_id "
