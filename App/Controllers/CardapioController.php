@@ -128,6 +128,20 @@ class CardapioController extends Controller implements CtrlInterface
         $model->editarRegistro();
     }
 
+    public function alteraRecipesAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new RecipesModel();
+        $model->editarRegistro();
+    }
+
+    public function alteraItemsAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new RecipesItemsModel();
+        $model->editarRegistro();
+    }
+
     public function checkdateAction()
     {
         $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
