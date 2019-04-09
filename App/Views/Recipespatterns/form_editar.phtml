@@ -75,10 +75,10 @@
                                     <input type="text"
                                            name="quantity[]"
                                            class="form-control"
-                                           data-mask="#.##0,00"
+                                           data-mask="#.###"
                                            value="<?= $values['quantity'] ?>"
                                            required
-                                           maxlength="10">
+                                           maxlength="5">
                                 </td>
                                 <td></td>
                             </tr>
@@ -104,9 +104,9 @@
             <td>
                 <input type="text"
                        name="quantity[]"
-                       class="form-control"
+                       class="form-control fix-mask"
                        required
-                       maxlength="10">
+                       maxlength="5">
             </td>
             <td>
                 <a class="remove btn btn-danger btn-sm" data-reference="-X-">
@@ -133,6 +133,7 @@
             event.preventDefault();
             var template = getTemplate('table-values', xRow);
             $('#row-list').append(template);
+            $('.fix-mask').mask('#.###');
             xRow++;
         });
         /**

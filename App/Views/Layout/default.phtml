@@ -123,10 +123,10 @@ $cfg = cfg::htrFileConfigs();
             }
 
             $(document).ready(function () {
-                $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
-                $('#delivery_date').mask('00-00-0000', {reverse: true});
-                $('#validade').mask('00/00/0000', {reverse: true});
-                $('#number').mask('00000/0000', {reverse: true});
+                $('#cnpj').mask('00.000.000/0000-00');
+                $('#delivery_date').mask('00-00-0000');
+                $('#validade').mask('00/00/0000');
+                $('#number').mask('00000/0000');
                 $('#valor, .valor').mask('000.000.000.000.000,00', {reverse: true});
                 $('#form').submit(function submitForm() {
                     $(this).ajaxSubmit({
