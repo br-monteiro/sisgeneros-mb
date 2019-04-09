@@ -27,7 +27,7 @@ class CardapioModel extends CRUD
     {
         $dados = [
             'entidade' => 'menus 
-            INNER JOIN users requester ON requester.id = menus.users_id_resquesters
+            INNER JOIN users requester ON requester.id = menus.users_id_requesters
             INNER JOIN users authorizers ON authorizers.id = menus.users_id_authorizers',
             'pagina' => $pagina,
             'maxResult' => 100,
@@ -55,7 +55,7 @@ class CardapioModel extends CRUD
         // inserindo o cardápio
         $dados = [
             'oms_id' => $this->getOmsId(),
-            'users_id_resquesters' => $this->getUserRequesters(),
+            'users_id_requesters' => $this->getUserRequesters(),
             'users_id_authorizers' => $this->getUserAuthorizers(),
             'beginning_date' => $this->getBeginningDate(),
             'ending_date' => $this->getEndingDate(),
