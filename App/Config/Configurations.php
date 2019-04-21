@@ -7,10 +7,10 @@ class Configurations extends InternalConfigurations
 {
 
     const DS = DIRECTORY_SEPARATOR;
-    const STR_SALT = 'He08ac4373efb5aa5782d454809f8c8509c719613';
+    const STR_SALT = '03f3b903d39fa68ede0bbcb2204057fe44a6d49';
     const DOMAIN = 'www.ceimbe.mb';
     const ADMIN_CONTACT = 'E-mail: bruno.monteirodg@gmail.com';
-    const PATH_CORE = '/Users/macbook/Projects/sisgeneros-mb/';
+    const PATH_CORE = '/path/to/core/';
     const DIR_DATABASE = self::PATH_CORE . 'App/Database/';
     const DEFAULT_URI = '/app/sisgeneros/';
     const TIMEZONE = 'America/Belem';

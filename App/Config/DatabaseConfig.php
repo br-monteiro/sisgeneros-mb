@@ -14,7 +14,7 @@ class DatabaseConfig
 {
 
     public $db = [
-        'servidor' => '127.0.0.1',
+        'servidor' => 'localhost',
         'banco' => 'sisgeneros',
         'usuario' => 'webapp',
         'senha' => 'webapp',
