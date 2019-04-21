@@ -80,7 +80,13 @@
                                            required
                                            maxlength="5">
                                 </td>
-                                <td></td>
+                                <td>
+                                    <a
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminarIngrediente/id/<?= $values['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

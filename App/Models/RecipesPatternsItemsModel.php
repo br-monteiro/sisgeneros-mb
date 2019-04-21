@@ -4,7 +4,7 @@ namespace App\Models;
 use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
 use Respect\Validation\Validator as v;
-
+use App\Config\Configurations as cfg;
 
 class RecipesPatternsItemsModel extends CRUD
 {
@@ -61,6 +61,13 @@ class RecipesPatternsItemsModel extends CRUD
                     "quantity" => $value['quantity']
                 ]);
             }
+        }
+    }
+
+    public function removerRegistro($id)
+    {
+        if (parent::remover($id)) {
+            header('Location: ' . cfg::DEFAULT_URI . 'recipespatterns/ver/');
         }
     }
 
