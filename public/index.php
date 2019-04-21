@@ -4,7 +4,7 @@
  * Desenvolvido por Bruno Monteiro
  */
 // composer autoload
-require_once '/path/to/core/vendor/autoload.php';
+require_once '/Users/macbook/Projects/sisgeneros-mb/vendor/autoload.php';
 
 /**
  * @HACK
