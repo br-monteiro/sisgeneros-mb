@@ -98,6 +98,24 @@ class SolicitacaoItemModel extends CRUD
         }
     }
 
+    public function novoRegistroByMenu($dados, $requestsId)
+    {
+        $item = new Item();
+        foreach ($dados as $values) {
+            $value = $item->findById($values['biddingItemsId']);
+            $dados = [
+                'requests_id' => $requestsId,
+                'number' => $value['number'],
+                'name' => $value['name'],
+                'uf' => $value['uf'],
+                'quantity' => $values['quantity'],
+                'delivered' => 0,
+                'value' => $value['value']
+            ];
+            parent::novo($dados);
+        }
+    }
+
     public function editarRegistro($idlista, $user)
     {
         $quantity = filter_input(INPUT_POST, 'quantity');

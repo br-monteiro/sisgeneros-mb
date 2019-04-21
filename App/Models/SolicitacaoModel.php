@@ -465,6 +465,117 @@ class SolicitacaoModel extends CRUD
     }
 
     /**
+     * método responsável por gerar solicitações através do cardápio
+     * 
+     * @param $id identificador do cardápio
+     */
+    public function gerarSolicitacoes($menuId)
+    {
+        $request = $this->requestByMenu($menuId);
+        $number = 0;
+        foreach($request as $values) {
+            # ITENS LICITADOS
+            if ($values['biddingsId']) {
+                $dados = [
+                    'biddings_id' => $values['biddingsId'],
+                    'oms_id' => $values['omsId'],
+                    'suppliers_id' => $values['suppliersId'],
+                    'number' => $this->numberGenerator(),
+                    'status' => 'ABERTO',
+                    'created_at' => date('Y-m-d'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'delivery_date' => $values['date']
+                ];
+                $number .= $dados['number'] . ', ';
+                if (parent::novo($dados)) {
+                    $lastId = $this->pdo->lastInsertId();
+
+                    $itemsList = $this->requestItemsByMenuAndSuppliers($menuId, $values['suppliersId']);
+
+                    (new Itens())->novoRegistroByMenu($itemsList, $lastId);
+                }
+            } else {
+                # ITENS NÃO LICITADOS
+                $dados = [
+                    'biddings_id' => 0,
+                    'oms_id' => $values['omsId'],
+                    'suppliers_id' => 177,
+                    'number' => $this->numberGenerator(),
+                    'status' => 'ABERTO',
+                    'created_at' => date('Y-m-d'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'delivery_date' => $values['date']
+                ];
+                if (parent::novo($dados)) {
+                    $lastId = $this->pdo->lastInsertId();
+
+                    $itemsList = $this->requestItemsNaoLicitadosByMenu($menuId);
+
+                    (new Itens())->novoNaoLicitado($itemsList, $lastId);
+                }
+            }
+        }
+        msg::showMsg('Solicitação Registrada com Sucesso!<br>'
+                        . "<strong>Solicitação Nº { $number } <br>"
+                        . "Status: ABERTO.</strong><br>"
+                        . "<a href='" . cfg::DEFAULT_URI . "solicitacao/ver' class='btn btn-info'>"
+                        . '<i class="fa fa-info-circle"></i> Ver Solicitações</a>'
+                        . '<script>resetForm(); </script>', 'success');
+    }
+
+    public function requestByMenu($menuId)
+    {
+        $query = "".
+            " SELECT " .
+            " D.biddings_id AS biddingsId, A.oms_id AS omsId, E.id AS suppliersId, A.beginning_date AS date " .
+            " FROM menus A " .
+            " INNER JOIN recipes B ON B.menus_id = A.id " .
+            " INNER JOIN recipes_items C ON C.recipes_id = B.id " .
+            " LEFT JOIN biddings_items D ON D.id = C.biddings_items_id " .
+            " LEFT JOIN suppliers E ON E.id = D.suppliers_id " .
+            " WHERE A.id = :menuId " .
+            " GROUP BY D.biddings_id, E.id ".
+            " ORDER BY D.biddings_id, E.id ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':menuId' => $menuId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function requestItemsByMenuAndSuppliers($menuId, $suppliersId)
+    {
+        $query = "" .
+            " SELECT " .
+            " D.id AS biddingItemsId, SUM(C.quantity) quantity " .
+            " FROM menus A " .
+            " INNER JOIN recipes B ON B.menus_id = A.id " .
+            " INNER JOIN recipes_items C ON C.recipes_id = B.id " .
+            " LEFT JOIN biddings_items D ON D.id = C.biddings_items_id " .
+            " LEFT JOIN suppliers E ON E.id = D.suppliers_id " .
+            " WHERE A.id = :menuId AND D.suppliers_id = :suppliersId " .
+            " GROUP BY D.id ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':menuId' => $menuId, ':suppliersId' => $suppliersId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function requestItemsNaoLicitadosByMenu($menuId)
+    {
+        $query = "" .
+            " SELECT " .
+            " A.beginning_date date, C.name, C.quantity, 'UN' AS 'uf', 0 AS 'value' " .
+            " FROM menus A " .
+            " INNER JOIN recipes B ON B.menus_id = A.id " .
+            " INNER JOIN recipes_items C ON C.recipes_id = B.id " .
+            " LEFT JOIN biddings_items D ON D.id = C.biddings_items_id " .
+            " WHERE A.id = :menuId AND D.id IS NULl " .
+            " GROUP BY A.beginning_date, C.name, C.quantity ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':menuId' => $menuId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Process the solcitação status.
      * @param int $id Identification of Solicitação
      * @param string $status The status to be changing
@@ -671,7 +782,7 @@ class SolicitacaoModel extends CRUD
     private function buildItemsBiddings(array $values): array
     {
         $result = [];
-
+        d($values);
         if (isset($values['quantity'], $values['ids']) && is_array($values['quantity'])) {
             foreach ($values['quantity'] as $index => $value) {
                 $id = filter_var($values['ids'][$index], FILTER_VALIDATE_INT);

@@ -5,6 +5,7 @@ use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
 use App\Models\CardapioModel;
+use App\Models\SolicitacaoModel;
 use App\Models\OmModel;
 use App\Models\MealsModel;
 use App\Models\RecipesModel;
@@ -119,6 +120,13 @@ class CardapioController extends Controller implements CtrlInterface
         $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
         $model = new CardapioModel();
         $model->aprovar($this->getParametro('id'), $user);
+    }
+
+    public function gerarSolicitacoesAction()
+    {
+        $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $model = new SolicitacaoModel();
+        $model->gerarSolicitacoes($this->getParametro('id'));
     }
 
     public function alteraAction()

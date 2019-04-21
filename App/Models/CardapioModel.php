@@ -132,7 +132,7 @@ class CardapioModel extends CRUD
         $menuMap = filter_input_array(INPUT_POST);
         $data = $menuMap["menuMap"];
         $beginningDate = date("Y-m-d", strtotime($data[0]["date"]));
-        $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +7 day"));
+        $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +6 day"));
         $this->setOmsId(filter_var($omId, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUserRequesters(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUserAuthorizers(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
@@ -154,7 +154,7 @@ class CardapioModel extends CRUD
         $result->menusId = 0;
 
         if (preg_match('/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|1\d|2\d|3[01])$/', $date)) {
-            $query = "SELECT id FROM {$this->entidade} WHERE oms_id = :omId AND (beginning_date >= :date OR ending_date <= :date)";
+            $query = "SELECT id FROM {$this->entidade} WHERE oms_id = :omId AND (beginning_date >= :date AND ending_date <= :date)";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([
                 ':omId' => $omId,
