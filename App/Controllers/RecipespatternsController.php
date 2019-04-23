@@ -51,6 +51,13 @@ class RecipespatternsController extends Controller implements CtrlInterface
         $model = new RecipesPatternsModel();
         $model->removerRegistro($this->getParametro('id'));
     }
+    
+    public function eliminarIngredienteAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $model = new RecipesPatternsItemsModel();
+        $model->removerRegistro($this->getParametro('id'));
+    }
 
     public function verAction()
     {

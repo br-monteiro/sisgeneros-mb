@@ -18,6 +18,11 @@ use App\Helpers\View;
                     <i class="fa fa-check"></i> Aprovar cardápio
                 </a>
             <?php endif; ?>
+            <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'APROVADO'): ?>
+                <a href="<?= $this->view->controller; ?>gerarSolicitacoes/id/<?= $this->view->result['id']; ?>" class="btn btn-success">
+                    <i class="fa fa-check"></i> Gerar solicitações
+                </a>
+            <?php endif; ?>
             </div>
             <div class="col-md-6">
                 <a href="<?= $this->view->controller; ?>" class="btn btn-warning pull-right">
@@ -120,7 +125,7 @@ use App\Helpers\View;
                                 </tbody>
                             </table>
                         </div>
-                        <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
+                        <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'APROVADO'): ?>
                         <div class="col-lg-12">
                             <div class="form-group pull-right">
                                 <br>
