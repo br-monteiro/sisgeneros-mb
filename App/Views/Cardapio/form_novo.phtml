@@ -115,7 +115,6 @@
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group pull-right btn-next-recipes">
-                                    <br>
                                     <button class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar ingredientes</button>
                                 </div>
                             </div>
@@ -138,8 +137,8 @@
                                         <tr>
                                             <th>Ingrediente</th>
                                             <th width="15%">Sugestão</th>
-                                            <th width="15%">Quantidade</th>
-                                            <th width="15%">Origem</th>
+                                            <th width="10%">Quantidade</th>
+                                            <th width="20%">Origem</th>
                                             <th width="8%"></th>
                                         </tr>
                                     </thead>
@@ -283,6 +282,7 @@ $(document).ready(function () {
                 currentDayObj = day;
                 currentDay = order;
                 $("#date").val(day.date);
+                buildTableResume();
             }
         }
     });
@@ -295,13 +295,15 @@ $(document).ready(function () {
                 currentDayObj = day;
                 currentDay = order;
                 $("#date").val(day.date);
+                buildTableResume();
             }
         }
     });
 
-    $(".btn-next-recipes").on("click", function () {
+    $(".btn-next-recipes button").on("click", function () {
         if (validateDate($("#date").val())) {
             $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
+                $('#row-list').html("");
                 buildTableIngredients(data);
             });
             hideFormCard("recipes");
@@ -312,19 +314,21 @@ $(document).ready(function () {
     });
 
     $(".btn-next-ingredients").on("click", function () {
+        debugger;
         var items = getValuesIngredients();
         var recipes = {
             "recipes": {
                 "meals": {
                     "id": $("#mealsId").val(),
-                    "name": $("#mealsId option:selected").text(),
+                    "name": $("#mealsId option:selected").text().replace(/\s{2}/g, ''),
                 },
                 "recipesPatternsId": $("#recipes").val(),
-                "name": $("#recipes option:selected").text(),
+                "name": $("#recipes option:selected").text().replace(/\s{2}/g, ''),
                 "quantity": $("#quantity_people").val(),
                 "items": items
             }
         };
+
         var day = getObjDay(currentDay);
         day.data.push(recipes);
         console.log(menuMap);

@@ -155,6 +155,7 @@ class CardapioModel extends CRUD
 
         if (preg_match('/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|1\d|2\d|3[01])$/', $date)) {
             $query = "SELECT id FROM {$this->entidade} WHERE oms_id = :omId AND (beginning_date >= :date OR ending_date <= :date)";
+            d($query);
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([
                 ':omId' => $omId,
