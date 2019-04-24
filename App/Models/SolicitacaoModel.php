@@ -11,6 +11,7 @@ use App\Models\AvaliacaoFornecedorModel;
 use App\Config\Configurations as cfg;
 use HTR\System\ControllerAbstract;
 use App\Helpers\Utils;
+use App\Models\CardapioModel;
 
 class SolicitacaoModel extends CRUD
 {
@@ -393,9 +394,8 @@ class SolicitacaoModel extends CRUD
 
     public function removerRegistro($id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id_lista = ?");
-        $stmt->bindValue(1, $id);
-        if ($stmt->execute()) {
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->entidade} WHERE id = ?");
+        if ($stmt->execute([$id])) {
             header('Location: ' . cfg::DEFAULT_URI . 'solicitacao/');
         }
     }
@@ -467,60 +467,62 @@ class SolicitacaoModel extends CRUD
     /**
      * método responsável por gerar solicitações através do cardápio
      * 
-     * @param $id identificador do cardápio
+     * @param $menuId identificador do cardápio
      */
     public function gerarSolicitacoes($menuId)
     {
+        $numbers = [];
         $request = $this->requestByMenu($menuId);
-        $number = 0;
-        foreach($request as $values) {
-            # ITENS LICITADOS
-            if ($values['biddingsId']) {
-                $dados = [
-                    'biddings_id' => $values['biddingsId'],
-                    'oms_id' => $values['omsId'],
-                    'suppliers_id' => $values['suppliersId'],
-                    'number' => $this->numberGenerator(),
-                    'status' => 'ABERTO',
-                    'created_at' => date('Y-m-d'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'delivery_date' => $values['date']
-                ];
-                $number .= $dados['number'] . ', ';
-                if (parent::novo($dados)) {
-                    $lastId = $this->pdo->lastInsertId();
+        $menus = (new CardapioModel)->findById($menuId);
 
-                    $itemsList = $this->requestItemsByMenuAndSuppliers($menuId, $values['suppliersId']);
-
-                    (new Itens())->novoRegistroByMenu($itemsList, $lastId);
-                }
-            } else {
-                # ITENS NÃO LICITADOS
-                $dados = [
-                    'biddings_id' => 0,
-                    'oms_id' => $values['omsId'],
-                    'suppliers_id' => 177,
-                    'number' => $this->numberGenerator(),
-                    'status' => 'ABERTO',
-                    'created_at' => date('Y-m-d'),
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'delivery_date' => $values['date']
-                ];
-                if (parent::novo($dados)) {
-                    $lastId = $this->pdo->lastInsertId();
-
-                    $itemsList = $this->requestItemsNaoLicitadosByMenu($menuId);
-
-                    (new Itens())->novoNaoLicitado($itemsList, $lastId);
+        if (count($request) && $menus['status'] == 'APROVADO') {
+            (new CardapioModel)->changeStatus('GERADO', intval($menuId));
+            foreach($request as $values) {
+                # ITENS LICITADOS
+                if ($values['biddingsId']) {
+                    $dados = [
+                        'biddings_id' => $values['biddingsId'],
+                        'oms_id' => $values['omsId'],
+                        'suppliers_id' => $values['suppliersId'],
+                        'number' => $this->numberGenerator(),
+                        'status' => 'ABERTO',
+                        'created_at' => date('Y-m-d'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'delivery_date' => $values['date']
+                    ];
+                    $numbers[] = $dados['number'];
+    
+                    if (parent::novo($dados)) {
+                        $lastId = $this->pdo->lastInsertId();
+    
+                        $itemsList = $this->requestItemsByMenuAndSuppliers($menuId, $values['suppliersId']);
+    
+                        (new Itens())->novoRegistroByMenu($itemsList, $lastId);
+                    }
+                } else {
+                    # ITENS NÃO LICITADOS
+                    $dados = [
+                        'biddings_id' => 0,
+                        'oms_id' => $values['omsId'],
+                        'suppliers_id' => 177,
+                        'number' => $this->numberGenerator(),
+                        'status' => 'ABERTO',
+                        'created_at' => date('Y-m-d'),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'delivery_date' => $values['date']
+                    ];
+                    if (parent::novo($dados)) {
+                        $lastId = $this->pdo->lastInsertId();
+    
+                        $itemsList = $this->requestItemsNaoLicitadosByMenu($menuId);
+    
+                        (new Itens())->novoNaoLicitado($itemsList, $lastId);
+                    }
                 }
             }
         }
-        msg::showMsg('Solicitação Registrada com Sucesso!<br>'
-                        . "<strong>Solicitação Nº { $number } <br>"
-                        . "Status: ABERTO.</strong><br>"
-                        . "<a href='" . cfg::DEFAULT_URI . "solicitacao/ver' class='btn btn-info'>"
-                        . '<i class="fa fa-info-circle"></i> Ver Solicitações</a>'
-                        . '<script>resetForm(); </script>', 'success');
+
+        return $numbers;
     }
 
     public function requestByMenu($menuId)

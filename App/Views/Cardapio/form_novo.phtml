@@ -301,7 +301,7 @@ $(document).ready(function () {
     });
 
     $(".btn-next-recipes button").on("click", function () {
-        if (validateDate($("#date").val())) {
+        if (validateDate($("#date").val()) && $("#mealsId").val() && $("#recipes").val() && $("#quantity_people").val()) {
             $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
                 $('#row-list').html("");
                 buildTableIngredients(data);
@@ -309,7 +309,7 @@ $(document).ready(function () {
             hideFormCard("recipes");
             showFormCard("ingredients");
         } else {
-            alert("Data inválida!");
+            alert("Você precisa preencher todos os campos");
         }
     });
 
@@ -330,7 +330,6 @@ $(document).ready(function () {
 
         var day = getObjDay(currentDay);
         day.data.push(recipes);
-        console.log(menuMap);
 
         hideFormCard("ingredients");
         showFormCard("recipes");
@@ -346,15 +345,25 @@ $(document).ready(function () {
     });
 
     btnCheckoutMenu.on("click", function () {
-        $.ajax({
-            type: "POST",
-            url: "cardapio/registra/",
-            data: {menuMap},
-            success: function (data) {
-                $("#resultado").html(data);
-            }
-        });
+        if (validateMenus()) {
+            $.ajax({
+                type: "POST",
+                url: "cardapio/registra/",
+                data: {menuMap}
+            });
+        } else {
+            alert('O cardápio deve conter ao menos uma refeição por dia.');
+        }
+
     });
+
+    function validateMenus() {
+        var result = menuMap.find(function (item) {
+            return item && item.data && item.data.length === 0;
+        });
+        return !Boolean(result);
+    }
+
     function getFirstDay() {
         return menuMap.find(function (item) {
             return item.order === 1;
@@ -503,8 +512,8 @@ $(document).ready(function () {
 
     function buildTableResume() {
         var strHTML = "";
-        $("#row-menu-resume").append(strHTML);
         var objDay = getObjDay(currentDay);
+        $("#row-menu-resume").html("");
         $(".title-menu").html("Cardápio do dia " + objDay.date);
 
         for (i = 0; i < objDay.data.length; i++) {

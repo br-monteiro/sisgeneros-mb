@@ -2,6 +2,8 @@
 
 use App\Helpers\View;
 
+$menusId = $this->getParametro('menusId');
+
 ?>
 <div id="page-wrapper">
     <div class="container-fluid">
@@ -76,9 +78,8 @@ use App\Helpers\View;
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <br>
                                         <button class="btn btn-primary"><i class="fa fa-check"></i> Registrar</button>
-                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                        <a href="<?= $this->view->controller . "detalhar/id/{$menusId}"; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
                                     </div>
                                 </div>
                             </div>

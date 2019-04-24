@@ -7,6 +7,7 @@ use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
 use App\Helpers\Utils;
+use App\Models\RecipesModel;
 
 class CardapioModel extends CRUD
 {
@@ -69,7 +70,7 @@ class CardapioModel extends CRUD
                 (new RecipesModel())->novoRegistro($values, $menusId);
             }
 
-            msg::showMsg('111', 'success');
+            header("Location: " . cfg::DEFAULT_URI . "/cardapio/detalhar/id/{$menusId}");
         }
     }
 
@@ -90,10 +91,20 @@ class CardapioModel extends CRUD
         }
     }
 
-    public function removerRegistro($id)
+    public function removerRegistro($id, $menusId)
     {
-        if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'cardapio/ver/');
+        $recipesModel = new RecipesModel;
+        $result = $recipesModel->findById($id);
+        if ($result) {
+            $count = $this->pdo
+            ->query("SELECT id FROM recipes WHERE date = '{$result['date']}' AND menus_id = {$result['menus_id']}")
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
+            if (count($count) > 1) {
+                $recipesModel->removerRegistro($id, $menusId);
+            } else {
+                header('Location: ' . cfg::DEFAULT_URI . "cardapio/detalhar/id/{$menusId}");
+            }
         }
     }
 
@@ -167,6 +178,14 @@ class CardapioModel extends CRUD
         }
 
         return $result;
+    }
+
+    function changeStatus (string $status, int $id)
+    {
+        $dados = [
+            'status' => strtoupper($status)
+        ];
+        return parent::editar($dados, $id);
     }
 
     // Validação

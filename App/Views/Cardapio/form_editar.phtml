@@ -2,6 +2,8 @@
 
 use App\Helpers\View;
 
+$menusId = $this->getParametro('id');
+
 ?>
 <div id="page-wrapper">
     <div class="container-fluid">
@@ -39,7 +41,7 @@ use App\Helpers\View;
                     </div>
                     <div class="card-body">
                         <form action="<?= $this->view->controller; ?>alteraMenuDays/" method="post" id="form">
-                        <input type="hidden" name="id" id="menusId" value="<?= $this->view->result['id']; ?>">                            
+                        <input type="hidden" name="id" id="menusId" value="<?= $this->view->result['id']; ?>">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
@@ -106,15 +108,15 @@ use App\Helpers\View;
                                         <td><?= $value['recipes'] ?></td>
                                         <td><?= $value['quantity_people'] ?></td>
                                         <td>
-                                            <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
+                                            <a href="<?= $this->view->controller; ?>detalharItems/idRecipes/<?= $value['id']; ?>/menusId/<?= $menusId; ?>" class="btn btn-primary btn-sm">
                                                 <i class="fa fa-list"></i> Ingredientes
                                             </a>
                                             <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'ENCARREGADO']) && $this->view->result['status'] == 'ABERTO'): ?>
-                                            <a href="<?= $this->view->controller; ?>editarRecipes/idRecipes/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <a href="<?= $this->view->controller; ?>editarRecipes/idRecipes/<?= $value['id']; ?>/menusId/<?= $menusId; ?>" class="btn btn-success btn-sm">
                                                 <i class="fa fa-edit"></i>
                                             </a>
                                             <a
-                                                onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                                onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>/menusId/<?= $menusId; ?>')"
                                                 class="btn btn-danger btn-sm">
                                                 <i class="fa fa-trash"></i>
                                             </a>

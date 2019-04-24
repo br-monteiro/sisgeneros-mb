@@ -105,16 +105,24 @@ $cfg = cfg::htrFileConfigs();
         <!-- Script padrão de envio de formulário -->
         <script type="text/javascript">
             function resetForm() {
-                document.getElementById("form").reset();
+                var form = document.getElementById("form");
+                if (form) {
+                    form.reset();
+                }
             }
             function resetFormOnDemand(fields) {
                 for (var i = 0; i < fields.length; i++) {
                     var field = document.getElementById(fields[i]);
-                    field.value = "";
+                    if (field) {
+                        field.value = "";
+                    }
                 }
             }
             function focusOn(idCampo) {
-                document.getElementById(idCampo).focus();
+                var field = document.getElementById(idCampo);
+                if (field) {
+                    field.focus();
+                }
             }
             function confirmar(texto, url) {
                 if (confirm(texto)) {

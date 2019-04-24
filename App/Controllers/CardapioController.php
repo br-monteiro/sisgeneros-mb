@@ -94,7 +94,7 @@ class CardapioController extends Controller implements CtrlInterface
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $model = new CardapioModel();
-        $model->removerRegistro($this->getParametro('id'));
+        $model->removerRegistro($this->getParametro('id'), $this->getParametro('menusId'));
     }
 
     public function verAction()
@@ -124,9 +124,17 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function gerarSolicitacoesAction()
     {
-        $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new SolicitacaoModel();
-        $model->gerarSolicitacoes($this->getParametro('id'));
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $requestsNumbers = (new SolicitacaoModel())->gerarSolicitacoes($this->getParametro('id'));
+        $this->view->urlRedirect = cfg::DEFAULT_URI . "solicitacao/ver";
+
+        if (!empty($requestsNumbers)) {
+            $this->view->requestsNumbers = implode(', ', $requestsNumbers);
+            $this->view->title = "Solicitações Geradas com sucesso";
+            $this->render('mensagem_geracao_sucesso');
+        } else {
+            header("Location: {$this->view->urlRedirect}");
+        }
     }
 
     public function alteraAction()

@@ -6,6 +6,7 @@ use HTR\Helpers\Mensagem\Mensagem as msg;
 use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Helpers\Utils;
+use App\Config\Configurations as cfg;
 
 class RecipesModel extends CRUD
 {
@@ -131,6 +132,13 @@ class RecipesModel extends CRUD
         ];
         if (parent::editar($dados, $this->getId())) {
             msg::showMsg('001', 'success');
+        }
+    }
+
+    public function removerRegistro($id, $menusId)
+    {
+        if (parent::remover($id)) {
+            header('Location: ' . cfg::DEFAULT_URI . "cardapio/detalhar/id/{$menusId}");
         }
     }
 

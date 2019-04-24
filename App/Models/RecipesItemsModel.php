@@ -78,6 +78,7 @@ class RecipesItemsModel extends CRUD
         $dados = [
             'quantity' => $this->getQuantity()
         ];
+
         if (parent::editar($dados, $this->getId())) {
             msg::showMsg('001', 'success');
         }
@@ -87,10 +88,11 @@ class RecipesItemsModel extends CRUD
     {
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT));
+            ->setQuantity(filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_FLOAT));
 
         // Inicia a Validação dos dados
         $this->validaId();
+        $this->validaQuantity();
     }
 
     private function validaId()
@@ -98,6 +100,15 @@ class RecipesItemsModel extends CRUD
         $value = v::intVal()->validate($this->getId());
         if (!$value) {
             msg::showMsg('O campo ID deve ser um número inteiro válido.', 'danger');
+        }
+        return $this;
+    }
+
+    private function validaQuantity()
+    {
+        $value = v::floatVal()->validate($this->getQuantity());
+        if (!$value) {
+            msg::showMsg('O campo de quantidade deve ser preenchido corretamente', 'danger');
         }
         return $this;
     }
