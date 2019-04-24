@@ -29,6 +29,7 @@
                             <div id="resultado"></div>
                             <div class="row">
                                 <div class="col-lg-6">
+                                    <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text"
@@ -59,6 +60,7 @@
                             <?php foreach ($this->view->resultIngredientsPatterns as $values): ?>
                             <tr>
                                 <td>
+                                    <input type='hidden' name='recipesPatternsId[]' value="<?= $values['id']; ?>">
                                     <select name="ingredients_id[]" class="form-control" required>
                                         <option value="">---</option>
                                         <?php foreach ($this->view->resultIngredients as $value) : ?>
@@ -73,12 +75,18 @@
                                     <input type="text"
                                            name="quantity[]"
                                            class="form-control"
-                                           data-mask="#.##0,00"
+                                           data-mask="#.###"
                                            value="<?= $values['quantity'] ?>"
                                            required
-                                           maxlength="10">
+                                           maxlength="5">
                                 </td>
-                                <td></td>
+                                <td>
+                                    <a
+                                        onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminarIngrediente/id/<?= $values['id']; ?>')"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -102,9 +110,9 @@
             <td>
                 <input type="text"
                        name="quantity[]"
-                       class="form-control"
+                       class="form-control fix-mask"
                        required
-                       maxlength="10">
+                       maxlength="5">
             </td>
             <td>
                 <a class="remove btn btn-danger btn-sm" data-reference="-X-">
@@ -131,6 +139,7 @@
             event.preventDefault();
             var template = getTemplate('table-values', xRow);
             $('#row-list').append(template);
+            $('.fix-mask').mask('#.###');
             xRow++;
         });
         /**

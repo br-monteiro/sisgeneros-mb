@@ -137,7 +137,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $model = new SolicitacaoModel();
         $solicitacaoItem = new SolicitacaoItem();
-        $model->avaliaAcesso($this->view->idlista, $this->view->userLoggedIn);
+        $model->avaliaAcesso($this->getParametro('id'), $this->view->userLoggedIn);
         if ($solicitacaoItem->removerRegistro($this->getParametro('id'))) {
             $model->removerRegistro($this->getParametro('id'));
         }

@@ -148,6 +148,27 @@ class LicitacaoModel extends CRUD
         }
     }
 
+    /**
+     * Returns all elements from database according the Ingredients ID 
+     * @param int $ingredientsId
+     * @return array
+     */
+    public function findAllByIngredientsId(int $ingredientsId): array
+    {
+        $query = ""
+            . " SELECT "
+            . "     bi.*, "
+            . "     b.number AS biddings_number "
+            . " FROM "
+            . "     biddings_items AS bi "
+            . " INNER JOIN "
+            . "     biddings AS b ON "
+            . "     b.id = bi.biddings_id "
+            . " WHERE "
+            . "     ingredients_id = {$ingredientsId} ";
+        return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     private function evitarDuplicidade()
     {
         /// Evita a duplicidade de registros

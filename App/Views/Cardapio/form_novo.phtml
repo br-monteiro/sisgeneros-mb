@@ -1,0 +1,565 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+            <div class="resultado"></div>
+        </div>
+
+        <div class="row menu">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                    </div>
+                    <div class="card-body">
+                        <div id="resultado"></div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Início</label>
+                                    <input type="text"
+                                           id="beginningDate"
+                                           name="beginningDate"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control"
+                                           data-mask="00-00-0000"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Data de Final</label>
+                                    <input type="text"
+                                           id="endingDate"
+                                           name="endingDate"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control"
+                                           data-mask="00-00-0000"
+                                           disabled
+                                           required>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-primary btn-next-menu"><i class="fa fa-check"></i> Próximo</button>
+                                    <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row recipes">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de dias do cardápio
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3">
+                                <div class="form-group">
+                                    <label>Dia</label>
+                                    <input type="text"
+                                           id="date"
+                                           name="date"
+                                           placeholder="Data no formato DD-MM-AAAA"
+                                           class="form-control text-center"
+                                           data-mask="00-00-0000"
+                                           disabled
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-sm btn-previous-day"><i class="fa fa-arrow-left"></i> Anterior</button>
+                                    <button class="btn btn-primary btn-sm btn-next-day">Próximo <i class="fa fa-arrow-right"></i> </button>
+                                </div>
+                                <div class="form-group">
+                                    <label>Refeição</label>
+                                    <select
+                                        class="form-control"
+                                        name="mealsId"
+                                        id="mealsId">
+                                        <option value="">Refeição</option>
+                                        <?php foreach ($this->view->resultMeals as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Receitas</label>
+                                    <select
+                                        class="form-control"
+                                        name="recipes"
+                                        id="recipes">
+                                        <option value="">Receitas</option>
+                                        <?php foreach ($this->view->resultRecipes as $value): ?>
+                                            <option value="<?= $value['id'] ?>">
+                                                <?= $value['name'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantidade de pessoas</label>
+                                    <input type="number"
+                                           id="quantity_people"
+                                           name="quantity_people"
+                                           placeholder="Quantidade de pessoas"
+                                           class="form-control"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right btn-next-recipes">
+                                    <button class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar ingredientes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ingredients">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de receitas
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ingrediente</th>
+                                            <th width="15%">Sugestão</th>
+                                            <th width="10%">Quantidade</th>
+                                            <th width="20%">Origem</th>
+                                            <th width="8%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="row-list"></tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-group pull-right">
+                                    <br>
+                                    <button class="btn btn-success btn-next-ingredients"><i class="fa fa-check"></i> Confirmar</button>
+                                    <button class="btn btn-warning btn-previous-ingredients"><i class="fa fa-arrow-left"></i> Voltar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row resume-menu">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header title-menu">
+                        Cardápio do dia {dia}
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Refeição</th>
+                                        <th>Receita</th>
+                                        <th>Quantidade de pessoas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="row-menu-resume"></tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group pull-right">
+                                <br>
+                                <button class="btn btn-success btn-checkout-menu"><i class="fa fa-check"></i> Concluir cardápio</button>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-none">
+    <table>
+        <tr class="quantity-ingredients">
+            <td>
+                <input type='text' name='name[]' class='form-control' disabled>
+            </td>
+            <td>
+                <input type='text' name='suggested_quantity[]' class='form-control' disabled>
+            </td>
+            <td>
+                <input type='text' name='quantity[]' class='form-control'>
+            </td>
+            <td>
+                <select name="biddings_items_id[]" class="form-control items"></select>
+            </td>
+            <td>
+                <button class='delete-row btn btn-danger btn-sm'>
+                    <i class='fa fa-times'></i>
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+$(document).ready(function () {
+    var beginningDate = $("#beginningDate");
+    var endingDate = $("#endingDate");
+    var btnPreviousIngredients = $(".btn-previous-ingredients");
+    var btnCheckoutMenu = $(".btn-checkout-menu");
+    var menuJson = [];
+    var itemsMap = [];
+    var menuMap = [];
+    var currentDay = 1;
+    var currentDayObj = {};
+    var x = 1;
+
+    initView();
+
+    /**
+     * Reverse the Date in portuguese format to english format
+     * @param { String } Value
+     * @return { String }
+     */
+    var reverseDate = function rverseDate(value) {
+        return value && value.split("-").reverse().join("-");
+    };
+
+    beginningDate.on("blur", function () {
+        if (validateDate(beginningDate.val())) {
+            var day = new Date(reverseDate(beginningDate.val()));
+            var nextWeek = new Date(day.getTime() + 7 * 86400000);
+            endingDate.val(formatDate(nextWeek));
+        }
+    });
+
+    $(".btn-next-menu").on("click", function () {
+        if (validateDate(endingDate.val())) {
+            var dateEnglish = reverseDate(beginningDate.val());
+            $.get("cardapio/checkdate/value/" + dateEnglish, function (data) {
+                var date = new Date(dateEnglish);
+                var result = jsonParse(data);
+                if (result.menusId === 0) {
+                    for (i = 1; i <= 7; i++) {
+                        var day = new Date(date.getTime() + i * 86400000);
+                        menuMap.push({
+                            "date": formatDate(day),
+                            "order": i,
+                            "data": []
+                        });
+                    }
+
+                    hideFormCard("menu");
+                    showFormCard("recipes");
+                    $("#date").val(getFirstDay());
+                } else {
+                    window.alert('Esta data já esta sendo usada em outro cardápio.');
+                }
+            });
+        } else {
+            window.alert("Data inválida!");
+        }
+    });
+
+    $(".btn-next-day").on("click", function () {
+        if (currentDay < 7) {
+            var order = currentDay + 1;
+            var day = getObjDay(order);
+            if (day) {
+                currentDayObj = day;
+                currentDay = order;
+                $("#date").val(day.date);
+                buildTableResume();
+            }
+        }
+    });
+
+    $(".btn-previous-day").on("click", function () {
+        if (currentDay > 1) {
+            var order = currentDay - 1;
+            var day = getObjDay(order);
+            if (day) {
+                currentDayObj = day;
+                currentDay = order;
+                $("#date").val(day.date);
+                buildTableResume();
+            }
+        }
+    });
+
+    $(".btn-next-recipes button").on("click", function () {
+        if (validateDate($("#date").val()) && $("#mealsId").val() && $("#recipes").val() && $("#quantity_people").val()) {
+            $.get("recipespatterns/findRecipeItemsByRecipesId/id/" + $("#recipes").val(), function (data) {
+                $('#row-list').html("");
+                buildTableIngredients(data);
+            });
+            hideFormCard("recipes");
+            showFormCard("ingredients");
+        } else {
+            alert("Você precisa preencher todos os campos");
+        }
+    });
+
+    $(".btn-next-ingredients").on("click", function () {
+        var items = getValuesIngredients();
+        var recipes = {
+            "recipes": {
+                "meals": {
+                    "id": $("#mealsId").val(),
+                    "name": $("#mealsId option:selected").text().replace(/\s{2}/g, ''),
+                },
+                "recipesPatternsId": $("#recipes").val(),
+                "name": $("#recipes option:selected").text().replace(/\s{2}/g, ''),
+                "quantity": $("#quantity_people").val(),
+                "items": items
+            }
+        };
+
+        var day = getObjDay(currentDay);
+        day.data.push(recipes);
+
+        hideFormCard("ingredients");
+        showFormCard("recipes");
+        showFormCard("resume-menu");
+        buildTableResume();
+        cleanFormRecipes();
+        $('#row-list').html("");
+    });
+
+    $(".btn-previous-ingredients").on("click", function () {
+        hideFormCard("ingredients");
+        showFormCard("recipes");
+    });
+
+    btnCheckoutMenu.on("click", function () {
+        if (validateMenus()) {
+            $.ajax({
+                type: "POST",
+                url: "cardapio/registra/",
+                data: {menuMap}
+            });
+        } else {
+            alert('O cardápio deve conter ao menos uma refeição por dia.');
+        }
+
+    });
+
+    function validateMenus() {
+        var result = menuMap.find(function (item) {
+            return item && item.data && item.data.length === 0;
+        });
+        return !Boolean(result);
+    }
+
+    function getFirstDay() {
+        return menuMap.find(function (item) {
+            return item.order === 1;
+        }).date;
+    }
+
+    function getObjDay(order) {
+        return menuMap.find(function (item) {
+            return item.order === order;
+        });
+    }
+
+    function formatDate(dateVal) {
+        var month = dateVal.getMonth() + 1;
+        var day = dateVal.getDate();
+
+        var output =
+                (day < 10 ? '0' : '') + day + '-' +
+                (month < 10 ? '0' : '') + month + '-' +
+                dateVal.getFullYear();
+
+        return output;
+    }
+
+    /**
+     * Show an element by selector
+     * @param { String } selector
+     * @returns { Void }
+     */
+    function showFormCard(selector) {
+        $('.' + selector).show();
+    }
+
+    /**
+     * Hide an element by selector
+     * @param { String } selector
+     * @returns { Void }
+     */
+    function hideFormCard(selector) {
+        $('.' + selector).hide();
+    }
+
+    /**
+     * Convert a JSON string to valid Object or Array
+     * @param { String } jsonString
+     * @param { * } valueDefault
+     * @return { Object | Array }
+     */
+    function jsonParse(jsonString, valueDefault) {
+        try {
+            return JSON.parse(jsonString);
+        } catch (_) {
+            return valueDefault || [];
+        }
+    }
+
+    function intParse(value) {
+        return parseInt(value, 10);
+    }
+
+    /**
+     * Parse the string to float
+     * @param { String } value
+     * @return { Number }
+     */
+    function floatParse(value) {
+        var valueParsed = parseFloat(value);
+        if (!isNaN(valueParsed)) {
+            valueParsed = valueParsed.toFixed(3);
+        }
+        return valueParsed;
+    }
+
+    function initView() {
+        hideFormCard("recipes");
+        hideFormCard("ingredients");
+        hideFormCard("resume-menu");
+    }
+
+    function cleanFormRecipes() {
+        $("#mealsId").val("");
+        $("#recipes").val("");
+        $("#quantity_people").val("");
+    }
+
+    /**
+     * Get the elements from DOM according selector
+     * @param { String } selector
+     * @return { Object }
+     */
+    function extractElementsPatterns (selector) {
+        return $(selector).clone();
+    }
+
+    /**
+     * Returns all elements from database according Igrendients Id
+     * @param { Number } elementId
+     * @param { Function } callback
+     * @return { Void }
+     */
+    function fetchBiddingsByIngredientsId (elementId, callback) {
+        $.get("licitacao/ingrendientes/id/" + elementId, function (data) {
+            if (typeof callback === 'function') {
+                callback(jsonParse(data, []));
+            }
+        });
+    }
+
+    function buildTableIngredients(data) {
+        var element = extractElementsPatterns('.quantity-ingredients');
+        var obj = jsonParse(data, []);
+
+        if (element.length && obj.length) {
+            $('#row-list').html("");
+            var quantityPeople = intParse($("#quantity_people").val());
+            obj.forEach(function (item) {
+                var quantity = floatParse(item.quantity);
+                var calc = floatParse(quantityPeople * quantity);
+                var elementTemp = element.clone();
+                elementTemp.find("input[name='id[]']").val(item.id);
+                elementTemp.find("input[name='name[]']").val(item.name);
+                elementTemp.find("input[name='suggested_quantity[]']").val(calc);
+                elementTemp.find("input[name='quantity[]']").val(calc);
+                elementTemp.find("select[name='biddings_items_id[]']").attr('data-reference', item.ingredients_id);
+                $('#row-list').append(elementTemp);
+                $(".delete-row").on('click', function () {
+                    $(this).closest('tr').remove();
+                });
+            });
+
+            $('select.items').each(function(i, value) {
+                var reference = value.getAttribute('data-reference');
+                if (reference) {
+                    fetchBiddingsByIngredientsId(reference, function (result) {
+                        result.forEach(function (item) {
+                            var option = document.createElement('option');
+                            option.value = item.id;
+                            option.innerText = item.biddings_number + ' - ' + item.name;
+                            value.appendChild(option);
+                        });
+                    });
+                }
+            });
+        }
+    }
+
+    function buildTableResume() {
+        var strHTML = "";
+        var objDay = getObjDay(currentDay);
+        $("#row-menu-resume").html("");
+        $(".title-menu").html("Cardápio do dia " + objDay.date);
+
+        for (i = 0; i < objDay.data.length; i++) {
+            strHTML = "<tr>";
+            strHTML += "<td>" + objDay.date + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.meals.name + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.name + "</td>";
+            strHTML += "<td>" + objDay.data[i].recipes.quantity + "</td>";
+            strHTML += "</tr>";
+        }
+
+        $("#row-menu-resume").append(strHTML);
+    }
+
+    function getValuesIngredients() {
+        var item = [];
+
+        $("#row-list tr").each(function () {
+            var recipe_item = {};
+            recipe_item["biddings_items_id"] = $(this).find("select[name='biddings_items_id[]']").children("option:selected").val();
+            recipe_item["name"] = $(this).find("input[name='name[]']").val();
+            recipe_item["quantity"] = $(this).find("input[name='quantity[]']").val();
+
+            item.push(recipe_item);
+        });
+        return item;
+    }
+
+    /**
+     * Teste if the date is DD-MM-AAAA
+     * @param { String } date
+     * @return { Boolean }
+     */
+    function validateDate(date) {
+        var regexDate = /^(0[1-9]|1\d|2\d|3[01])-(0[1-9]|1[0-2])-(19|20)\d{2}$/;
+        return regexDate.test(date);
+    }
+
+    function validateRangeDate(valueDate) {
+        var valueDate = new Date(valueDate);
+        var startDate = new Date(beginningDate.val());
+        var endDate = new Date(endingDate.val());
+        if (valueDate.getTime() >= startDate.getTime() && valueDate.getTime() <= endDate.getTime()) {
+            return true;
+        }
+        return false;
+    }
+});
+</script>

@@ -1,0 +1,92 @@
+<?php
+
+use App\Helpers\View;
+
+$menusId = $this->getParametro('menusId');
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de dias do cardápio
+                    </div>
+                    <div class="card-body text-center">
+                    <div id="resultado"></div>
+                        <form action="<?= $this->view->controller; ?>alteraRecipes/" method="post" id="form">
+                            <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
+                            <div class="row">
+                                <div class="col-md-6 offset-md-3">
+                                    <div class="form-group">
+                                        <label>Dia</label>
+                                        <input type="text"
+                                            id="date"
+                                            name="date"
+                                            placeholder="Data no formato DD-MM-AAAA"
+                                            class="form-control text-center"
+                                            data-mask="00-00-0000"
+                                            value="<?= date("d-m-Y", strtotime($this->view->result['date'])) ?>"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Refeição</label>
+                                        <select
+                                            class="form-control"
+                                            name="mealsId"
+                                            id="mealsId">
+                                            <option value="">Refeição</option>
+                                            <?php foreach ($this->view->resultMeals as $value): ?>
+                                                <option value="<?= $value['id'] ?>"
+                                                <?= View::isSelected($this->view->result['meals_id'], $value['id'])?>>
+                                                    <?= $value['name'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Receitas</label>
+                                        <select
+                                            class="form-control"
+                                            name="recipes"
+                                            id="recipes">
+                                            <option value="">Receitas</option>
+                                            <?php foreach ($this->view->resultRecipes as $value): ?>
+                                                <option value="<?= $value['id'] ?>"
+                                                <?= View::isSelected($this->view->result['recipes_patterns_id'], $value['id'])?>>
+                                                    <?= $value['name'] ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Quantidade de pessoas</label>
+                                        <input type="number"
+                                            id="quantity_people"
+                                            name="quantity_people"
+                                            placeholder="Quantidade de pessoas"
+                                            class="form-control"
+                                            value="<?= $this->view->result['quantity_people'] ?>"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <button class="btn btn-primary"><i class="fa fa-check"></i> Registrar</button>
+                                        <a href="<?= $this->view->controller . "detalhar/id/{$menusId}"; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

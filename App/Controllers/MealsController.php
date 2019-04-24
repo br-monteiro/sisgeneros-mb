@@ -4,20 +4,19 @@ namespace App\Controllers;
 use HTR\System\ControllerAbstract as Controller;
 use HTR\Interfaces\ControllerInterface as CtrlInterface;
 use HTR\Helpers\Access\Access;
-use App\Models\RecipesPatternsModel;
-use App\Models\IngredientesModel;
-use App\Models\RecipesPatternsItemsModel;
+use App\Models\MealsModel;
 use App\Config\Configurations as cfg;
 
-class RecipespatternsController extends Controller implements CtrlInterface
+class MealsController extends Controller implements CtrlInterface
 {
+
     private $access;
 
     public function __construct($bootstrap)
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = cfg::DEFAULT_URI . 'recipespatterns/';
+        $this->view->controller = cfg::DEFAULT_URI . 'meals/'; 
         $this->access = new Access();
     }
 
@@ -28,42 +27,32 @@ class RecipespatternsController extends Controller implements CtrlInterface
 
     public function novoAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
         $this->view->title = 'Novo Registro';
-        $this->view->resultIngredients = (new IngredientesModel())->findAll();
         $this->render('form_novo');
     }
 
     public function editarAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsModel();
+        $model = new MealsModel();
         $this->view->title = 'Editando Registro';
         $this->view->result = $model->findById($this->getParametro('id'));
-        $this->view->resultIngredients = (new IngredientesModel())->findAll();
-        $this->view->resultIngredientsPatterns = (new RecipesPatternsItemsModel())->findByidRecipes($this->getParametro('id'));
         $this->render('form_editar');
     }
 
     public function eliminarAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsModel();
-        $model->removerRegistro($this->getParametro('id'));
-    }
-    
-    public function eliminarIngredienteAction()
-    {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsItemsModel();
+        $model = new MealsModel();
         $model->removerRegistro($this->getParametro('id'));
     }
 
     public function verAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsModel();
-        $this->view->title = 'Lista de Todas as Receitas Padrões';
+        $model = new MealsModel();
+        $this->view->title = 'Lista de Todas os Refeições';
         $model->paginator($this->getParametro('pagina'));
         $this->view->result = $model->getResultadoPaginator();
         $this->view->btn = $model->getNavePaginator();
@@ -72,22 +61,15 @@ class RecipespatternsController extends Controller implements CtrlInterface
 
     public function registraAction()
     {
-        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsModel();
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new MealsModel();
         $model->novoRegistro();
     }
 
     public function alteraAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
-        $model = new RecipesPatternsModel();
+        $model = new MealsModel();
         $model->editarRegistro();
-    }
-
-    public function findRecipeItemsByRecipesIdAction()
-    {
-        $model = new RecipesPatternsModel();
-        $result = $model->findRecipeItemsByRecipesId($this->getParametro('id'));
-        echo json_encode($result);
     }
 }

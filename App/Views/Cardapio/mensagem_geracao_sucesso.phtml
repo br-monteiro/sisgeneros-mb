@@ -1,0 +1,24 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header"> Mensagem</div>
+                    <div class="card-body">
+                        <div class="row">
+                            Solicitação Registrada com Sucesso!
+                        </div>
+                        <div class="row">
+                            <strong>Solicitação Nº <?= $this->view->requestsNumbers; ?></strong>
+                        </div>
+                        <div class="row">
+                            <a href='<?= $this->view->urlRedirect; ?>' class='btn btn-info'>
+                                <i class="fa fa-info-circle"></i> Ver solicitações
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

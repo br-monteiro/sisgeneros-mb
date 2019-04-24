@@ -3,9 +3,8 @@ namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
 use HTR\Helpers\Mensagem\Mensagem as msg;
-use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
-
+use App\Config\Configurations as cfg;
 
 class RecipesPatternsItemsModel extends CRUD
 {
@@ -47,12 +46,37 @@ class RecipesPatternsItemsModel extends CRUD
         }
     }
 
+    public function editarRegistro($dados, $recipePatternsId)
+    {
+        foreach ($dados as $value) {
+            if ($value['id'] > 0) {
+                parent::editar([
+                    "ingredients_id" => $value['ingredients_id'],
+                    "quantity" => $value['quantity']
+                ], $value['id']);
+            } else {
+                parent::novo([
+                    "recipes_patterns_id" => $recipePatternsId,
+                    "ingredients_id" => $value['ingredients_id'],
+                    "quantity" => $value['quantity']
+                ]);
+            }
+        }
+    }
+
+    public function removerRegistro($id)
+    {
+        if (parent::remover($id)) {
+            header('Location: ' . cfg::DEFAULT_URI . 'recipespatterns/ver/');
+        }
+    }
+
     private function setAll($dados)
     {
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setidlista($dados['requests_id'])
-            ->setIdLicitacao($dados['biddings_id'])
+            ->setQuantity(filter_input(INPUT_POST, 'quantity'))
+            ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setListaItens($dados['lista_itens']);
     }
 

@@ -7,9 +7,10 @@ use HTR\Helpers\Paginator\Paginator;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
 
-class RecipesPatternsModel extends CRUD
+class MealsModel extends CRUD
 {
-    protected $entidade = 'recipes_patterns';
+
+    protected $entidade = 'meals';
 
     /**
      * @var \HTR\Helpers\Paginator\Paginator
@@ -27,7 +28,7 @@ class RecipesPatternsModel extends CRUD
             'entidade' => $this->entidade,
             'pagina' => $pagina,
             'maxResult' => 100,
-            'orderBy' => 'name ASC'
+            'orderBy' => ''
         ];
 
         $this->paginator = new Paginator($dados);
@@ -50,14 +51,9 @@ class RecipesPatternsModel extends CRUD
 
         $dados = [
             'name' => $this->getName(),
+            'sort' => $this->getSort()
         ];
-
         if (parent::novo($dados)) {
-            $lastId = $this->pdo->lastInsertId();
-
-            $itens = new RecipesPatternsItemsModel();
-            $itens->novoItens($this->getItemsList(), $lastId);
-
             msg::showMsg('111', 'success');
         }
     }
@@ -69,65 +65,27 @@ class RecipesPatternsModel extends CRUD
 
         $dados = [
             'name' => $this->getName(),
+            'sort' => $this->getSort()
         ];
 
         if (parent::editar($dados, $this->getId())) {
-
-            $itens = new RecipesPatternsItemsModel();
-            $itens->editarRegistro($this->getItemsList(), $this->getId());
-
             msg::showMsg('001', 'success');
         }
-    }
-
-    private function buildItemsIngredients(array $values): array
-    {
-        $result = [];
-
-        if (isset($values['ingredients_id']) && is_array($values['ingredients_id'])) {
-            foreach ($values['ingredients_id'] as $index => $value) {
-                $result[] = [
-                    "id" => isset($values['recipesPatternsId'][$index]) ? $values['recipesPatternsId'][$index] : "",
-                    "ingredients_id" => $value,
-                    "quantity" => $values['quantity'][$index]
-                ];
-            }
-        }
-
-        return $result;
-    }
-
-    public function findRecipeItemsByRecipesId($id)
-    {
-        $query = ""
-            . " SELECT "
-            . " rpi.id, rpi.ingredients_id, ing.name, quantity "
-            . " FROM recipes_patterns_items AS rpi"
-            . " INNER JOIN ingredients AS ing "
-            . "     ON ing.id = rpi.ingredients_id "
-            . " WHERE rpi.recipes_patterns_id = :recipesId ";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':recipesId' => $id]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function removerRegistro($id)
     {
         if (parent::remover($id)) {
-            header('Location: ' . cfg::DEFAULT_URI . 'recipespatterns/ver/');
+            header('Location: ' . cfg::DEFAULT_URI . 'meals/ver/');
         }
     }
 
     private function validaAll()
     {
-        $value = filter_input_array(INPUT_POST);
         // Seta todos os valores
         $this->setId(filter_input(INPUT_POST, 'id') ?? time())
-            ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setIngredientsId(filter_input(INPUT_POST, 'ingredients_id'))
-            ->setQuantity(filter_input(INPUT_POST, 'quantity'));
-
-        $this->setItemsList($this->buildItemsIngredients($value));
+            ->setSort(filter_input(INPUT_POST, 'sort', FILTER_VALIDATE_INT))
+            ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS));
 
         // Inicia a Validação dos dados
         $this->validaId()
