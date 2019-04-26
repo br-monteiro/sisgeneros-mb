@@ -69,8 +69,7 @@ class CardapioModel extends CRUD
                 // inserindo as receitas
                 (new RecipesModel())->novoRegistro($values, $menusId);
             }
-
-            header("Location: " . cfg::DEFAULT_URI . "/cardapio/detalhar/id/{$menusId}");
+            echo '{"id": ' . $menusId . '}';
         }
     }
 

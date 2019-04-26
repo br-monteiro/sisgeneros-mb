@@ -308,12 +308,12 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes_patterns_items` (
   CONSTRAINT `fk_recipes_patterns_items_recipes_patterns1`
     FOREIGN KEY (`recipes_patterns_id`)
     REFERENCES `sisgeneros`.`recipes_patterns` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_recipes_patterns_items_ingredients1`
     FOREIGN KEY (`ingredients_id`)
     REFERENCES `sisgeneros`.`ingredients` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'Itens das receitas';
@@ -340,17 +340,17 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`menus` (
   CONSTRAINT `fk_menus_oms1`
     FOREIGN KEY (`oms_id`)
     REFERENCES `sisgeneros`.`oms` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_menus_users1`
     FOREIGN KEY (`users_id_requesters`)
     REFERENCES `sisgeneros`.`users` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_menus_users2`
     FOREIGN KEY (`users_id_authorizers`)
     REFERENCES `sisgeneros`.`users` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'Cardápios registrados pela Organizações Militares';
@@ -390,7 +390,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes` (
   CONSTRAINT `fk_recipes_recipes_patterns1`
     FOREIGN KEY (`recipes_patterns_id`)
     REFERENCES `sisgeneros`.`recipes_patterns` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_recipes_meals1`
     FOREIGN KEY (`meals_id`)
@@ -422,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes_items` (
   CONSTRAINT `fk_recispes_items_recipes1`
     FOREIGN KEY (`recipes_id`)
     REFERENCES `sisgeneros`.`recipes` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

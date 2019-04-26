@@ -47,7 +47,7 @@ class RecipesModel extends CRUD
     public function novoRegistro($values, $menusId)
     {
         $date = $values["date"];
-        $recipes = $this->buildRecipes($values["data"]);
+        $recipes = $this->buildRecipes($values["data"] ?? []);
 
         foreach ($recipes as $value) {
             $dados = [
@@ -67,7 +67,7 @@ class RecipesModel extends CRUD
         }
     }
 
-    private function buildRecipes(array $values) : array
+    private function buildRecipes($values)
     {
         $result = [];
 
