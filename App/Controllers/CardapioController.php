@@ -107,6 +107,15 @@ class CardapioController extends Controller implements CtrlInterface
         $this->view->btn = $model->getNavePaginator();
         $this->render('index');
     }
+    
+    public function itensNaoLicitadosAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $solicitacaoModel = new SolicitacaoModel();
+        $this->view->title = 'Forncedores e itens não encontrados';
+        $this->view->result = $solicitacaoModel->requestItemsNaoLicitadosByMenu($this->getParametro('id'));
+        $this->render('mostra_itens_nao_licitados');
+    }
 
     public function registraAction()
     {

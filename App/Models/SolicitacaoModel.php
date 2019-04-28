@@ -499,26 +499,8 @@ class SolicitacaoModel extends CRUD
     
                         (new Itens())->novoRegistroByMenu($itemsList, $lastId);
                     }
-                } else {
-                    # ITENS NÃO LICITADOS
-                    $dados = [
-                        'biddings_id' => 0,
-                        'oms_id' => $values['omsId'],
-                        'suppliers_id' => 177,
-                        'number' => $this->numberGenerator(),
-                        'status' => 'ABERTO',
-                        'created_at' => date('Y-m-d'),
-                        'updated_at' => date('Y-m-d H:i:s'),
-                        'delivery_date' => $values['date']
-                    ];
-                    if (parent::novo($dados)) {
-                        $lastId = $this->pdo->lastInsertId();
-    
-                        $itemsList = $this->requestItemsNaoLicitadosByMenu($menuId);
-    
-                        (new Itens())->novoNaoLicitado($itemsList, $lastId);
-                    }
-                }
+                } 
+                # ITENS NÃO LICITADOS
             }
         }
 
@@ -564,7 +546,7 @@ class SolicitacaoModel extends CRUD
     {
         $query = "" .
             " SELECT " .
-            " A.beginning_date date, C.name, C.quantity, 'UN' AS 'uf', 0 AS 'value' " .
+            " A.beginning_date date, C.name, SUM(C.quantity) quantity, 'KG' AS 'uf', 0 AS 'value' " .
             " FROM menus A " .
             " INNER JOIN recipes B ON B.menus_id = A.id " .
             " INNER JOIN recipes_items C ON C.recipes_id = B.id " .
