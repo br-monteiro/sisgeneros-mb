@@ -525,7 +525,7 @@ $(document).ready(function () {
         $(".title-menu").html("Cardápio do dia " + objDay.date);
 
         for (i = 0; i < objDay.data.length; i++) {
-            strHTML = "<tr>";
+            strHTML += "<tr>";
             strHTML += "<td>" + objDay.date + "</td>";
             strHTML += "<td>" + objDay.data[i].recipes.meals.name + "</td>";
             strHTML += "<td>" + objDay.data[i].recipes.name + "</td>";
