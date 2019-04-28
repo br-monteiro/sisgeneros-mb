@@ -784,7 +784,6 @@ class SolicitacaoModel extends CRUD
     private function buildItemsBiddings(array $values): array
     {
         $result = [];
-        d($values);
         if (isset($values['quantity'], $values['ids']) && is_array($values['quantity'])) {
             foreach ($values['quantity'] as $index => $value) {
                 $id = filter_var($values['ids'][$index], FILTER_VALIDATE_INT);
