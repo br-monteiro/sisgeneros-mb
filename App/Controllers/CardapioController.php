@@ -124,6 +124,27 @@ class CardapioController extends Controller implements CtrlInterface
         $this->render('mostra_itens_nao_licitados');
     }
 
+    public function pdfAction()
+    {
+        $this->view->userLoggedIn = $this->access->setRedirect('cardapio/')
+            ->clearAccessList()
+            ->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+
+        $id = $this->getParametro('id');
+        $pdf = new Pdf();
+        $pdf->number = $id;
+        $pdf->url = $this->view->controller . 'relatorioCardapio/id/' . $id;
+        $pdf->gerar();
+    }
+
+    public function relatorioCardapioAction()
+    {
+        $model = new SolicitacaoModel();
+        $this->view->title = 'Cardápio semanal';
+        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'));
+        $this->render('relatorio_cardapio', true, 'blank');
+    }
+
     public function registraAction()
     {
         $user = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR']);
