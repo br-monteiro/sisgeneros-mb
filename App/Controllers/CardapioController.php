@@ -12,6 +12,7 @@ use App\Models\RecipesModel;
 use App\Models\RecipesItemsModel;
 use App\Models\RecipesPatternsModel;
 use App\Config\Configurations as cfg;
+use App\Helpers\Pdf;
 
 class CardapioController extends Controller implements CtrlInterface
 {
