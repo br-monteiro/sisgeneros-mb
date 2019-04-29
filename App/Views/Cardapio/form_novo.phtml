@@ -350,11 +350,11 @@ $(document).ready(function () {
                 type: "POST",
                 url: "cardapio/registra/",
                 data: {menuMap},
-                seccesse: function (data) {
+                success: function (data) {
                     var id = jsonParse(data, {}).id;
                     var url = 'cardapio/ver';
                     if (id) {
-                        url = 'cardapio/detalhar/id' + id;
+                        url = 'cardapio/detalhar/id/' + id;
                     }
                     window.location = url;
                 }

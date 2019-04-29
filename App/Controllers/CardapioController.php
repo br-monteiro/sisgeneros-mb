@@ -90,6 +90,13 @@ class CardapioController extends Controller implements CtrlInterface
         $model->atualizaDataCardapio();
     }
 
+    public function eliminarMenuAction()
+    {
+        $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);
+        $model = new CardapioModel();
+        $model->removerMenu($this->getParametro('id'));
+    }
+
     public function eliminarAction()
     {
         $this->view->userLoggedIn = $this->access->authenticAccess(['ADMINISTRADOR', 'CONTROLADOR', 'ENCARREGADO', 'NORMAL']);

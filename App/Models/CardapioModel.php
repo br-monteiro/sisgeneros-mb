@@ -107,6 +107,13 @@ class CardapioModel extends CRUD
         }
     }
 
+    public function removerMenu($id)
+    {
+        if (parent::remover($id)) {
+            header('Location: ' . cfg::DEFAULT_URI . 'cardapio/ver/');
+        }
+    }
+
     public function aprovar($id, $user)
     {
         $dados = [
