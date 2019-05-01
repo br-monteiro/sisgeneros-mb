@@ -199,7 +199,7 @@ class CardapioModel extends CRUD
      * @param int $id
      * @return array
      */
-    public function retornsDataFrommMenus(int $id): array
+    public function retornsDataFromMenus(int $id): array
     {
         $query = ""
             . " SELECT "

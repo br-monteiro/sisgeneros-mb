@@ -142,7 +142,7 @@ class CardapioController extends Controller implements CtrlInterface
     {
         $model = new CardapioModel();
         $this->view->title = 'Cardápio semanal';
-        $this->view->result = $model->retornsDataFrommMenus(intval($this->getParametro('id')));
+        $this->view->result = $model->retornsDataFromMenus(intval($this->getParametro('id')));
         $this->render('relatorio_cardapio', true, 'blank');
     }
 
