@@ -38,7 +38,7 @@ class AvaliacaoFornecedorModel extends CRUD
             . "     suppliers AS supp "
             . "     ON supp.id = req.suppliers_id "
             . " GROUP BY req.suppliers_id "
-            . " ORDER BY evaluation DESC";
+            . " ORDER BY evaluation DESC, supp.name ASC";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
