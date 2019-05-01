@@ -383,6 +383,7 @@ CREATE TABLE IF NOT EXISTS `sisgeneros`.`recipes` (
   `name` VARCHAR(50) NOT NULL,
   `quantity_people` INT(5) NOT NULL COMMENT 'Quantidade de pessoas a serem atendidas',
   `date` DATE NOT NULL,
+  `sort` INT(15) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_recipes_recipes_patterns1_idx` (`recipes_patterns_id` ASC),
   INDEX `fk_recipes_meals1_idx` (`meals_id` ASC),

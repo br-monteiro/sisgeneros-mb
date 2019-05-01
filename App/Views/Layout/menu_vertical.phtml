@@ -270,31 +270,6 @@
             <a class="nav-link collapsed"
                href="#"
                data-toggle="collapse"
-               data-target="#cardapio"
-               aria-expanded="false"
-               aria-controls="cardapio">
-                <i class="fa fa-bars fa-fw"></i> Cardápio
-                <span class="fa arrow"></span>
-            </a>
-            <div id="cardapio"
-                 class="collapse"
-                 aria-labelledby="headingPages"
-                 data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="cardapio/ver">
-                        <i class="fa fa-cog"></i> Gerenciar
-                    </a>
-                    <a class="collapse-item" href="cardapio/novo/">
-                        <i class="fa fa-plus-circle"></i> Novo Registro
-                    </a>
-                </div>
-            </div>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed"
-               href="#"
-               data-toggle="collapse"
                data-target="#meals"
                aria-expanded="false"
                aria-controls="meals">
@@ -316,6 +291,30 @@
             </div>
         </li>
     <?php endif; ?>
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-toggle="collapse"
+           data-target="#cardapio"
+           aria-expanded="false"
+           aria-controls="cardapio">
+            <i class="fa fa-bars fa-fw"></i> Cardápio
+            <span class="fa arrow"></span>
+        </a>
+        <div id="cardapio"
+             class="collapse"
+             aria-labelledby="headingPages"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="cardapio/ver">
+                    <i class="fa fa-cog"></i> Gerenciar
+                </a>
+                <a class="collapse-item" href="cardapio/novo/">
+                    <i class="fa fa-plus-circle"></i> Novo Registro
+                </a>
+            </div>
+        </div>
+    </li>
 
     <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR') : ?>
         <li class="nav-item">

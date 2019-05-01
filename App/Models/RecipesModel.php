@@ -79,6 +79,7 @@ class RecipesModel extends CRUD
                     'recipesPatternsId' => $recipes['recipesPatternsId'],
                     'name' => trim($recipes['name']),
                     'quantity' => $recipes['quantity'],
+                    'sort' => $recipes['sort'],
                     'items' => $this->buildItemsRecipes($recipes['items'])
                 ];
             }
@@ -114,7 +115,8 @@ class RecipesModel extends CRUD
             . "     ON B.id = A.meals_id "
             . " INNER JOIN recipes_patterns AS C "
             . "     ON C.id = A.recipes_patterns_id "
-            . " WHERE A.menus_id = :menusId ";
+            . " WHERE A.menus_id = :menusId "
+            . "ORDER BY A.date, B.sort";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':menusId' => $menusId]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

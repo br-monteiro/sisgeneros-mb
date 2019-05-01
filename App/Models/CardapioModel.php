@@ -199,7 +199,7 @@ class CardapioModel extends CRUD
      * @param int $id
      * @return array
      */
-    public function retornsDataFromMenus(int $id): array
+    public function returnsDataFromMenus(int $id): array
     {
         $query = ""
             . " SELECT "
@@ -222,8 +222,7 @@ class CardapioModel extends CRUD
             . "        INNER JOIN oms ON oms.id = mn.oms_id "
             . " WHERE "
             . "    mn.id = {$id}  "
-            . "    AND mn.status IN ( 'GERADO' , 'APROVADO') "
-            . " ORDER BY rcp.date, mls.sort, mn.id; ";
+            . " ORDER BY rcp.date, mls.sort, rcp.sort, mn.id; ";
         return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 

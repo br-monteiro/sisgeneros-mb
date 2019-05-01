@@ -324,6 +324,7 @@ $(document).ready(function () {
                 "recipesPatternsId": $("#recipes").val(),
                 "name": $("#recipes option:selected").text().replace(/\s{2}/g, ''),
                 "quantity": $("#quantity_people").val(),
+                "sort" : (new Date()).getTime(),
                 "items": items
             }
         };

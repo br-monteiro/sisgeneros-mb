@@ -246,10 +246,11 @@ class SolicitacaoModel extends CRUD
             $andExists = isset($dados['where']) ? 'AND' : '';
             $dados['where'] = ($dados['where'] ?? "") . " {$andExists} ( "
                 . 'sol.status LIKE :search '
-                . 'OR sol.number LIKE :search '
-                . 'OR sol.created_at BETWEEN :dInit AND :dEnd '
-                . 'OR sol.updated_at BETWEEN :dInit AND :dEnd '
-                . 'OR sol.delivery_date LIKE :search '
+                . ' OR sol.number LIKE :search '
+                . ' OR oms.naval_indicative LIKE :search '
+                . ' OR sol.created_at BETWEEN :dInit AND :dEnd '
+                . ' OR sol.updated_at BETWEEN :dInit AND :dEnd '
+                . ' OR sol.delivery_date LIKE :search '
                 . ') ';
 
             $bindValue = [
@@ -488,7 +489,7 @@ class SolicitacaoModel extends CRUD
                         'status' => 'ABERTO',
                         'created_at' => date('Y-m-d'),
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'delivery_date' => $values['date']
+                        'delivery_date' => date('Y-m-d', strtotime($values['date']) - (5 * 86400))
                     ];
                     $numbers[] = $dados['number'];
     

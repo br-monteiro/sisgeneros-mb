@@ -53,7 +53,7 @@ $pagination = Pagination::make($this);
                                     <a href="<?= $this->view->controller; ?>detalhar/id/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Cardápio
                                     </a>
-                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO']) && $value['status'] == 'GERADO'): ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO', 'NORMAL'])): ?>
                                         <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-secondary btn-sm">
                                             <i class="fa fa-file-pdf-o"></i> PDF
                                         </a>

@@ -26,7 +26,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
         <!-- Content Row -->
         <div class="row">
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card border-left-primary shadow h-100 py-2 goto-report goto-report-entrega-em-atraso">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -42,7 +42,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
+                <div class="card border-left-success shadow h-100 py-2 goto-report goto-report-acompanhamento-solicitacao">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -58,7 +58,7 @@ $cfg = App\Config\Configurations::htrFileConfigs();
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2">
+                <div class="card border-left-info shadow h-100 py-2 goto-report goto-report-aguardando-aprovacao">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
@@ -191,4 +191,27 @@ $cfg = App\Config\Configurations::htrFileConfigs();
     .btn-dark {
         color: #fff !important;
     }
+    .goto-report {
+        cursor: pointer;
+    }
 </style>
+<script>
+    var gotoBtnAtrasado = document.querySelector('.goto-report-entrega-em-atraso');
+    var gotoBtnAcompanhamento = document.querySelector('.goto-report-acompanhamento-solicitacao');
+    var gotoBtnAguardando = document.querySelector('.goto-report-aguardando-aprovacao');
+    if (gotoBtnAtrasado) {
+        gotoBtnAtrasado.addEventListener('click', function () {
+            window.location = 'relatorio/solicitacao/pagina/1/status/SOLICITADO/';
+        });
+    }
+    if (gotoBtnAcompanhamento) {
+        gotoBtnAcompanhamento.addEventListener('click', function () {
+            window.location = 'solicitacao/ver/';
+        });
+    }
+    if (gotoBtnAguardando) {
+        gotoBtnAguardando.addEventListener('click', function () {
+            window.location = 'relatorio/solicitacao/pagina/1/status/ABERTO/';
+        });
+    }
+</script>
