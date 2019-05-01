@@ -96,8 +96,8 @@ class CardapioModel extends CRUD
         $result = $recipesModel->findById($id);
         if ($result) {
             $count = $this->pdo
-            ->query("SELECT id FROM recipes WHERE date = '{$result['date']}' AND menus_id = {$result['menus_id']}")
-            ->fetchAll(\PDO::FETCH_ASSOC);
+                ->query("SELECT id FROM recipes WHERE date = '{$result['date']}' AND menus_id = {$result['menus_id']}")
+                ->fetchAll(\PDO::FETCH_ASSOC);
 
             if (count($count) > 1) {
                 $recipesModel->removerRegistro($id, $menusId);
@@ -129,7 +129,7 @@ class CardapioModel extends CRUD
     public function atualizaDataCardapio()
     {
         $beginningDate = filter_input(INPUT_POST, 'beginningDate');
-        $endingDate = date("Y-m-d", strtotime("".Utils::dateDatabaseFormate($beginningDate)." +6 day"));
+        $endingDate = date("Y-m-d", strtotime("" . Utils::dateDatabaseFormate($beginningDate) . " +6 day"));
         $id = filter_input(INPUT_POST, 'id');
 
         $dados = [
@@ -149,7 +149,7 @@ class CardapioModel extends CRUD
         $menuMap = filter_input_array(INPUT_POST);
         $data = $menuMap["menuMap"];
         $beginningDate = date("Y-m-d", strtotime($data[0]["date"]));
-        $endingDate = date("Y-m-d", strtotime("".$data[0]["date"]." +6 day"));
+        $endingDate = date("Y-m-d", strtotime("" . $data[0]["date"] . " +6 day"));
         $this->setOmsId(filter_var($omId, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUserRequesters(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
             ->setUserAuthorizers(filter_var($userId, FILTER_SANITIZE_SPECIAL_CHARS))
@@ -186,12 +186,45 @@ class CardapioModel extends CRUD
         return $result;
     }
 
-    function changeStatus (string $status, int $id)
+    public function changeStatus(string $status, int $id)
     {
         $dados = [
             'status' => strtoupper($status)
         ];
         return parent::editar($dados, $id);
+    }
+
+    /**
+     * Returns all data to make the menus reports
+     * @param int $id
+     * @return array
+     */
+    public function retornsDataFrommMenus(int $id): array
+    {
+        $query = ""
+            . " SELECT "
+            . "    mn.beginning_date, "
+            . "    mn.ending_date, "
+            . "    rcp.name AS recipes_name, "
+            . "    mls.name AS meals_name, "
+            . "    mls.sort, "
+            . "    rcp.date, "
+            . "    oms.fiscal_agent, "
+            . "    oms.fiscal_agent_graduation, "
+            . "    oms.munition_fiel, "
+            . "    oms.munition_fiel_graduation, "
+            . "    oms.munition_manager, "
+            . "    oms.munition_manager_graduation "
+            . " FROM "
+            . "    menus AS mn "
+            . "        INNER JOIN recipes AS rcp ON rcp.menus_id = mn.id "
+            . "        INNER JOIN meals AS mls ON mls.id = rcp.meals_id "
+            . "        INNER JOIN oms ON oms.id = mn.oms_id "
+            . " WHERE "
+            . "    mn.id = {$id}  "
+            . "    AND mn.status IN ( 'GERADO' , 'APROVADO') "
+            . " ORDER BY rcp.date, mls.sort, mn.id; ";
+        return $this->pdo->query($query)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     // Validação

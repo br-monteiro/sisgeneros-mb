@@ -140,9 +140,9 @@ class CardapioController extends Controller implements CtrlInterface
 
     public function relatorioCardapioAction()
     {
-        $model = new SolicitacaoModel();
+        $model = new CardapioModel();
         $this->view->title = 'Cardápio semanal';
-        $this->view->result = $model->retornaDadosPapeleta($this->getParametro('id'));
+        $this->view->result = $model->retornsDataFrommMenus(intval($this->getParametro('id')));
         $this->render('relatorio_cardapio', true, 'blank');
     }
 
