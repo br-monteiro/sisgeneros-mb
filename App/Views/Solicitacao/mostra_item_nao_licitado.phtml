@@ -2,10 +2,9 @@
     <div class="container-fluid">
         <form action="<?= $this->view->controller; ?>registranaolicitado" method="post" id="form" enctype="multipart/form-data">
             <div class="row">
-                <input type="hidden" name="id_licitacao" value="0">
-                <input type="hidden" name="nao_licitado" value="1">
-                <input type="hidden" name="numero_nota_fiscal" value="S/N">
-                <input type="hidden" name="observacao">
+                <input type="hidden" name="biddings_id" value="S/N">
+                <input type="hidden" name="invoice" value="S/N">
+                <input type="hidden" name="observation">
                 <div class="col-md-12">
                     <div id="resultado"></div>
                 </div>
@@ -16,7 +15,7 @@
                 </div>
                 <div class="col-lg-6">
                     <a class="btn btn-info pull-right add" id="add-row">
-                        <i class="fa fa-plus-circle"></i> Adicionar Campo
+                        <i class="fa fa-plus-circle"></i> Adicionar Item
                     </a>
                     <a class="btn btn-warning pull-right add" id="add-file">
                         <i class="fa fa-file"></i> Adicionar Arquivo
@@ -27,8 +26,8 @@
                 <div class="col-md-6">
                     <label>Data estipulada para entrega:</label>
                     <input type="text"
-                           name="data_entrega"
-                           id="data_entrega"
+                           name="delivery_date"
+                           id="delivery_date"
                            class="form-control"
                            data-mask="00-00-0000"
                            data-mask-reverse="true"
@@ -38,10 +37,10 @@
                 </div>
                 <div class="col-md-6">
                     <label>Fornecedor:</label>
-                    <select name="fornecedor_id" class="form-control" required>
+                    <select name="suppliers_id" class="form-control" required>
                         <option value="">---</option>
                         <?php foreach ($this->view->resultFornecedor as $value) : ?>
-                            <option value="<?= $value['id']; ?>"><?= $value['cnpj']; ?> - <?= $value['nome']; ?></option>
+                            <option value="<?= $value['id']; ?>"><?= $value['cnpj']; ?> - <?= $value['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -60,7 +59,7 @@
                         <tbody id="file-list">
                             <tr>
                                 <td>
-                                    <input type="file" name="arquivos[]" accept="application/pdf" required>
+                                    <input type="file" name="files[]" accept="application/pdf" required>
                                 </td>
                                 <td></td>
                             </tr>
@@ -83,9 +82,8 @@
                         <tbody id="row-list">
                             <tr>
                                 <td>
-                                    <input type="hidden" name="id[]" value="">
                                     <input type="text"
-                                           name="quantidade[]"
+                                           name="quantity[]"
                                            class="form-control"
                                            required
                                            maxlength="10">
@@ -99,7 +97,7 @@
                                 </td>
                                 <td>
                                     <input type="text"
-                                           name="valor[]"
+                                           name="value[]"
                                            class="form-control"
                                            data-mask="000.000.000,00"
                                            data-mask-reverse="true"
@@ -107,7 +105,7 @@
                                 </td>
                                 <td>
                                     <input type="text"
-                                           name="nome[]"
+                                           name="name[]"
                                            class="form-control"
                                            required
                                            maxlength="50">
@@ -125,20 +123,19 @@
     <table>
         <tr class="table-values remove--X-">
             <td>
-                <input type="hidden" name="id[]">
-                <input type="text" name="quantidade[]" class="form-control" maxlength="10" required="">
+                <input type="text" name="quantity[]" class="form-control" maxlength="10" required="">
             </td>
             <td>
                 <input type="text" name="uf[]" class="form-control" maxlength="5" required="">
             </td>
             <td>
                 <input type="text"
-                       name="valor[]"
+                       name="value[]"
                        class="form-control valor"
                        required="">
             </td>
             <td>
-                <input type="text" name="nome[]" class="form-control" maxlength="50" required="">
+                <input type="text" name="name[]" class="form-control" maxlength="50" required="">
             </td>
             <td>
                 <a class="remove btn btn-danger btn-sm" data-reference="-X-">
@@ -148,7 +145,7 @@
         </tr>
         <tr class="table-files remove--X-">
             <td>
-                <input type="file" name="arquivos[]" required="" accept="application/pdf">
+                <input type="file" name="files[]" required="" accept="application/pdf">
             </td>
             <td>
                 <a class="remove btn btn-danger btn-sm" data-reference="-X-">

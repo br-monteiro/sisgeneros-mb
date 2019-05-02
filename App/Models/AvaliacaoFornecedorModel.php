@@ -1,91 +1,44 @@
 <?php
-/**
- * @Model Om
- */
 namespace App\Models;
 
 use HTR\System\ModelCRUD as CRUD;
-use HTR\Helpers\Paginator\Paginator;
 
 class AvaliacaoFornecedorModel extends CRUD
 {
 
-    protected $entidade = 'avaliacao_fornecedor';
-    protected $id;
-    protected $fornecedorId;
-    protected $licitacaoId;
-    protected $nota;
-    protected $naoEntregue;
-    protected $resultadoPaginator;
-    protected $navPaginator;
+    protected $entidade = 'suppliers_evaluations';
 
     public function returnAll()
     {
         return $this->findAll();
     }
 
-    public function paginator($pagina)
+    public function novoRegistro($dados)
     {
-        $dados = [
-            'entidade' => $this->entidade,
-            'pagina' => $pagina,
-            'maxResult' => 10,
-            'orderBy' => 'nome ASC'
-            //'where' => 'nome LIKE ? ORDER BY nome',
-            //'bindValue' => [0 => '%MONTEIRO%']
-        ];
+        $result = $this->findByRequests_id($dados['requests_id'] ?? 0);
 
-        $paginator = new Paginator($dados);
-        $this->resultadoPaginator = $paginator->getResultado();
-        $this->navPaginator = $paginator->getNaveBtn();
-    }
-
-    public function getResultadoPaginator()
-    {
-        return $this->resultadoPaginator;
-    }
-
-    public function getNavePaginator()
-    {
-        return $this->navPaginator;
-    }
-
-    public function novoRegistro($value)
-    {
-        $this->validaAll($value);
-
-        $dados = [
-            'fornecedor_id' => $this->getFornecedorId(),
-            'licitacao_id' => $this->getLicitacaoId(),
-            'nota' => $this->getNota(),
-            'nao_entregue' => $this->getNaoEntregue(),
-            'solicitacao_id' => $value['solicitacao_id']
-        ];
-
-        parent::novo($dados);
-    }
-
-    private function validaAll($value)
-    {
-        // Seta todos os valores
-        $this->setNota($value['nota'])
-            ->setFornecedorId($value['fornecedor_id'])
-            ->setLicitacaoId($value['licitacao_id'])
-            ->setNaoEntregue($value['nao_entregue']);
+        if ($result) {
+            parent::editar($dados, $result['id']);
+        } else {
+            parent::novo($dados);
+        }
     }
 
     public function findBestBadSuppliers()
     {
         $query = ""
             . " SELECT "
-            . "     AVG(af.nota) AS nota,"
-            . "     forn.nome "
-            . " FROM {$this->entidade} AS af "
+            . "     AVG(se.evaluation) AS evaluation,"
+            . "     supp.name "
+            . " FROM {$this->entidade} AS se "
             . " INNER JOIN "
-            . "     fornecedor AS forn "
-            . "     ON forn.id = af.fornecedor_id "
-            . " GROUP BY fornecedor_id"
-            . " ORDER BY nota DESC";
+            . "     requests AS req "
+            . "     ON req.id = se.requests_id "
+            . " INNER JOIN "
+            . "     suppliers AS supp "
+            . "     ON supp.id = req.suppliers_id "
+            . " GROUP BY req.suppliers_id "
+            . " ORDER BY evaluation DESC, supp.name ASC";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

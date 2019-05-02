@@ -7,7 +7,7 @@ $showMedia = false;
 if (isset($this->view->result) && $total = count($this->view->result)) {
     $showMedia = true;
     $sum = array_reduce($this->view->result, function ($acc, $item) {
-        return $acc + $item['nota'];
+        return $acc + $item['evaluation'];
     }, 0);
     $media = $sum / $total;
 }
@@ -45,7 +45,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('fornecedor') ? 'selected' : '' ?>>
                                         <?= $value['cnpj'] ?>
                                         -
-                                        <?= $value['nome'] ?>
+                                        <?= $value['name'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -60,7 +60,7 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                                 <option value="">OM</option>
                                 <?php foreach ($this->view->resultOms as $value): ?>
                                     <option value="<?= $value['id'] ?>" <?= $value['id'] == $this->getParametro('om') ? 'selected' : '' ?>>
-                                        <?= $value['indicativo_naval'] ?>
+                                        <?= $value['naval_indicative'] ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -117,25 +117,25 @@ $pagination = Pagination::make($this, function ($btn, $controllerName) {
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
                                 <td>
-                                    <?= $value['nota']; ?>
+                                    <?= $value['evaluation']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['fornecedor_nome']; ?>
+                                    <?= $value['suppliers_name']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['solicitacao_numero']; ?>
+                                    <?= $value['requests_number']; ?>
                                     -
-                                    <?= $value['solicitacao_status']; ?>
+                                    <?= $value['requests_status']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['licitacao_numero']; ?>
-                                    <i class="fa fa-info-circle text-info" title="<?= $value['licitacao_uasg_nome']; ?>"></i>
+                                    <?= $value['biddings_number']; ?>
+                                    <i class="fa fa-info-circle text-info" title="<?= $value['biddings_uasg_name']; ?>"></i>
                                 </td>
                                 <td>
-                                    <?= $value['om_indicativo_naval']; ?>
+                                    <?= $value['om_naval_indicative']; ?>
                                 </td>
                                 <td>
-                                    <?= date('d-m-Y', $value['criacao']); ?>
+                                    <?= date('d-m-Y', strtotime($value['created_at'])); ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

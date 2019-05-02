@@ -16,8 +16,9 @@ class FornecedorController extends Controller implements CtrlInterface
     {
         parent::__construct($bootstrap);
 
-        $this->view->controller = cfg::DEFAULT_URI . 'fornecedor/';
+        $this->view->controller = cfg::DEFAULT_URI . 'fornecedor/'; 
         $this->access = new Access();
+        
     }
 
     public function indexAction()

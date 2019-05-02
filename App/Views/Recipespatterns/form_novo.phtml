@@ -1,0 +1,148 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <form action="<?= $this->view->controller; ?>registra/" method="post" id="form">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="resultado"></div>
+                </div>
+                <div class="col-lg-6">
+                    <button class="btn btn-success">
+                        <i class="fa fa-check"></i> Confirmar Registro
+                    </button>
+                    <a href="<?= $this->view->controller; ?>"
+                       class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <a class="btn btn-info pull-right add" id="add-ingredients">
+                        <i class="fa fa-file"></i> Adicionar Ingrediente
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                        </div>
+                        <div class="panel-body">
+                            <div id="resultado"></div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Nome</label>
+                                        <input type="text"
+                                               id="name"
+                                               name="name"
+                                               placeholder="Nome da receita"
+                                               class="form-control"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ingrediente</th>
+                                <th width="25%">Quantidade</th>
+                                <th width="8%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="row-list">
+                            <tr>
+                                <td>
+                                    <select name="ingredients_id[]" class="form-control" tabindex="1" required>
+                                        <option value="">---</option>
+                                        <?php foreach ($this->view->resultIngredients as $value) : ?>
+                                            <option value="<?= $value['id']; ?>"><?= $value['name']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           name="quantity[]"
+                                           class="form-control"
+                                           data-mask="#.###"
+                                           required
+                                           maxlength="5">
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="hide">
+    <table>
+        <tr class="table-values remove--X-">
+            <td>
+                <select name="ingredients_id[]" class="form-control" tabindex="2" required>
+                    <option value="">---</option>
+                    <?php foreach ($this->view->resultIngredients as $value) : ?>
+                        <option value="<?= $value['id']; ?>"><?= $value['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td>
+                <input type="text"
+                       name="quantity[]"
+                       class="form-control fix-mask"
+                       required
+                       maxlength="5">
+            </td>
+            <td>
+                <a class="remove btn btn-danger btn-sm" data-reference="-X-">
+                    <i class="fa fa-times"></i>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        var xRow = 1;
+        var getTemplate = function getTemplate(className, reference) {
+            return $('tr.' + className + '.remove--X-')
+                    .get(0)
+                    .outerHTML
+                    .replace('table-values ', '')
+                    .replace(/-X-/g, reference);
+        };
+        /**
+         * Add a new row into table values
+         */
+        $('#add-ingredients').click(function addRowItem(event) {
+            event.preventDefault();
+            var template = getTemplate('table-values', xRow);
+            $('#row-list').append(template);
+            $('.fix-mask').mask('#.###');
+            xRow++;
+        });
+        /**
+         * Remove a row from table values
+         */
+        $('#row-list').on("click", ".remove", function removeRowItem(event) {
+            event.preventDefault();
+            var reference = $(this).attr('data-reference');
+            $('#row-list tr.remove-' + reference).remove();
+        });
+    });
+</script>
+<style>
+    .add {
+        color: #fff !important;
+        margin-right: 10px;
+    }
+    .hide {
+        display: none;
+    }
+</style>

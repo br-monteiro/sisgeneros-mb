@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Pagination;
+use App\Helpers\View;
 
 $pagination = Pagination::make($this);
 
@@ -18,7 +19,7 @@ $pagination = Pagination::make($this);
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Numero</th>
+                            <th>Número</th>
                             <th>Descrição</th>
                             <th>UASG</th>
                             <th>UASG Nome</th>
@@ -29,26 +30,26 @@ $pagination = Pagination::make($this);
                     <tbody>
                         <?php foreach ($this->view->result as $value): ?>
                             <tr>
-                                <td><?= $value['numero']; ?></td>
+                                <td><?= $value['number']; ?></td>
                                 <td>
-                                    <?= $value['descricao']; ?>
+                                    <?= $value['description']; ?>
                                 </td>
                                 <td>
                                     <?= $value['uasg']; ?>
                                 </td>
                                 <td>
-                                    <?= $value['nome_uasg']; ?>
+                                    <?= $value['uasg_name']; ?>
                                 </td>
                                 <td>
                                     <span class="badge badge-danger">
-                                        <?= date('d-m-Y', $value['validade']); ?>
+                                        <?= View::humanDate($value['validate']); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="item/novo/idlista/<?= $value['id_lista']; ?>" class="btn btn-info btn-sm">
+                                    <a href="item/novo/idlista/<?= $value['id']; ?>" class="btn btn-info btn-sm">
                                         <i class="fa fa-plus-circle"></i> Add
                                     </a>
-                                    <a href="item/listar/idlista/<?= $value['id_lista']; ?>" class="btn btn-primary btn-sm">
+                                    <a href="item/listar/idlista/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
                                         <i class="fa fa-list"></i> Itens
                                     </a>
                                     <a href="<?= $this->view->controller; ?>editar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">

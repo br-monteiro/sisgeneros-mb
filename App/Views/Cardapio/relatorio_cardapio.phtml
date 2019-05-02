@@ -1,0 +1,161 @@
+<?php
+
+use App\Helpers\View;
+use App\Config\Configurations as cfg;
+
+setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+date_default_timezone_set(cfg::TIMEZONE);
+
+if (!isset($this->view->result[0])) {
+    die("<i class='fa fa-info-circle'></i> O cardápio não pode ser gerado..");
+}
+
+$arrayFind = function ($callback, $array) {
+    foreach ($array as $index => $value) {
+        if ($callback($value)) {
+            return $index;
+        }
+    }
+    return false;
+};
+
+$common = $this->view->result[0];
+$menusBody = [];
+
+foreach ($this->view->result as $index => $value) {
+    $mealsExists = false;
+    if (isset($menusBody[$value['date']])) {
+        $mealsExists = $arrayFind(function ($item) use ($value) {
+            return $item['meals_name'] === $value['meals_name'];
+        }, $menusBody[$value['date']]);
+    }
+
+    if ($mealsExists === false) {
+        $menusBody[$value['date']][] = [
+            'sort' => $value['sort'],
+            'meals_name' => $value['meals_name'],
+            'recipes_name' => $value['recipes_name']
+        ];
+    } else {
+        $menusBody[$value['date']][$mealsExists]['recipes_name'] .= "<br>" . $value['recipes_name'];
+    }
+}
+
+$fixWeekDay = function ($day) {
+    if (in_array($day, ['sábado', 'domingo'])) {
+        return $day;
+    }
+    return $day . '-feira';
+};
+
+?>
+<table class="table-print">
+    <tr>
+        <td class="assign-colunm"></td>
+        <td class="cabecalho bold">
+            MARINHA DO BRASIL<br>
+            <?= cfg::htrFileConfigs()->application->om ?><br>
+            DEPARTAMENTO DE INTENDÊNCIA<br>
+            CARDÁPIO SEMANAL DO PERÍODO DE
+            <?= View::humanDate($common['beginning_date']); ?>
+            À <?= View::humanDate($common['ending_date']); ?>
+        </td>
+        <td class="assign-colunm">
+            <span class="bold">
+                <?= $common['fiscal_agent']; ?><br>
+            </span>
+            <?= $common['fiscal_agent_graduation']; ?><br>
+            Agente Fiscal
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" class="body-table">
+            <table>
+                <?php foreach ($menusBody as $date => $value): ?>
+                    <tr>
+                        <td class="bold uppercase">
+                            <?= $fixWeekDay(strftime('%A', strtotime($date))); ?> -
+                            <?= View::humanDate($date); ?>
+                        </td>
+                        <?php foreach ($value as $recipe): ?>
+                            <td class="width-18-percent">
+                                <span class="bold">
+                                    <?= $recipe['meals_name']; ?>
+                                </span><br>
+                                <?= $recipe['recipes_name']; ?>
+                            </td>
+                        <?php endforeach; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td class = "assign-colunm">
+            <span class = "bold">
+                <?= $common['munition_manager']; ?><br>
+            </span>
+            <?= $common['munition_manager_graduation']; ?><br>
+            Fiel de Municiamento
+        </td>
+        <td></td>
+        <td class="assign-colunm">
+            <span class="bold">
+                <?= $common['munition_fiel']; ?><br>
+            </span>
+            <?= $common['munition_fiel_graduation']; ?><br>
+            Gestor de Municiamento
+    </tr>
+</table>
+<style>
+    body {
+        font-size: 12px !important;
+        background-color: #fff !important;
+    }
+    .table-striped > tbody > tr:nth-of-type(2n+1) {
+        background-color: #ccc;
+    }
+    .table-print {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .td-table, .table {
+        margin: 0px !important;
+        padding: 0px !important;
+    }
+    .table-condensed > tfoot > tr > td {
+        padding: 2px !important;
+    }
+    .cabecalho {
+        text-transform: uppercase;
+    }
+    .cabecalho {
+        text-transform: uppercase;
+    }
+    .bold {
+        font-weight: bold;
+    }
+    .assign-colunm {
+        width: 25%;
+        padding-top: 60px;
+    }
+    .body-table {
+        padding-top: 30px;
+    }
+    .body-table table {
+        margin: 0px auto;
+        width: 95%;
+    }
+    .body-table table td {
+        border: 1px solid;
+        padding: 5px;
+    }
+    .uppercase {
+        text-transform: uppercase;
+    }
+    .width-18-percent {
+        width: 18%;
+    }
+</style>

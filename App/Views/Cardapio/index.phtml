@@ -1,0 +1,80 @@
+<?php
+
+use App\Helpers\Pagination;
+use App\Helpers\View;
+
+$userNivel = $this->view->userLoggedIn['level'];
+
+$pagination = Pagination::make($this);
+
+?>
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5>Lista de cardápios</h5>
+                <i class="fa fa-list"></i> <?= $this->view->title; ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="<?= $this->view->controller; ?>novo/" class="btn btn-info">
+                            <i class="fa fa-plus-circle"></i> Novo Registro
+                        </a>
+                    </div>
+                </div>
+                <?= $pagination; ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Início</th>
+                            <th>Fim</th>
+                            <th>Status</th>
+                            <th>Solicitante</th>
+                            <th>Autorizador</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->view->result as $value): ?>
+                            <tr>
+                                <td>
+                                    <span class="badge badge-danger">
+                                        <?= View::humanDate($value['beginning_date']); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-danger">
+                                        <?= View::humanDate($value['ending_date']); ?>
+                                    </span>
+                                </td>
+                                <td><?= $value['status']; ?></td>
+                                <td><?= $value['requester']; ?></td>
+                                <td><?= $value['authorizers']; ?></td>
+                                <td>
+                                    <a href="<?= $this->view->controller; ?>detalhar/id/<?= $value['id']; ?>" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-list"></i> Cardápio
+                                    </a>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO', 'NORMAL'])): ?>
+                                        <a href="<?= $this->view->controller; ?>pdf/id/<?= $value['id']; ?>" class="btn btn-secondary btn-sm">
+                                            <i class="fa fa-file-pdf-o"></i> PDF
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if (in_array($userNivel, ['ADMINISTRADOR', 'ENCARREGADO']) && $value['status'] == 'ABERTO'): ?>
+                                        <a href="<?= $this->view->controller; ?>aprovar/id/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                            <i class="fa fa-check-circle"></i> Aprovar
+                                        </a>
+                                        <a
+                                            onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminarMenu/id/<?= $value['id']; ?>')"
+                                            class="btn btn-danger btn-sm">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?= $pagination; ?>
+            </div>
+        </div>
+    </div>
+</div>

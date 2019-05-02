@@ -1,0 +1,58 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-table fa-fw"></i> Formulário de Cadastro
+                    </div>
+                    <div class="card-body">
+                        <div id="resultado"></div>
+                        <form action="<?= $this->view->controller; ?>altera/" method="post" id="form">
+                            <input type="hidden" name="id" value="<?= $this->view->result['id']; ?>">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Nome</label>
+                                        <input type="text"
+                                               id="name"
+                                               name="name"
+                                               placeholder="Nome da Empresa"
+                                               class="form-control"
+                                               value="<?= $this->view->result['name']; ?>"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Ordem</label>
+                                        <input type="text"
+                                               id="sort"
+                                               name="sort"
+                                               placeholder="Ordem"
+                                               class="form-control"
+                                               value="<?= $this->view->result['sort']; ?>"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <br>
+                                        <button class="btn btn-primary"><i class="fa fa-check"></i> Alterar</button>
+                                        <a href="<?= $this->view->controller; ?>" class="btn btn-warning"><i class="fa fa-arrow-left"></i> Voltar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

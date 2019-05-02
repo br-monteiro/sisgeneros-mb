@@ -91,9 +91,13 @@ class ModelCRUD extends ModelAbstract
         } elseif (substr($metodo, 0, 3) == 'get') {
 
             $attribName = lcfirst(substr($metodo, 3, strlen($metodo)));
-            return $this->$attribName;
+            if (isset($this->$attribName)) {
+                return $this->$attribName;
+            } else {
+                throw new \Exception("Attribute '{$attribName}' is not found");
+            }
         } else {
-            throw new \Exception('Método não encontrado');
+            throw new \Exception("The method '{$metodo}' is not accessible or not exists");
         }
     }
 }

@@ -1,0 +1,54 @@
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h5 class="page-header"><?= $this->view->title ?></h5>
+            </div>
+            <div class="resultado"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header title-menu">
+                        Ingredientes dos cardápio
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Solicitado</th>
+                                        <th>Quantidade</th>
+                                        <th>Licitado</th>
+                                        <th>Fornecedor</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($this->view->result as $value): ?>
+                                    <tr>
+                                        <td><?= $value['item'] ?></td>
+                                        <td><?= $value['quantity'] ?></td>
+                                        <td><?= ($value['biddings'])??"<span class='badge badge-danger'>NÃO LICITADO</span>"  ?></td>
+                                        <td><?= ($value['suppliers'])??"<span class='badge badge-danger'>NÃO LICITADO</span>" ?></td>
+                                        <td>
+                                            <a href="<?= $this->view->controller; ?>editarIngredientes/itemId/<?= $value['id']; ?>" class="btn btn-success btn-sm">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a
+                                                onclick="confirmar('Deseja REMOVER este registro?', '<?= $this->view->controller; ?>eliminar/id/<?= $value['id']; ?>')"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

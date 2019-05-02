@@ -1,4 +1,6 @@
 <?php
+
+use App\Helpers\View;
 $cfg = App\Config\Configurations::htrFileConfigs();
 
 ?>
@@ -10,10 +12,10 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                     <div class="card bg-warning shadow billboard-container">
                         <div class="card-body billboard-content">
                             <div class="billboard-title">
-                                <i class="fa fa-bullhorn fa-fw"></i> <?= $value['titulo'] ?? ''; ?>
+                                <i class="fa fa-bullhorn fa-fw"></i> <?= $value['title'] ?? ''; ?>
                             </div>
                             <div class="billboard-body">
-                                <?= $value['corpo'] ?? ''; ?>
+                                <?= $value['content'] ?? ''; ?>
                             </div>
                         </div>
                     </div>
@@ -24,12 +26,12 @@ $cfg = App\Config\Configurations::htrFileConfigs();
         <!-- Content Row -->
         <div class="row">
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card border-left-primary shadow h-100 py-2 goto-report goto-report-entrega-em-atraso">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Entregas em Atraso</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesAtrasadas['quantidade']; ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesAtrasadas['quantity']; ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-truck fa-fw"></i>
@@ -40,12 +42,12 @@ $cfg = App\Config\Configurations::htrFileConfigs();
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
+                <div class="card border-left-success shadow h-100 py-2 goto-report goto-report-acompanhamento-solicitacao">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Acompanhamento de Solicitações (Mensal)</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesMensal['quantidade'] ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->solicitacoesMensal['quantity'] ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-list fa-fw"></i>
@@ -56,12 +58,12 @@ $cfg = App\Config\Configurations::htrFileConfigs();
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2">
+                <div class="card border-left-info shadow h-100 py-2 goto-report goto-report-aguardando-aprovacao">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Aguard. aprov.</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->pendAprov['quantidade'] ?></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $this->view->pendAprov['quantity'] ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fa fa-thumbs-up fa-fw"></i>
@@ -85,18 +87,18 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         if ($index > 4) {
                             break;
                         }
-                        $value['nota'] = round($value['nota'], 2);
+                        $value['evaluation'] = round($value['evaluation'], 2);
 
                         ?>
                         <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
+                            <?= $value['name'] ?>
+                            <span class="float-right"><?= $value['evaluation'] ?></span>
                         </h4>
                         <div class="progress mb-4">
                             <div class="progress-bar bg-success"
                                  role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 style="width: <?= ($value['evaluation'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['evaluation'] ?>"
                                  aria-valuemin="1"
                                  aria-valuemax="5"></div>
                         </div>
@@ -116,18 +118,18 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         if ($index > 4) {
                             break;
                         }
-                        $value['nota'] = round($value['nota'], 2);
+                        $value['evaluation'] = round($value['evaluation'], 2);
 
                         ?>
                         <h4 class="small font-weight-bold">
-                            <?= $value['nome'] ?>
-                            <span class="float-right"><?= $value['nota'] ?></span>
+                            <?= $value['name'] ?>
+                            <span class="float-right"><?= $value['evaluation'] ?></span>
                         </h4>
                         <div class="progress mb-4">
                             <div class="progress-bar bg-danger"
                                  role="progressbar"
-                                 style="width: <?= ($value['nota'] * 100) / 5 ?>%"
-                                 aria-valuenow="<?= $value['nota'] ?>"
+                                 style="width: <?= ($value['evaluation'] * 100) / 5 ?>%"
+                                 aria-valuenow="<?= $value['evaluation'] ?>"
                                  aria-valuemin="0"
                                  aria-valuemax="5"></div>
                         </div>
@@ -167,12 +169,12 @@ $cfg = App\Config\Configurations::htrFileConfigs();
                         <tbody>
                             <?php foreach ($this->view->lastUpdated as $value): ?>
                                 <tr>
-                                    <td><?= $value['numero']; ?></td>
-                                    <td><?= $value['indicativo_naval']; ?></td>
+                                    <td><?= $value['number']; ?></td>
+                                    <td><?= $value['naval_indicative']; ?></td>
                                     <td><?= $value['status']; ?></td>
-                                    <td><?= date('d-m-Y H:i:s', $value['updated_at']); ?></td>
+                                    <td><?= View::humanDate($value['updated_at']); ?></td>
                                     <td>
-                                        <a href="solicitacao/ver/busca/<?= $value['numero']; ?>" class="btn btn-dark btn-sm">
+                                        <a href="solicitacao/ver/busca/<?= $value['number']; ?>" class="btn btn-dark btn-sm">
                                             <i class="fa fa-arrow-circle-right"></i> Ver Solicitação
                                         </a>
                                     </td>
@@ -189,4 +191,27 @@ $cfg = App\Config\Configurations::htrFileConfigs();
     .btn-dark {
         color: #fff !important;
     }
+    .goto-report {
+        cursor: pointer;
+    }
 </style>
+<script>
+    var gotoBtnAtrasado = document.querySelector('.goto-report-entrega-em-atraso');
+    var gotoBtnAcompanhamento = document.querySelector('.goto-report-acompanhamento-solicitacao');
+    var gotoBtnAguardando = document.querySelector('.goto-report-aguardando-aprovacao');
+    if (gotoBtnAtrasado) {
+        gotoBtnAtrasado.addEventListener('click', function () {
+            window.location = 'relatorio/solicitacao/pagina/1/status/SOLICITADO/';
+        });
+    }
+    if (gotoBtnAcompanhamento) {
+        gotoBtnAcompanhamento.addEventListener('click', function () {
+            window.location = 'solicitacao/ver/';
+        });
+    }
+    if (gotoBtnAguardando) {
+        gotoBtnAguardando.addEventListener('click', function () {
+            window.location = 'relatorio/solicitacao/pagina/1/status/ABERTO/';
+        });
+    }
+</script>

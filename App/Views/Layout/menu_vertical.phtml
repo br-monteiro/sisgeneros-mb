@@ -63,7 +63,7 @@
         </div>
     </li>
 
-    <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR']) === false) : ?>
+    <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'CONTROLADOR']) === false) : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"
@@ -87,7 +87,7 @@
         </li>
     <?php endif; ?>
 
-    <?php if (in_array($this->view->userLoggedIn['nivel'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
+    <?php if (in_array($this->view->userLoggedIn['level'], ['ADMINISTRADOR', 'CONTROLADOR'])) : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"
@@ -215,9 +215,108 @@
                 </div>
             </div>
         </li>
-    <?php endif; ?>
 
-    <?php if ($this->view->userLoggedIn['nivel'] == 'ADMINISTRADOR') : ?>
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#ingredientes"
+               aria-expanded="false"
+               aria-controls="ingredientes">
+                <i class="fa fa-cutlery fa-fw"></i> Ingredientes
+                <span class="fa arrow"></span>
+            </a>
+            <div id="ingredientes"
+                 class="collapse"
+                 aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="ingredientes/ver">
+                        <i class="fa fa-cog"></i> Gerenciar
+                    </a>
+                    <a class="collapse-item" href="ingredientes/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#recipespatterns"
+               aria-expanded="false"
+               aria-controls="recipespatterns">
+                <i class="fa fa-table fa-fw"></i> Receitas Padrões
+                <span class="fa arrow"></span>
+            </a>
+            <div id="recipespatterns"
+                 class="collapse"
+                 aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="recipespatterns/ver">
+                        <i class="fa fa-cog"></i> Gerenciar
+                    </a>
+                    <a class="collapse-item" href="recipespatterns/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed"
+               href="#"
+               data-toggle="collapse"
+               data-target="#meals"
+               aria-expanded="false"
+               aria-controls="meals">
+                <i class="fa fa-spoon fa-fw"></i> Refeições
+                <span class="fa arrow"></span>
+            </a>
+            <div id="meals"
+                 class="collapse"
+                 aria-labelledby="headingPages"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="meals/ver">
+                        <i class="fa fa-cog"></i> Gerenciar
+                    </a>
+                    <a class="collapse-item" href="meals/novo/">
+                        <i class="fa fa-plus-circle"></i> Novo Registro
+                    </a>
+                </div>
+            </div>
+        </li>
+    <?php endif; ?>
+    <li class="nav-item">
+        <a class="nav-link collapsed"
+           href="#"
+           data-toggle="collapse"
+           data-target="#cardapio"
+           aria-expanded="false"
+           aria-controls="cardapio">
+            <i class="fa fa-bars fa-fw"></i> Cardápio
+            <span class="fa arrow"></span>
+        </a>
+        <div id="cardapio"
+             class="collapse"
+             aria-labelledby="headingPages"
+             data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="cardapio/ver">
+                    <i class="fa fa-cog"></i> Gerenciar
+                </a>
+                <a class="collapse-item" href="cardapio/novo/">
+                    <i class="fa fa-plus-circle"></i> Novo Registro
+                </a>
+            </div>
+        </div>
+    </li>
+
+    <?php if ($this->view->userLoggedIn['level'] == 'ADMINISTRADOR') : ?>
         <li class="nav-item">
             <a class="nav-link collapsed"
                href="#"

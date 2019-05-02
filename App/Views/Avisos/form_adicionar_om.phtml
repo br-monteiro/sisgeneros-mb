@@ -23,12 +23,12 @@ $id = $this->getParametro('id');
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>OM Disponível</label>
-                                        <select name="om" class="form-control" required>
+                                        <select name="oms" class="form-control" required>
                                             <?php foreach ($this->view->result as $value): ?>
                                                 <option value="<?= $value['id']; ?>">
-                                                    <?= $value['indicativo_naval']; ?>
+                                                    <?= $value['naval_indicative']; ?>
                                                     -
-                                                    <?= $value['nome']; ?>
+                                                    <?= $value['name']; ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>

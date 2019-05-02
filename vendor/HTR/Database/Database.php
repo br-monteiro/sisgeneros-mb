@@ -25,7 +25,7 @@ class Database
         $this->validaConexao();
     }
 
-    public function conecta()
+    public function conecta(bool $forceConnection = false)
     {
         if (self::$pdo) {
             return self::$pdo;
@@ -35,9 +35,14 @@ class Database
 
         try {
             if (!$this->config['sqlite']) {
+                $dbname = ';dbname=' . $this->config['banco'];
+                if ($forceConnection) {
+                    $dbname = '';
+                }
+
                 $dns = ''
                     . 'mysql:host=' . $this->config['servidor']
-                    . ';dbname=' . $this->config['banco'];
+                    . $dbname;
                 $pdo = new \PDO($dns, $this->config['usuario'], $this->config['senha'], $this->config['opcoes']);
             } else {
                 $pdo = new \PDO('sqlite:' . cfg::DIR_DATABASE . $this->config['sqlite']);
@@ -46,8 +51,8 @@ class Database
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
             throw new \Exception('Erro ao conectar. '
-                . 'Código: ' . $e->getCode() . '!'
-                . 'Mensagem: ' . $e->getMessage());
+            . 'Código: ' . $e->getCode() . '!'
+            . 'Mensagem: ' . $e->getMessage());
         }
         self::$pdo = $pdo;
 
