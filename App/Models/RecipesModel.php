@@ -56,6 +56,7 @@ class RecipesModel extends CRUD
                 'recipes_patterns_id' => $value['recipesPatternsId'],
                 'name' => $value['name'],
                 'quantity_people' => $value['quantity'],
+                'sort' => $value['sort'],
                 'date' => date("Y-m-d", strtotime($date))
             ];
             if (parent::novo($dados)) {

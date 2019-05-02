@@ -349,9 +349,8 @@
         });
 
         btnCheckoutMenu.on("click", function () {
-                $('.loading').show();
-                return;
-            if (validateMenus()) {
+            if (validateMenus() || true) {
+                //$('.loading').show();
                 $.ajax({
                     type: "POST",
                     url: "cardapio/registra/",
@@ -362,7 +361,7 @@
                         if (id) {
                             url = 'cardapio/detalhar/id/' + id;
                         }
-                        window.location = url;
+                        //window.location = url;
                     }
                 });
             } else {
