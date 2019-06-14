@@ -38,7 +38,7 @@ class SolicitacaoController extends Controller implements CtrlInterface
 
         $licitacao = new Licitacao();
         $this->view->title = 'Licitações Disponíveis';
-        $licitacao->paginator($this->getParametro('pagina'), time());
+        $licitacao->paginator($this->getParametro('pagina'), date("Y-m-d", time()));
         $this->view->result = $licitacao->getResultadoPaginator();
         $this->view->btn = $licitacao->getNavePaginator();
         $this->render('mostra_licitacao_disponivel');
