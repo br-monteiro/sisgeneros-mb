@@ -43,6 +43,9 @@ $pagination = Pagination::make($this);
                                 <td>
                                     <span class="badge badge-danger">
                                         <?= View::humanDate($value['validate']); ?>
+                                        <?php if($value['validate'] < date("Y-m-d")): ?>
+                                         - VENCIDA
+                                        <?php endif ?>
                                     </span>
                                 </td>
                                 <td>
