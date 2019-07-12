@@ -64,4 +64,23 @@ class Utils
 
         return $value;
     }
+
+    /**
+     * Check the length of string
+     * @param string $str The string to be verified
+     * @param int $lengthInit The length init
+     * @param int $lengthEnd The length end
+     * @return bool
+     */
+    public static function checkLength($str = '', int $lengthInit = 0, int $lengthEnd = 0): bool
+    {
+        if ($lengthInit && $lengthEnd) {
+            return strlen($str) >= $lengthInit && strlen($str) <= $lengthEnd;
+        } elseif ($lengthInit) {
+            return strlen($str) >= $lengthInit;
+        } elseif ($lengthEnd) {
+            return strlen($str) <= $lengthEnd;
+        }
+        return false;
+    }
 }
