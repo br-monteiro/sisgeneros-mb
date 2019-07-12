@@ -8,6 +8,7 @@ use HTR\Helpers\Session\Session;
 use HTR\Helpers\Criptografia\Criptografia;
 use Respect\Validation\Validator as v;
 use App\Config\Configurations as cfg;
+use App\Helpers\Utils;
 
 class AcessoModel extends CRUD
 {
@@ -310,8 +311,8 @@ class AcessoModel extends CRUD
 
     private function validaPassword()
     {
-        $value = v::stringType()->notEmpty()->length(8, null)->validate($this->getPassword());
-        if (!$value) {
+        $value = v::stringType()->notEmpty()->validate($this->getPassword());
+        if (!$value || !Utils::checkLength($this->getPassword(), 8)) {
             msg::showMsg('O campo Senha deve ser preenchido corretamente'
                 . ' com no <strong>mínimo 8 caracteres</strong>.'
                 . '<script>focusOn("password");</script>', 'danger');
