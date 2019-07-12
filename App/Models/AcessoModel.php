@@ -312,7 +312,7 @@ class AcessoModel extends CRUD
     private function validaPassword()
     {
         $value = v::stringType()->notEmpty()->validate($this->getPassword());
-        if (!$value && !Utils::checkLength($this->getPassword(), 8)) {
+        if (!$value || !Utils::checkLength($this->getPassword(), 8)) {
             msg::showMsg('O campo Senha deve ser preenchido corretamente'
                 . ' com no <strong>mínimo 8 caracteres</strong>.'
                 . '<script>focusOn("password");</script>', 'danger');

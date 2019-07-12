@@ -181,7 +181,7 @@ class OmModel extends CRUD
     private function validaNome()
     {
         $value = v::stringType()->notEmpty()->validate($this->getNome());
-        if (!$value && !Utils::checkLength($this->getNome(), 1, 60)) {
+        if (!$value || !Utils::checkLength($this->getNome(), 1, 60)) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("name");</script>', 'danger');
         }
@@ -202,7 +202,7 @@ class OmModel extends CRUD
     private function validaIndicativoNaval()
     {
         $value = v::stringType()->notEmpty()->validate($this->getIndicativoNaval());
-        if (!$value && !Utils::checkLength($this->getIndicativoNaval(), 6, 6)) {
+        if (!$value || !Utils::checkLength($this->getIndicativoNaval(), 6, 6)) {
             msg::showMsg('O campo Indicativo Naval deve ser preenchido '
                 . 'corretamente <strong>com 6 caracteres</strong>.'
                 . '<script>focusOn("naval_indicative");</script>', 'danger');
@@ -213,7 +213,7 @@ class OmModel extends CRUD
     private function validaAgenteFiscal()
     {
         $value = v::stringType()->notEmpty()->validate($this->getAgenteFiscal());
-        if (!$value && !Utils::checkLength($this->getAgenteFiscal(), 3, 100)) {
+        if (!$value || !Utils::checkLength($this->getAgenteFiscal(), 3, 100)) {
             msg::showMsg('O campo Agente Fiscal deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
                 . '<script>focusOn("fiscal_agent");</script>', 'danger');
@@ -224,7 +224,7 @@ class OmModel extends CRUD
     private function validaAgenteFiscalPosto()
     {
         $value = v::stringType()->notEmpty()->validate($this->getAgenteFiscalPosto());
-        if (!$value && !Utils::checkLength($this->getAgenteFiscalPosto(), 2, 50)) {
+        if (!$value || !Utils::checkLength($this->getAgenteFiscalPosto(), 2, 50)) {
             msg::showMsg('O campo Agente Fiscal Posto deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 2 e máximo 50 caracteres</strong>.'
                 . '<script>focusOn("fiscal_agent_graduation");</script>', 'danger');
@@ -235,7 +235,7 @@ class OmModel extends CRUD
     private function validaGestorMuniciamento()
     {
         $value = v::stringType()->notEmpty()->validate($this->getGestorMuniciamento());
-        if (!$value && !Utils::checkLength($this->getGestorMuniciamento(), 3, 100)) {
+        if (!$value || !Utils::checkLength($this->getGestorMuniciamento(), 3, 100)) {
             msg::showMsg('O campo Gestor Municiamento deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
                 . '<script>focusOn("munition_manager");</script>', 'danger');
@@ -246,7 +246,7 @@ class OmModel extends CRUD
     private function validaGestorMuniciamentoPosto()
     {
         $value = v::stringType()->notEmpty()->validate($this->getGestorMuniciamentoPosto());
-        if (!$value && !Utils::checkLength($this->getGestorMuniciamentoPosto(), 2, 50)) {
+        if (!$value || !Utils::checkLength($this->getGestorMuniciamentoPosto(), 2, 50)) {
             msg::showMsg('O campo Gestor Municiamento Posto deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 2 e máximo 50 caracteres</strong>.'
                 . '<script>focusOn("munition_manager_graduation");</script>', 'danger');
@@ -257,7 +257,7 @@ class OmModel extends CRUD
     private function validaFielMuniciamento()
     {
         $value = v::stringType()->notEmpty()->validate($this->getFielMuniciamento());
-        if (!$value && !Utils::checkLength($this->getFielMuniciamento(), 3, 100)) {
+        if (!$value || !Utils::checkLength($this->getFielMuniciamento(), 3, 100)) {
             msg::showMsg('O campo Fiel Municiamento deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 3 e máximo 100 caracteres</strong>.'
                 . '<script>focusOn("munition_fiel");</script>', 'danger');
@@ -268,7 +268,7 @@ class OmModel extends CRUD
     private function validaFielMuniciamentoPosto()
     {
         $value = v::stringType()->notEmpty()->validate($this->getFielMuniciamentoPosto());
-        if (!$value && !Utils::checkLength($this->getFielMuniciamentoPosto(), 2, 50)) {
+        if (!$value || !Utils::checkLength($this->getFielMuniciamentoPosto(), 2, 50)) {
             msg::showMsg('O campo Fiel Municiamento Posto deve ser preenchido '
                 . 'corretamente <strong>com no mínimo 10 e máximo 50 caracteres</strong>.'
                 . '<script>focusOn("munition_fiel_graduation");</script>', 'danger');

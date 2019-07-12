@@ -837,7 +837,7 @@ class SolicitacaoModel extends CRUD
     private function validaUf($value)
     {
         $validate = v::stringType()->notEmpty()->validate($value);
-        if ((!$validate && !Utils::checkLength($value, 2, 5)) || is_numeric($value)) {
+        if ((!$validate || !Utils::checkLength($value, 2, 5)) || is_numeric($value)) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) UF deve(m) ser'
                 . ' preenchido corretamente', 'danger');
         }
@@ -871,7 +871,7 @@ class SolicitacaoModel extends CRUD
     private function validaName($value)
     {
         $validate = v::stringType()->notEmpty()->validate($value);
-        if (!$validate && !Utils::checkLength($value, 3, 50)) {
+        if (!$validate || !Utils::checkLength($value, 3, 50)) {
             msg::showMsg('O(s) valor(es)  do(s) campo(s) DESCRIÇÃO deve(m) ser'
                 . ' preenchido corretamente', 'danger');
         }
@@ -881,7 +881,7 @@ class SolicitacaoModel extends CRUD
     private function validaInvoice($value)
     {
         $validate = v::stringType()->notEmpty()->validate($value);
-        if (!$validate && !Utils::checkLength($value, 3, 20)) {
+        if (!$validate || !Utils::checkLength($value, 3, 20)) {
             msg::showMsg('Para realizar o recebimeto é necessário fornecer o número da nota fiscal'
                 . '<script>focusOn("invoice");</script>', 'danger');
         }

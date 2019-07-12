@@ -216,7 +216,7 @@ class LicitacaoModel extends CRUD
     private function validanumber()
     {
         $value = v::stringType()->notEmpty()->noWhitespace()->validate($this->getNumber());
-        if (!$value && !View::checkLength($this->getNumber(), 10, 10)) {
+        if (!$value || !View::checkLength($this->getNumber(), 10, 10)) {
             msg::showMsg('O campo number deve ser preenchido corretamente'
                 . ' com <strong>10 caracteres obrigatoriamente</strong>.'
                 . '<script>focusOn("number");</script>', 'danger');
@@ -238,7 +238,7 @@ class LicitacaoModel extends CRUD
     private function validaUasgName()
     {
         $value = v::stringType()->notEmpty()->validate($this->getUasgName());
-        if (!$value && !View::checkLength($this->getUasgName(), 1, 50)) {
+        if (!$value || !View::checkLength($this->getUasgName(), 1, 50)) {
             msg::showMsg('O campo Nome da Uasg deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("uasg_name");</script>', 'danger');
         }
@@ -248,7 +248,7 @@ class LicitacaoModel extends CRUD
     private function validadescription()
     {
         $value = v::stringType()->notEmpty()->validate($this->getDescription());
-        if (!$value && !View::checkLength($this->getDescription(), 1, 30)) {
+        if (!$value || !View::checkLength($this->getDescription(), 1, 30)) {
             msg::showMsg('O campo Descrição da licitação deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("description");</script>', 'danger');
         }
