@@ -243,8 +243,8 @@ class AvisosModel extends CRUD
 
     private function validaTitle()
     {
-        $value = v::stringType()->notEmpty()->length(3, 100)->validate($this->getTitle());
-        if (!$value) {
+        $value = v::stringType()->notEmpty()->validate($this->getTitle());
+        if (!$value && !Utils::checkLength($this->getTitle(), 3, 100)) {
             msg::showMsg('O campo Título deve ser preenchido corretamente.'
                 . '<script>focusOn("title");</script>', 'danger');
         }
@@ -253,8 +253,8 @@ class AvisosModel extends CRUD
 
     private function validaContent()
     {
-        $value = v::stringType()->notEmpty()->length(3, 256)->validate($this->getContent());
-        if (!$value) {
+        $value = v::stringType()->notEmpty()->validate($this->getContent());
+        if (!$value && !Utils::checkLength($this->getContent(), 3, 256)) {
             msg::showMsg('O campo Mensagem deve ser preenchido corretamente.'
                 . '<script>focusOn("title");</script>', 'danger');
         }

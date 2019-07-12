@@ -219,8 +219,8 @@ class ItemModel extends CRUD
 
     private function validaUf()
     {
-        $value = v::stringType()->notEmpty()->length(1, 4)->validate($this->getUf());
-        if (!$value) {
+        $value = v::stringType()->notEmpty()->validate($this->getUf());
+        if (!$value  && !Utils::checkLength($this->getUf(), 1, 4)) {
             msg::showMsg('O campo Nome deve ser deve ser preenchido corretamente.'
                 . '<script>focusOn("uf");</script>', 'danger');
         }
