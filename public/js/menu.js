@@ -124,14 +124,24 @@
     });
 
     btnCheckoutMenu.on("click", function () {
-        $.ajax({
-            type: "POST",
-            url: "cardapio/registra/",
-            data: {menuMap},
-            success: function (data) {
-                $("#resultado").html(data);
-            }
-        });
+        if (validateMenus()) {
+            $('.loading').show();
+            $.ajax({
+                type: "POST",
+                url: "cardapio/registra/",
+                data: {menuMap},
+                success: function (data) {
+                    var id = jsonParse(data, {}).id;
+                    var url = 'cardapio/ver';
+                    if (id) {
+                        url = 'cardapio/detalhar/id/' + id;
+                    }
+                    //window.location = url;
+                }
+            });
+        } else {
+            window.alert('O cardápio deve conter ao menos uma refeição por dia.');
+        }
     });
     function getFirstDay() {
         return menuMap.find(function (item) {
