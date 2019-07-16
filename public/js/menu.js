@@ -136,7 +136,7 @@
                     if (id) {
                         url = 'cardapio/detalhar/id/' + id;
                     }
-                    //window.location = url;
+                    window.location = url;
                 }
             });
         } else {
