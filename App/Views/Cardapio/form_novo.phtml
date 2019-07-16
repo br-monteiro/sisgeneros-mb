@@ -349,8 +349,8 @@
         });
 
         btnCheckoutMenu.on("click", function () {
-            if (validateMenus() || true) {
-                //$('.loading').show();
+            if (validateMenus()) {
+                $('.loading').show();
                 $.ajax({
                     type: "POST",
                     url: "cardapio/registra/",
@@ -361,13 +361,12 @@
                         if (id) {
                             url = 'cardapio/detalhar/id/' + id;
                         }
-                        //window.location = url;
+                        window.location = url;
                     }
                 });
             } else {
                 alert('O cardápio deve conter ao menos uma refeição por dia.');
             }
-
         });
 
         function validateMenus() {
