@@ -186,7 +186,7 @@ class AcessoModel extends CRUD
         $stmt->bindValue(2, $this->getName());
         $stmt->execute();
         if ($stmt->fetch(\PDO::FETCH_ASSOC)) {
-            msg::showMsg('Já existe um registro com este Nomse.'
+            msg::showMsg('Já existe um registro com este Nome.'
                 . '<script>focusOn("name")</script>', 'warning');
         }
 
@@ -229,7 +229,7 @@ class AcessoModel extends CRUD
 
             if ($result['active'] === 'no') {
                 msg::showMsg('<strong>Usuário Bloqueado!</strong><br>'
-                    . ' Consulte o Admistrador do Sistema para mais informações.'
+                    . ' Consulte o Admistrador do Sistema para mais informações.<br>'
                     . cfg::ADMIN_CONTACT, 'danger');
             }
 
@@ -271,7 +271,7 @@ class AcessoModel extends CRUD
             ->setName(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS))
             ->setEmail(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL))
             ->setLevel(filter_input(INPUT_POST, 'level', FILTER_SANITIZE_SPECIAL_CHARS))
-            ->setActive(filter_input(INPUT_POST, 'active', FILTER_SANITIZE_NUMBER_INT));
+            ->setActive(filter_input(INPUT_POST, 'active'));
 
         return $this;
     }

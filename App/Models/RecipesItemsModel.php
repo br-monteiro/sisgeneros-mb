@@ -71,6 +71,17 @@ class RecipesItemsModel extends CRUD
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public function findById($id)
+    {
+        $query = ""
+            . " SELECT ri.*, r.menus_id FROM recipes_items AS ri "
+            . " INNER JOIN recipes AS r ON r.id = ri.recipes_id "
+            . " WHERE ri.id = :id; ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     public function editarRegistro()
     {
         $this->validaAll();
